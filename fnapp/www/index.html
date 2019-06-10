@@ -103,8 +103,8 @@
             {{#each tests}}        
             <li id ="{{url}}" class="table-view-cell">
                     <div class="media-body">               
-                           <p><b>Testname:  </b>{{this.testname}}</p>      
-                           <p><b>Testtype:  </b>{{this.testtype}}</p>
+                           <p>{{this.name}} ({{this.testtype}})</p>   
+                           <p>@{{this.lastrundt}}</p>                       
                        </div>    
                       <span class ="{{testStatusColour this.alerttext}}">        
                             {{this.alerttext}}
@@ -123,9 +123,16 @@
 
         <ul class="table-view">
         {{#each servers}}        
-            <li id ="{{url}}" class="table-view-cell">{{name}} 
-                    
+            <li id ="{{url}}" class="table-view-cell media">
+               
+                <span class="media-object pull-right icon icon-gear"> 
+                   </span>  
+                    <div class="media-body">
+                        <b>{{name}}</b>
+                      </div>
+              
             </li>
+        
             {{else}} <h3>No servers added</h3>
          {{/each}}
         </ul>
@@ -139,7 +146,8 @@
         {{#each nodes}}        
         <li id = "{{this.nodeid}}" class="table-view-cell">
                 <div class="media-body">
-                         {{this.nodeid}} 
+                         <p>{{this.nodeid}}</p>
+                         <p>{{this.hostname}}</p>
                         <p>@{{this.lastrundt}}</p>      
                     </div>                  
                     <span class ="{{statusColour this.alerttext}}">        
@@ -218,7 +226,7 @@
         </a>
         <a id = "test" class="tab-item" href="#tests">
             <span class="icon icon-star-filled"></span>
-            <span class="tab-label">Test Results</span>
+            <span class="tab-label">Groups</span>
         </a>
         <a id = "alerts" class="tab-item" href="#">
             <span class="icon icon-search"></span>
