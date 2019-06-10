@@ -93,7 +93,7 @@
     <!----------------- handle bars script templates ------------->
 
     <!-- Page Title-->
-    <script id="headerTemplate" type="text/template">           
+    <script id="headerTemplate" type="text/template">
            <h2>{{title}}</h2>            
     </script>
 
@@ -111,11 +111,8 @@
       </div>
     </script>
 
-
     <!-- Home/Freenats servers -->
     <script id="homeTemplate" type="text/template">
-
-         
         <ul class="table-view">
         {{#each servers}}        
             <li id ="{{url}}" class="table-view-cell">{{name}} 
@@ -124,22 +121,21 @@
             {{else}} <h3>No servers added</h3>
          {{/each}}
         </ul>
-
-
-        <!-- floating button for adding servers -->
-         <!-- <a href="#addserver" class="float">
-                <i class="fa fa-plus my-float"></i>
-        </a> -->
        </script>
 
     <!-- Nodes -->
     <script id="nodesTemplate" type="text/template">
     <ul class="table-view">
         {{#each nodes}}        
-        <li id = "{{this.nodeid}}" class="table-view-cell">{{this.nodeid}} 
-               <span>
-                   {{this.alerttext}}
-               </span>  
+        <li id = "{{this.nodeid}}" class="table-view-cell">
+                <div class="media-body">
+                         {{this.nodeid}} 
+                        <p>@{{convertFromUnixTime this.lastrunx}}</p>      
+                    </div>                  
+                    <span class ="{{statusColour this.alerttext}}">        
+                            {{this.alerttext}}
+                        </span>  
+                    
         </li>
         {{else}} <h3>No nodes on this server</h3>
      {{/each}}      
