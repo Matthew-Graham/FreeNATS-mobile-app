@@ -99,16 +99,21 @@
 
     <!-- test page -->
     <script id="testListTemplate" type="text/template">
-     <div class="card">
         <ul class="table-view">
             {{#each tests}}        
             <li id ="{{url}}" class="table-view-cell">
-                <a class="navigate-right">{{this.testname}}:{{this.testtype}}  <span class="badge">{{this.alerttext}}</span></a>
+                    <div class="media-body">               
+                           <p><b>Testname:  </b>{{this.testname}}</p>      
+                           <p><b>Testtype:  </b>{{this.testtype}}</p>
+                       </div>    
+                      <span class ="{{testStatusColour this.alerttext}}">        
+                            {{this.alerttext}}
+                        </span>  
             </li>
-            {{else}} <h3>No tests setup</h3>
+            {{else}} <h3>No tests on this node setup</h3>
          {{/each}}
         </ul>
-      </div>
+     
     </script>
 
 
@@ -126,10 +131,6 @@
         </ul>
 
 
-        <!-- floating button for adding servers -->
-         <!-- <a href="#addserver" class="float">
-                <i class="fa fa-plus my-float"></i>
-        </a> -->
        </script>
 
     <!-- Nodes -->
@@ -139,7 +140,7 @@
         <li id = "{{this.nodeid}}" class="table-view-cell">
                 <div class="media-body">
                          {{this.nodeid}} 
-                        <p>@{{convertFromUnixTime this.lastrunx}}</p>      
+                        <p>@{{this.lastrundt}}</p>      
                     </div>                  
                     <span class ="{{statusColour this.alerttext}}">        
                             {{this.alerttext}}
