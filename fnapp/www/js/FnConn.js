@@ -4,6 +4,7 @@
 function FnConn() {
   let fnDb = "-1";
   let currUrl = "-1";
+  let validSession = false;
 }
 
 
@@ -48,7 +49,8 @@ FnConn.prototype.connect = function (url, name, pass) {
     /**
      * Set Entry point page when connecting to a server
      */
-    router.routeToPage(requestedRoute);
+   
+    router.routeToPage(router.requestedPage);
 
   });
   jqxhr.fail(function (xhr, textStatus, errorThrown) {
@@ -75,7 +77,7 @@ FnConn.prototype.connect = function (url, name, pass) {
  * @param url
  */
 FnConn.prototype.initializeSession = function (url,requestedRoute) {
-  router.requestedRoute = requestedRoute;
+  router.requestedPage = requestedRoute;
   this.currUrl = url;
 
   if (sessionStorage.getItem("skey") == undefined || null) {
@@ -96,7 +98,8 @@ FnConn.prototype.initializeSession = function (url,requestedRoute) {
     });
   } else {
     console.log("SESSION ACTIVE");
-    router.routeToPage(this.requestedRoute);
+    //call data dependent route
+    router.routeToPage(router.requestedPage);
   }
 
 
@@ -164,9 +167,12 @@ FnConn.prototype.query = function (route, id) {
 
   this.route = route;
   let apiRoute;
-
+  console.log(fnConnObj.validSession +"session status")
     console.log("checking session")
-   this.initializeSession(sessionStorage.getItem("url"),route);
+  
+    this.initializeSession(sessionStorage.getItem("url"),route);
+  
+ 
    
     if (id === undefined) {
       apiRoute = this.currUrl + "/" + route;
