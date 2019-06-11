@@ -17,25 +17,28 @@ function PageRouter() {
 PageRouter.prototype.routeToPage = function (route, route2, data) {
 
     //TODO remove server login after moving the function
-    //TODO possible add conditionals to arrays - 1st level 2nd level allowing easy adding of new pages 
-
-    console.log("ROUTING TO ---"+route)
-    console.log("CURRENT PAGE--- "+this.currPage)
-
+    
+    
+    console.log("CURRENT PAGE--- "+this.currPage);
+    console.log("ROUTING TO ---"+route);
 
     /*
     arrays representing what nav bar is displayed depending on the current
     page and the page a user wants to go to 
     any new additional pages should be added to at least 1 of these arrays
     */
+   //TODO Change to constants
     let initialUiLevel = ["servers", "serverLogin","modifyServer"];
     let nestedUiLevel =["tests","nodes","node","alerts","groups"];
 
     
-    //check session, redirect to servers if invalid
+    //Check session for these pages
     if(nestedUiLevel.includes(route)){
-        console.log("checking session")
-         FnConnObj.checkSession();
+        //console.log("checking session")
+         //fnConnObj.initializeSession(sessionStorage.getItem("url"));
+    }else if(initialUiLevel.includes(route)){
+        fnConnObj.removeSession();
+        //remove session
     }
    
 
@@ -63,8 +66,7 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
 
 
     if (route == "tests") {
-        f1 = new FnConn();
-        f1.query("node", route2);
+        fnConnObj.query("node", route2);
 
         $(".tab-item").on('click', function (event) {
             let id = this.id;
@@ -74,26 +76,10 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
             self.routeToPage(id);
         });
 
-    } else if (route == "nodes") {
-        
-        console.log("Node page here " + this.currPage);
-        f1 = new FnConn();
-        f1.query("nodes");
-
+    } else if (route == "nodes") {      
+        fnConnObj.query("nodes");
         this.currPage = "nodes";
-        // $(".tab-item").on('click', function (event) {
-        //     let id = this.id;
-
-        //     if(id=="nodes"){
-        //         console.log("on nodes");
-        //     }else{
-        //         event.stopPropagation();
-        //         event.stopImmediatePropagation();
-        //         console.log("here"+id);
-        //         self.routeToPage(id);
-        //     }
-
-        // });
+ 
 
     } else if (route == "alerts") {
         this.currPage = "alerts";
@@ -108,41 +94,7 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
         //if unchanged server list  use previous  if not gen new one 
         let servers = new FnServerView();
 
-    } else if (route == "serverLogin") {
-        this.currPage = "serverLogin";
-        let name;
-        let sid;
-        let skey;
-        let url;
-
-        for (let server of data.servers) {
-
-            console.log(server.url);
-            console.log(route2);
-
-            if (server.url === route2) {
-                url = server.url;
-                name = server.name;
-                sid = server.sid;
-                console.log(sid);
-                skey = server.skey;
-            }
-        }
-
-        FnConnObj = new FnConn();
-        FnConnObj.initializeSession(url, sid, skey);
-
-        // $(".bar.bar-tab").html(Handlebars.compile($("#navBarTemplate").html()));
-        //if unchanged server list  use previous  if not gen new one 
-
-
-        sessionStorage.setItem("url", url);
-        sessionStorage.setItem("serverName", name);
-
-        /**
-         * Set Entry point page when connecting to a server
-         */
-        //this.routeToPage("nodes");
+    
     } else if (route == "modifyServer") {
        let test = new ServerDetailsView(1);
     }else{

@@ -28,11 +28,15 @@ var app = {
   initialize: function () {
      router = this.router;
      fnConnObj = this.fnConnObj;
-     
+
+
+
+
     //create db for FNserver passes
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     /**Test */
+    sessionStorage.clear();
     fnDb.transaction(function (tx) {
       tx.executeSql('DROP TABLE servers');
     });
@@ -73,7 +77,7 @@ var app = {
 
 
  
-
+//TODO REMOVE FROM here and into view 
     $(document).ready(function () {
 
       //Compile nav bar view  
@@ -91,35 +95,6 @@ var app = {
         //pgRouter(id);
         router.routeToPage(id);
       });
-
-
-
-      /**
-       * 
-       */
-      function pgRouter(pgId) {
-
-        if (pgId == "test") {
-          $(".content-padded").html(Handlebars.compile($("#testResultTemplate").html()));
-
-        } else if (pgId == "nodes") {
-          let nodesTemplate = Handlebars.compile($("#nodesTemplate").html());
-          let context = { name: "home", };
-          let nodesHTML = nodesTemplate(context);
-          $(".content-padded").html(nodesHTML);
-
-        } else if (pgId == "alerts") {
-          $(".bar.bar-tab").html(Handlebars.compile($("#navBarTemplate").html()));
-
-        } else if (pgId == "servers") {
-
-
-
-          //if unchanged server list  use previous  if not gen new one 
-          let servers = new FnServerView();
-
-        }
-      }
     });
 
 

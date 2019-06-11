@@ -113,32 +113,23 @@
             {{else}} <h3>No tests on this node setup</h3>
          {{/each}}
         </ul>
-     
     </script>
 
 
     <!-- Home/Freenats servers -->
     <script id="homeTemplate" type="text/template">
-
-
         <ul class="table-view">
         {{#each servers}}        
-            <li id ="{{url}}" class="table-view-cell media">
-
-          
-            <button id = "editServer" class="btn btn-primary btn-outlined icon icon-gear"> 
-              
-             </button>
-
-                    <div class="media-body">
-                        <b>{{name}}</b>
-                      </div>
-                    </li>
+            <li id ="{{url}}" value="{{name}}" class="table-view-cell media">      
+                <button id = "" class="btn btn-primary btn-outlined icon icon-gear editServer">         
+                </button>
+                  <div class="media-body">
+                        <b class = "serverName" id ="{{name}}">{{name}}</b>
+                    </div>
+             </li>
             {{else}} <h3>No servers added</h3>
          {{/each}}
         </ul>
-
-
        </script>
 
     <!-- Nodes -->

@@ -56,33 +56,19 @@ function displayServerList(serverList) {
 
   //events
   $(".table-view-cell").on('click', function (event) {
-
-    
-    let serverUrl = this.id;
-    
-
-    //grab session data if it exists if not new connection
-    //doesn't exist
-
-    //query 
-
-
-
-
-   //check if sid and skey still valid
-    let name = this.innerHTML;
-    let pageid = "serverLogin";
-    
     event.stopPropagation();
     event.stopImmediatePropagation();
-    console.log(pageid);
+    let serverUrl = this.id;
+    let name =$(this).find("b").attr('id');
+     
+    //default page after servers clicked
     sessionStorage.setItem("url",serverUrl);
     sessionStorage.setItem("serverName",name);
-    router.routeToPage(pageid,serverUrl,serverList);
+    router.routeToPage("nodes")
   });
 
 
-  $("#editServer").on('click', function (event) {
+  $(".editServer").on('click', function (event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     let url=  this.parentElement.id ;
@@ -139,43 +125,43 @@ function displayFurtherServerDetails() {
   console.log("the resuly" + results);
 }
 
-function addServer() {
+// function addServer() {
 
-  /**
-   * Form for server details entry
-   */
-  event.preventDefault();
-  let serverDetails = new ServerDetailsView(1);
+//   /**
+//    * Form for server details entry
+//    */
+//   event.preventDefault();
+//   let serverDetails = new ServerDetailsView(1);
 
-  //let hfunction = Handlebars.compile($("#serverConnDetailsTemplate").html());
- // $(".content-padded").html(hfunction);
+//   //let hfunction = Handlebars.compile($("#serverConnDetailsTemplate").html());
+//  // $(".content-padded").html(hfunction);
 
-  //event on connect click 
-  $("#submit").click(function () {
+//   //event on connect click 
+//   $("#submit").click(function () {
 
-    let usr = $("#username").val();
-    let pass = $("#password").val();
-    let url = $("#fnurl").val();
-    let name = $("#serverName").val();
-
-
-    let loginConn = new FnConn("admin", "admin", "http://natsapi.altair.davecutting.uk/jsonapi.php/login");
-    loginConn.connect;
+//     let usr = $("#username").val();
+//     let pass = $("#password").val();
+//     let url = $("#fnurl").val();
+//     let name = $("#serverName").val();
 
 
-    //validation here
+//     let loginConn = new FnConn("admin", "admin", "http://natsapi.altair.davecutting.uk/jsonapi.php/login");
+//     loginConn.connect;
 
-    let fnDb = window.openDatabase("fnDb", 1, "fnServerStore", 5000000);
 
-    var serverData = [name, url, usr, pass];
+//     //validation here
 
-    //if saved password is clicked 
-    fnDb.transaction(function (tx) {
-      tx.executeSql('INSERT INTO fnServer (name,url,naun,napw) VALUES (?,?,?,?)', serverData);
-    });
+//     let fnDb = window.openDatabase("fnDb", 1, "fnServerStore", 5000000);
 
-  });
-}
+//     var serverData = [name, url, usr, pass];
+
+//     //if saved password is clicked 
+//     fnDb.transaction(function (tx) {
+//       tx.executeSql('INSERT INTO fnServer (name,url,naun,napw) VALUES (?,?,?,?)', serverData);
+//     });
+
+//   });
+// }
 
 function viewServer() {
   //   /**
