@@ -2,8 +2,7 @@
  * pass,user,url
  */
 function FnConn() {
-
-
+ let fnDb = "-1";
 }
 
 
@@ -77,19 +76,23 @@ FnConn.prototype.initializeSession = function (url, sid, skey) {
     sessionStorage.setItem("sid", sid);
     sessionStorage.setItem("skey", skey);
     sessionStorage.setItem("url", url); 
-    this.currPage = "nodes";
+    
   }, "json");
 
   /**
    * entry point
    */
-  p1 = new PageRouter();
-  router.routeToPage("nodes");
+  router.routeToPage(router.requestedPage);
 
+  /*
+  Request failed
+  */
   jqxhr.fail(function (errorThrown) {
-    console.log(errorThrown.responseJSON.httpcode);
 
-    if (errorThrown.responseJSON.httpcode == 403) {
+    console.log(errorThrown);
+    console.log(errorThrown.status);
+
+    if (errorThrown.status == 403) {
       console.log("session no longer valid, retrieving new session")
 
       let getLoginDetails = function (url) {
@@ -107,13 +110,32 @@ FnConn.prototype.initializeSession = function (url, sid, skey) {
 
 
       getLoginDetails(url);
+    }else{
+
     }
 
   });
-
-
-
 }
+
+FnConn.prototype.checkSession = function(){
+   let skey =  sessionStorage.getItem("skey") ;
+   let  sid = sessionStorage.getItem("sid");
+   let  surl = sessionStorage.getItem("url");
+
+  if (skey=="-1"||skey==undefined||skey==""){
+    console.log("no session key or id");
+
+    //default page for expired session
+    router.routeToPage("servers");
+  }else{
+    console.log("attempting to intialize new session");
+    
+    //attempt to intialize new session
+    this.initializeSession(surl,sid,skey);
+  }
+}
+
+
 
 
 FnConn.prototype.query = function (route, id) {

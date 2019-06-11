@@ -7,6 +7,7 @@ function PageRouter() {
     self = this;
     currPage = "-1";
     previousPage = "-1";
+    requestedPage = "-1";
 }
 
 /**
@@ -29,6 +30,19 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
     */
     let initialUiLevel = ["servers", "serverLogin","modifyServer"];
     let nestedUiLevel =["tests","nodes","node","alerts","groups"];
+
+    
+    //check session, redirect to servers if invalid
+    if(nestedUiLevel.includes(route)){
+        console.log("checking session")
+         FnConnObj.checkSession();
+    }
+   
+
+
+
+
+
    
     /*if route is an initial ui level and currpage is an initial ui level keep 
     nav bar
@@ -131,6 +145,8 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
         //this.routeToPage("nodes");
     } else if (route == "modifyServer") {
        let test = new ServerDetailsView(1);
+    }else{
+        $(".content-padded").html("ROUTING ERROR. The route "+route+" doesnt not exist");
     }
 }
 

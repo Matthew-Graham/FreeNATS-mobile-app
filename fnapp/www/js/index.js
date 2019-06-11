@@ -23,11 +23,12 @@
 var app = {
 
   router:new PageRouter(),
-
+  fnConnObj:new FnConn(),
   // Application Constructor
   initialize: function () {
      router = this.router;
-
+     fnConnObj = this.fnConnObj;
+     
     //create db for FNserver passes
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
