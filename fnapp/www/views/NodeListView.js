@@ -1,5 +1,8 @@
 function NodeListView(nodeList) {
   router.currPage = "nodes";
+
+  //
+
   console.log("NODE PAGE---" + router.currPage)
   this.nodeList = nodeList;
   this.compile();

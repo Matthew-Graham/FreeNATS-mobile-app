@@ -82,6 +82,40 @@ function displayServerList(serverList) {
   });
 
 
+  $("#editServer").on('click', function (event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    let url=  this.parentElement.id ;
+    console.log("server ID "+url);
+    
+    let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+    
+    fnDb.transaction(function (tx) {
+      tx.executeSql('SELECT * FROM servers WHERE url = ?', [url], function (tx, results) {
+          let i = 0 ;
+          let tmpName = results.rows.item(i).serverName;
+          let tmpUrl = results.rows.item(i).url;
+          let tmpUsr = results.rows.item(i).naun;
+          let tmpPass = results.rows.item(i).napw;
+          let tmpServer = {name:tmpName, url:tmpUrl,usr:tmpUsr,pass:tmpPass};
+          console.log("wew" +tmpName);
+        
+  
+        //pass servers to display function
+        let changeServerObj = new ServerDetailsView(2,tmpServer);
+      }, null);
+  
+  
+  
+    }, function (error) {
+      console.log("SQL Transaction error  getting server details Message:"+error.message)});
+
+
+  });
+
+
+
+
   /*Header */
    let headerTemplate = Handlebars.compile($("#headerTemplate").html());
    let context = {title:"Your servers"};

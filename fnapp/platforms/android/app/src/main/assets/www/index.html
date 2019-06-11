@@ -124,15 +124,16 @@
         <ul class="table-view">
         {{#each servers}}        
             <li id ="{{url}}" class="table-view-cell media">
-               
-                <span class="media-object pull-right icon icon-gear"> 
-                   </span>  
+
+          
+            <button id = "editServer" class="btn btn-primary btn-outlined icon icon-gear"> 
+              
+             </button>
+
                     <div class="media-body">
                         <b>{{name}}</b>
                       </div>
-              
-            </li>
-        
+                    </li>
             {{else}} <h3>No servers added</h3>
          {{/each}}
         </ul>
@@ -187,16 +188,26 @@
 
     <!-- login form -->
     <script id=serverConnDetailsTemplate type="text/template">
-
+       {{#if url}}
+       <form id ="loginForm"  class="input-group">
+        
+                <input id = "fnurl" type="url" placeholder="" value = "{{url}}">    
+                <input id = "serverName" type="text" placeholder="" value = "{{name}}">
+                <input id = "username" type="text" placeholder="" value = "{{usr}}">
+                <input id="password" type="password" placeholder="" value ="{{pass}}"> 
+            <a id = "submit" class="btn connect btn-positive btn-block">modify</a>
+        </form>
+        
+        {{else}}
         <form id ="loginForm"  class="input-group">
         <input id = "fnurl" type="url" placeholder="Enter a Freenats url" value = "">
         <input id = "serverName" type="text" placeholder="Name your server" value = "">
         <input id = "username" type="text" placeholder="Enter your username" value = "">
         <input id="password" type="password" placeholder="Enter your password" value ="">
         <div></div>
-        <a id = "submit" class="btn connect btn-positive btn-block">connect</a>
+        <a id = "submit" class="btn connect btn-positive btn-block">add</a>
         </form>
-
+        {{/if}}
     </script>
 
 
@@ -207,7 +218,7 @@
                 <span class="tab-label">Servers</span>
             </a>
             <a id = "modifyServer" class="tab-item" href="#">
-                <span class="icon icon-gear"></span>
+                <span class="icon icon-plus"></span>
                 <span class="tab-label">Add a Server</span>
             </a>
     </script>
