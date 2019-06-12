@@ -64,7 +64,9 @@ function displayServerList(serverList) {
     //default page after servers clicked
     sessionStorage.setItem("url",serverUrl);
     sessionStorage.setItem("serverName",name);
-    router.routeToPage("nodes")
+  
+    fnConnObj.initializeSession(serverUrl,"nodes");
+    //router.routeToPage("nodes")
   });
 
 

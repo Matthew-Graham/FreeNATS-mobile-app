@@ -79,23 +79,19 @@ var app = {
  
 //TODO REMOVE FROM here and into view 
     $(document).ready(function () {
-
       //Compile nav bar view  
-      $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
-      // p1= new PageRouter();
-      // p1.routeToPage("servers");
+      navViewObj = new NavbarView(1);
+    //   $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
+    //   $(".tab-item").on('click', function (event) {
 
-
-      $(".tab-item").on('click', function (event) {
-
-        let id = this.id;
+    //     let id = this.id;
       
-        console.log(id);
+    //     console.log(id);
 
-        //pgRouter(id);
-        router.routeToPage(id);
-      });
-    });
+    //     //pgRouter(id);
+    //     router.routeToPage(id);
+    //   });
+     });
 
 
 

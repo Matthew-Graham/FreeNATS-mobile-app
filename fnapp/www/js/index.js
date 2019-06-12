@@ -53,7 +53,8 @@ var app = {
         tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);   
         
         router.currPage = "servers";
-        router.routeToPage("servers");
+        router.routeToPage({path1:"servers"})
+       // router.routeToPage("servers");
       });
     }, function (error) {
       console.log("SQL Transaction error creating server table Message:" + error.message);
@@ -79,23 +80,19 @@ var app = {
  
 //TODO REMOVE FROM here and into view 
     $(document).ready(function () {
-
       //Compile nav bar view  
-      $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
-      // p1= new PageRouter();
-      // p1.routeToPage("servers");
+      navViewObj = new NavbarView(1);
+    //   $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
+    //   $(".tab-item").on('click', function (event) {
 
-
-      $(".tab-item").on('click', function (event) {
-
-        let id = this.id;
+    //     let id = this.id;
       
-        console.log(id);
+    //     console.log(id);
 
-        //pgRouter(id);
-        router.routeToPage(id);
-      });
-    });
+    //     //pgRouter(id);
+    //     router.routeToPage(id);
+    //   });
+     });
 
 
 

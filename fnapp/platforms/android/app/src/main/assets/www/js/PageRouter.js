@@ -66,18 +66,20 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
 
 
     if (route == "tests") {
+        
         fnConnObj.query("node", route2);
 
-        $(".tab-item").on('click', function (event) {
-            let id = this.id;
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            console.log(id);
-            self.routeToPage(id);
-        });
+        // $(".tab-item").on('click', function (event) {
+        //     let id = this.id;
+        //     event.stopPropagation();
+        //     event.stopImmediatePropagation();
+        //     console.log(id);
+        //     self.routeToPage(id);
+        // });
 
-    } else if (route == "nodes") {      
-        fnConnObj.query("nodes");
+    } else if (route == "nodes") {         
+        fnConnObj.initializeSession(sessionStorage.getItem("url"),route);
+        //fnConnObj.query("nodes");
         this.currPage = "nodes";
  
 
