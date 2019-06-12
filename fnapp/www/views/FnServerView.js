@@ -65,7 +65,7 @@ function displayServerList(serverList) {
     sessionStorage.setItem("url",serverUrl);
     sessionStorage.setItem("serverName",name);
   
-    fnConnObj.initializeSession(serverUrl,"nodes");
+    fnConnObj.initializeSession(serverUrl,{path1:"nodes"});
     //router.routeToPage("nodes")
   });
 

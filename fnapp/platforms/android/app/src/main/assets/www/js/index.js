@@ -53,7 +53,8 @@ var app = {
         tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);   
         
         router.currPage = "servers";
-        router.routeToPage("servers");
+        router.routeToPage({path1:"servers"})
+       // router.routeToPage("servers");
       });
     }, function (error) {
       console.log("SQL Transaction error creating server table Message:" + error.message);

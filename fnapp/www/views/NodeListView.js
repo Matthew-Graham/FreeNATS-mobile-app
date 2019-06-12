@@ -45,7 +45,7 @@ NodeListView.prototype.attachEvents = function () {
     let nodeid = this.id;
     let pageid = "tests";
     // pRouter = new PageRouter();   
-    router.routeToPage(pageid, nodeid);
+    router.routeToPage({path1:pageid, path2:nodeid});
   });
 }
 

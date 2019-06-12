@@ -1,3 +1,5 @@
+
+
 /**
  * pass,user,url
  */
@@ -69,7 +71,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
       console.log(errorThrown.responnseText);
     }
 
-    router.routeToPage("servers");
+    router.routeToPage({path1:"servers"});
 
   })
 }
@@ -82,8 +84,8 @@ FnConn.prototype.connect = function (url, name, pass, route) {
  * @param url
  */
 FnConn.prototype.initializeSession = function (url, requestedRoute) {
+  
   console.log("requested route " + requestedRoute);
-
   this.currUrl = url;
 
   /*
@@ -110,7 +112,7 @@ FnConn.prototype.initializeSession = function (url, requestedRoute) {
    
     console.log("SESSION VARIABLES EXIST --Attempting query");
     //Try to route normally
-    this.query("nodes")
+    this.query(requestedRoute)
   }
 }
 
@@ -123,9 +125,9 @@ FnConn.prototype.removeSession = function () {
 
 
 
-FnConn.prototype.query = function (route, id) {
-
-  this.route = route;
+FnConn.prototype.query = function (routeObj) {
+  let route = routeObj.path1;
+  let id  = routeObj.path2;
   let apiRoute;
 
 
@@ -160,8 +162,17 @@ FnConn.prototype.query = function (route, id) {
   //TODO add error code  for routes
 
   dataDependentRouter = function (data) {
-    console.log("route" + route);
-    console.log("Current page herde " + router.currPage);
+    console.log("Current page " + router.currPage);
+
+    //if remaining in nested ui level
+    if(router.nestedUiLevel.includes(router.currPage)){
+      
+     //if go to nested from initial 
+    }else if (router.initialUiLevel.includes(router.currPage)){
+      console.log("create level 2 nav ");  
+      let nav = new NavbarView(2);
+    }
+    
     switch (route) {
       case 'nodes':
         router.currPage = "nodes";

@@ -14,11 +14,12 @@ function PageRouter() {
  * controls displaying of content
  * @param {id of page to route} route 
  */
-PageRouter.prototype.routeToPage = function (route, route2, data) {
+PageRouter.prototype.routeToPage = function (routeObj) {
+
+    let route = routeObj.path1;
+    let route2 =routeObj.path2;
 
     //TODO remove server login after moving the function
-    
-    
     console.log("CURRENT PAGE--- "+this.currPage);
     console.log("ROUTING TO ---"+route);
 
@@ -28,15 +29,15 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
     any new additional pages should be added to at least 1 of these arrays
     */
    //TODO Change to constants
-    let initialUiLevel = ["servers", "serverLogin","modifyServer"];
-    let nestedUiLevel =["tests","nodes","node","alerts","groups"];
+    this.initialUiLevel = ["servers", "serverLogin","modifyServer"];
+    this.nestedUiLevel =["tests","nodes","node","alerts","groups"];
 
     
     //Check session for these pages
-    if(nestedUiLevel.includes(route)){
+    if(this.nestedUiLevel.includes(route)){
         //console.log("checking session")
          //fnConnObj.initializeSession(sessionStorage.getItem("url"));
-    }else if(initialUiLevel.includes(route)){
+    }else if(this.initialUiLevel.includes(route)){
         fnConnObj.removeSession();
         //remove session
     }
@@ -50,24 +51,21 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
     /*if route is an initial ui level and currpage is an initial ui level keep 
     nav bar
     */
-    if (initialUiLevel.includes(route) && initialUiLevel.includes(this.currPage)) {
+    if (this.initialUiLevel.includes(route) && this.initialUiLevel.includes(this.currPage)) {
         console.log("keeping level 1 nav ");
     /*
     If route is initial ui level and current page is a nested ui level create new initial nav
     */
-    }else if(initialUiLevel.includes(route)&&nestedUiLevel.includes(this.currPage)){
+    }else if(this.initialUiLevel.includes(route)&&this.nestedUiLevel.includes(this.currPage)){
         console.log("create level 1 nav ");    
         let nav1 = new NavbarView(1);
-    }else{
-        console.log("create level 2 nav ");  
-        let nav = new NavbarView(2);
     }
-
 
 
     if (route == "tests") {
         
-        fnConnObj.query("node", route2);
+       
+        fnConnObj.query({path1:"node", path2:route2});
 
         // $(".tab-item").on('click', function (event) {
         //     let id = this.id;
@@ -78,7 +76,7 @@ PageRouter.prototype.routeToPage = function (route, route2, data) {
         // });
 
     } else if (route == "nodes") {         
-        fnConnObj.initializeSession(sessionStorage.getItem("url"),route);
+        fnConnObj.initializeSession(sessionStorage.getItem("url"),routeObj);
         //fnConnObj.query("nodes");
         this.currPage = "nodes";
  
