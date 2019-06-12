@@ -49,6 +49,7 @@
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
     <script type="text/javascript" src="views/TestListView.js"></script>
+    <script type="text/javascript" src="views/TestGraphView.js"></script>
     <script type="text/javascript" src="views/ServerDetailsView.js"></script>
     <script type="text/javascript" src="js/FnConn.js"></script>
     <script type="text/javascript" src="views/FnServerView.js"></script>
@@ -239,6 +240,48 @@
             <span class="tab-label">settings</span>
         </a>
   
+    </script>
+
+    <script id ="graphTemplate" type = "text/template">
+        <div>
+       
+        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="graph" aria-labelledby="title" role="img">
+            <title id="title">A line chart showing some information</title>
+          <g class="grid x-grid" id="xGrid">
+            <!-- Vertical line -->
+            <line x1="20" x2="20" y1="5" y2=" {{graphHeight}}"></line>
+          </g>
+          <!-- Horizontal line -->
+          <g class="grid y-grid" id="yGrid">
+            <line x1="30" x2=" {{graphWidth}}" y1="{{graphHeight}}" y2="{{graphHeight}}"></line>
+          </g>
+
+            <!-- X axis labels/dividers -->
+            <g class="labels x-labels">
+            <text x="20" y="{{graphHeight}}">20:00</text>
+            <text x="" y="400">04:00</text>
+            <text x="392" y="400">12:00</text>
+            <text x="538" y="400">20:00</text>
+            <!-- <text x="400" y="440" class="label-title">Time</text> -->
+          </g>
+          <g class="labels y-labels">
+            <text x="20" y="{{this.yAxis.point1}}">2</text>
+            <text x="20" y="{{this.yAxis.point2}}">1</text>
+            <text x="20" y="{{this.yAxis.point3}}">0</text>
+            <text x="20" y="{{this.yAxis.point4}}">-1</text>
+            <!-- <text x="50" y="200" class="label-title">Test Value</text> -->
+          </g>
+          <g class="data" data-setname="Our first data set">
+            <line x1="90" y1="192" x2="240" y2="141" stroke-width="4" stroke="RED"/>
+            <circle cx="90" cy="192" data-value="7.2" r="4"></circle>
+            <circle cx="240" cy="141" data-value="8.1" r="4"></circle>
+              <line x1="240" y1="141" x2="388" y2="179" stroke-width="4" stroke="green"/>
+            <circle cx="388" cy="179" data-value="7.7" r="4"></circle>
+            <circle cx="531" cy="200" data-value="6.8" r="4"></circle>
+            <circle cx="677" cy="104" data-value="6.7" r="4"></circle>
+          </g>
+          </svg>
+        </div>
     </script>
 
 </body>

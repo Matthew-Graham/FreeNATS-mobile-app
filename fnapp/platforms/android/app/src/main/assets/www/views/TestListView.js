@@ -1,6 +1,7 @@
 function TestListView(testListData){
     this.testListData = testListData; 
     this.compile();
+    this.attachEvents();
 }
 
 TestListView.prototype.compile = function(){
@@ -20,6 +21,17 @@ TestListView.prototype.compile = function(){
         }
       });
     
+
+      
+TestListView.prototype.attachEvents = function () {
+  $(".table-view-cell").on('click', function (event) {
+   
+    let pageid = "test";
+    // pRouter = new PageRouter();   
+    router.routeToPage({path1:pageid});
+  });
+}
+
 
 
 

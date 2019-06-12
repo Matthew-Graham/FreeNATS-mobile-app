@@ -97,7 +97,9 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     
     } else if (route == "modifyServer") {
        let test = new ServerDetailsView(1);
-    }else{
+    }else if(route=="test"){
+        testGraphViewobj = new TestGraphView();
+    } else{
         $(".content-padded").html("ROUTING ERROR. The route "+route+" doesnt not exist");
     }
 }
