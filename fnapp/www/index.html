@@ -47,9 +47,9 @@
     <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="js/handlebars.js"></script>
     <!-- <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script> -->
-    <script type="text/javascript" src="js/d3.min.js"></script>
-   <script type="text/javascript" src="https://d3js.org/d3-axis.v1.min.js"></script>
-    <script type="text/javascript" src="https://d3js.org/d3-time.v1.min.js"></script> 
+    <script type="text/javascript" src="js/d3.js"></script>
+   <!-- <script type="text/javascript" src="https://d3js.org/d3-axis.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-time.v1.min.js"></script>  -->
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
     <script type="text/javascript" src="views/TestListView.js"></script>
@@ -106,7 +106,7 @@
     <script id="testListTemplate" type="text/template">
         <ul class="table-view">
             {{#each tests}}        
-            <li id ="{{url}}" class="table-view-cell">
+            <li id ="{{this.testid}}" class="table-view-cell">
                     <div class="media-body">               
                            <p>{{this.name}} ({{this.testtype}})</p>   
                            <p>@{{this.lastrundt}}</p>                       
@@ -118,6 +118,10 @@
             {{else}} <h3>No tests on this node setup</h3>
          {{/each}}
         </ul>
+
+        <svg width = "500" height = "500">
+            <rect x = "0" y = "0" width = "300" height = "200" fill = "yellow"></rect>
+         </svg>
     </script>
 
 
@@ -247,7 +251,7 @@
     </script>
 
     <script id ="graphTemplate" type = "text/template">
-      
+      hey
     </script>
 
 </body>
