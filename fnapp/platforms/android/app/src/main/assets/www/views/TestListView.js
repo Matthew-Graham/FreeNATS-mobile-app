@@ -1,6 +1,7 @@
 function TestListView(testListData){
     this.testListData = testListData; 
     this.compile();
+    this.attachEvents();
 }
 
 TestListView.prototype.compile = function(){
@@ -20,13 +21,25 @@ TestListView.prototype.compile = function(){
         }
       });
     
+      let testListTemplate = Handlebars.compile($("#testListTemplate").html());
+      let testListHtml = testListTemplate(this.testListData);
+      $(".content-padded").html(testListHtml);
+    }
 
-
-
-
-
-
-    let testListTemplate = Handlebars.compile($("#testListTemplate").html());
-    let testListHtml = testListTemplate(this.testListData);
-    $(".content-padded").html(testListHtml);
+TestListView.prototype.attachEvents = function () {
+  $(".table-view-cell").on('click', function (event) {
+   
+    let pageid = "test";
+    // pRouter = new PageRouter();   
+    router.routeToPage({path1:pageid,path2:this.id});
+    console.log(this.id);
+  });
 }
+
+
+
+
+
+
+
+   

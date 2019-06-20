@@ -23,15 +23,20 @@
 var app = {
 
   router:new PageRouter(),
-
+  fnConnObj:new FnConn(),
   // Application Constructor
   initialize: function () {
      router = this.router;
+     fnConnObj = this.fnConnObj;
+
+
+
 
     //create db for FNserver passes
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     /**Test */
+    sessionStorage.clear();
     fnDb.transaction(function (tx) {
       tx.executeSql('DROP TABLE servers');
     });
@@ -48,7 +53,8 @@ var app = {
         tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);   
         
         router.currPage = "servers";
-        router.routeToPage("servers");
+        router.routeToPage({path1:"servers"})
+       // router.routeToPage("servers");
       });
     }, function (error) {
       console.log("SQL Transaction error creating server table Message:" + error.message);
@@ -72,54 +78,21 @@ var app = {
 
 
  
-
+//TODO REMOVE FROM here and into view 
     $(document).ready(function () {
-
       //Compile nav bar view  
-      $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
-      // p1= new PageRouter();
-      // p1.routeToPage("servers");
+      navViewObj = new NavbarView(1);
+    //   $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
+    //   $(".tab-item").on('click', function (event) {
 
-
-      $(".tab-item").on('click', function (event) {
-
-        let id = this.id;
+    //     let id = this.id;
       
-        console.log(id);
+    //     console.log(id);
 
-        //pgRouter(id);
-        router.routeToPage(id);
-      });
-
-
-
-      /**
-       * 
-       */
-      function pgRouter(pgId) {
-
-        if (pgId == "test") {
-          $(".content-padded").html(Handlebars.compile($("#testResultTemplate").html()));
-
-        } else if (pgId == "nodes") {
-          let nodesTemplate = Handlebars.compile($("#nodesTemplate").html());
-          let context = { name: "home", };
-          let nodesHTML = nodesTemplate(context);
-          $(".content-padded").html(nodesHTML);
-
-        } else if (pgId == "alerts") {
-          $(".bar.bar-tab").html(Handlebars.compile($("#navBarTemplate").html()));
-
-        } else if (pgId == "servers") {
-
-
-
-          //if unchanged server list  use previous  if not gen new one 
-          let servers = new FnServerView();
-
-        }
-      }
-    });
+    //     //pgRouter(id);
+    //     router.routeToPage(id);
+    //   });
+     });
 
 
 

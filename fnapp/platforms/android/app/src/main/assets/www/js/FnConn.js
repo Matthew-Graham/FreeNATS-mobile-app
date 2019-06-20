@@ -1,29 +1,22 @@
+
+
 /**
  * pass,user,url
  */
 function FnConn() {
-
+  let fnDb = "-1";
+  let currUrl = "-1";
+  let validSession = false;
 
 }
 
 
 
-FnConn.prototype.connect = function (url, name, pass) {
-
-
+FnConn.prototype.connect = function (url, name, pass, route) {
+  console.log("requested route " + route);
   let loginUrl = url + "/login";
 
-  //retrieve from database pass and usr if saved
-
-  // let usr = this.username;
-  // let pass = this.password;
-
-  // let usr = "admin";
-  // let pass = "admin";
-  // let url = "http://natsapi.altair.davecutting.uk/jsonapi.php/login";
-
-
-  $.ajax({
+  let jqxhr = $.ajax({
     url: loginUrl,
     type: 'post',
     data: {
@@ -32,133 +25,180 @@ FnConn.prototype.connect = function (url, name, pass) {
     },
     headers: {},
     dataType: 'json',
-    success: function (data) {
-      console.log("successful login");
-      sessionStorage.setItem("url", url);
-      sessionStorage.setItem("skey", data.skey);
-      sessionStorage.setItem("sid", data.sid);
 
-      let persistSession = function () {
-        let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
-        fnDb.transaction(function (tx) {
-          console.log(url);
-          tx.executeSql('UPDATE servers  SET sid = ?,skey = ? WHERE url = ?', [data.sid, data.skey, url], function (tx, result) {
-            console.log("query successful");
-          }, function (tx, error) {
-            console.log("SQL query ERROR" + error.message)
-          });
-        }, function (error) {
-          console.log("SQL Transaction error")
-        });
-      }
-
-      persistSession();
-        /**
-         * Set Entry point page when connecting to a server
-         */
-        p1 = new PageRouter();
-        
-        router.routeToPage("nodes");
-    }
   });
+
+  jqxhr.done(function (data) {
+    console.log("successful login");
+    sessionStorage.setItem("url", url);
+    sessionStorage.setItem("skey", data.skey);
+    sessionStorage.setItem("sid", data.sid);
+
+    let persistSession = function () {
+      let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+      fnDb.transaction(function (tx) {
+
+        tx.executeSql('UPDATE servers  SET sid = ?,skey = ? WHERE url = ?', [data.sid, data.skey, url], function (tx, result) {
+          console.log("Session variables successfully updated");
+          fnConnObj.query(route);
+        }, function (tx, error) {
+          console.log("SQL query ERROR" + error.message)
+        });
+      }, function (error) {
+        console.log("SQL Transaction error")
+      });
+    }
+
+    persistSession();
+
+    /**
+     * Set Entry point page when connecting to a server
+     */
+    //data router  to requested route
+    // router.routeToPage("nodes");
+
+  });
+  jqxhr.fail(function (xhr, textStatus, errorThrown) {
+
+    if (errorThrown.status == "403") {
+      alert("Incorrect password or username" + "[" + errorThrown.status + "]");
+    } else if (errorThrown.status == "404") {
+      alert("no such route found" + "[" + errorThrown.status + "]");
+    } else {
+      alert("Error could not connect to url");
+      console.log(xhr.statusText);
+      console.log(textStatus);
+      console.log(errorThrown.responnseText);
+    }
+
+    router.routeToPage({path1:"servers"});
+
+  })
 }
 
 
 
 
 //TODO add passable name here aswell
-FnConn.prototype.initializeSession = function (url, sid, skey) {
-  apiRoute = url + "/alerts";
-  let self = this;
-  console.log("initializing session");
+/**
+ * @param url
+ */
+FnConn.prototype.initializeSession = function (url, requestedRoute) {
+  
+  console.log("requested route " + requestedRoute);
+  this.currUrl = url;
 
-  let jqxhr = $.get(apiRoute, { fn_sid: sid, fn_skey: skey }, function (data) {
-    console.log("session still valid")
-    sessionStorage.setItem("sid", sid);
-    sessionStorage.setItem("skey", skey);
-    sessionStorage.setItem("url", url); 
-    this.currPage = "nodes";
-  }, "json");
+  /*
+  check if session var exists
+  */
+  if (sessionStorage.getItem("skey") == undefined || null) {
 
-  /**
-   * entry point
-   */
-  p1 = new PageRouter();
-  router.routeToPage("nodes");
+    console.log("SESSION NOT ACTIVE")
+    //populate session based on url    
+    let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
-  jqxhr.fail(function (errorThrown) {
-    console.log(errorThrown.responseJSON.httpcode);
+    fnDb.transaction(function (tx) {
+      //session var doesnt exist , create from server db
+      tx.executeSql('SELECT * FROM servers WHERE url = ?', [url], function (tx, results) {
+        console.log("initializing session");
+        //grab recent session details from db
+        fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, requestedRoute);
 
-    if (errorThrown.responseJSON.httpcode == 403) {
-      console.log("session no longer valid, retrieving new session")
+      });
+    }, function (tx, error) {
+      console.log("no such server")
+    });
+  } else {
+   
+    console.log("SESSION VARIABLES EXIST --Attempting query");
+    //Try to route normally
+    this.query(requestedRoute)
+  }
+}
 
-      let getLoginDetails = function (url) {
-        let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
-
-        fnDb.transaction(function (tx) {
-          console.log(url);
-          tx.executeSql('SELECT * FROM servers WHERE url = ?', [url], function (tx, results) {
-            console.log(results.rows.item(0).url);
-            console.log(results.rows.item(0).naun);      
-            self.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw);
-          });
-        });
-      }
-
-
-      getLoginDetails(url);
-    }
-
-  });
-
-
-
+FnConn.prototype.removeSession = function () {
+  console.log("clearing session")
+  sessionStorage.clear();
 }
 
 
-FnConn.prototype.query = function (route, id) {
 
-  this.route = route;
+
+
+FnConn.prototype.query = function (routeObj) {
+  let route = routeObj.path1;
+  let id  = routeObj.path2;
   let apiRoute;
 
-  if (id === undefined) {
-    //let apiRoute = sessionStorage.getItem("url")+"/"+route;
-    apiRoute = "http://natsapi.altair.davecutting.uk/jsonapi.php/" + route;
 
-  } else {
-    apiRoute = "http://natsapi.altair.davecutting.uk/jsonapi.php/" + route + "/" + id;
+  //check session var/session storage var
+  //doesnt exist populate sid from db
+  //does exist query test 
+  //fail - login retrive username and pass from server
+
+  //valid session 
+  //route to requested page through data router 
+  //choose nav bar 
+
+
+
+
+  if (id === undefined) {
+    apiRoute = this.currUrl + "/" + route;
+    console.log("Querying api route -> " + apiRoute);
+  } else if(routeObj.path3=="data"){
+    apiRoute = this.currUrl + "/" + route + "/" + id+"/data";
+    console.log("Querying api route -> " + apiRoute);
+  } else{
+    apiRoute = this.currUrl + "/" + route + "/" + id;
+    console.log("Querying api route -> " + apiRoute);
   }
 
-
-
-  $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
+  let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
     console.log(data.error);
     dataDependentRouter(data);
-
+    console.log("SESSION ACTIVE");
   }, "json");
-
-
-
+  jqxhr.fail(function (error) {
+    console.log("SESSION INACTIVE");
+   })
+  //TODO add error code  for routes
 
   dataDependentRouter = function (data) {
-    console.log("route" + route);
-  console.log("Current page herde " + router.currPage);
+    console.log("Current page " + router.currPage);
+    console.log("Data Dependent Route to " + route);
+    //if remaining in nested ui level
+    if(router.nestedUiLevel.includes(router.currPage)){
+      
+     //if go to nested from initial 
+    }else if (router.initialUiLevel.includes(router.currPage)){
+      console.log("create level 2 nav ");  
+      let nav = new NavbarView(2);
+    }
+    
     switch (route) {
       case 'nodes':
         router.currPage = "nodes";
-        console.log(router.currPage +" is curr page");
+        console.log(router.currPage + " is curr page");
         //new node view passing in node data
         let nodeListViewObj = new NodeListView(data);
 
         break;
       case 'node':
-          router.currPage = "node";
+        router.currPage = "node";
         //console.log(data);
         let testListViewObj = new TestListView(data);
+        break;
+      case 'test':{
+        router.currPage = "test"
+        console.log(data);
+        let testGraphViewobj = new TestGraphView(data);
+      }
     }
   }
 
 }
+
 
 
 

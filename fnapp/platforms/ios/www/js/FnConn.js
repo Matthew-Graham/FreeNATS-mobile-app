@@ -146,10 +146,7 @@ FnConn.prototype.query = function (routeObj) {
   if (id === undefined) {
     apiRoute = this.currUrl + "/" + route;
     console.log("Querying api route -> " + apiRoute);
-  } else if(routeObj.path3=="data"){
-    apiRoute = this.currUrl + "/" + route + "/" + id+"/data";
-    console.log("Querying api route -> " + apiRoute);
-  } else{
+  } else {
     apiRoute = this.currUrl + "/" + route + "/" + id;
     console.log("Querying api route -> " + apiRoute);
   }
@@ -166,7 +163,7 @@ FnConn.prototype.query = function (routeObj) {
 
   dataDependentRouter = function (data) {
     console.log("Current page " + router.currPage);
-    console.log("Data Dependent Route to " + route);
+
     //if remaining in nested ui level
     if(router.nestedUiLevel.includes(router.currPage)){
       
@@ -188,12 +185,6 @@ FnConn.prototype.query = function (routeObj) {
         router.currPage = "node";
         //console.log(data);
         let testListViewObj = new TestListView(data);
-        break;
-      case 'test':{
-        router.currPage = "test"
-        console.log(data);
-        let testGraphViewobj = new TestGraphView(data);
-      }
     }
   }
 

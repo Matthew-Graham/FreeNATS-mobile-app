@@ -26,8 +26,8 @@ NavbarView.prototype.attachEvents = function () {
         let id = this.id;
         event.stopPropagation();
         event.stopImmediatePropagation();
-        console.log(id+" was clicked");
-        router.routeToPage(id);
+        console.log(id+"Navigation was clicked");
+        router.routeToPage({path1:id});
     });
 }
       
