@@ -98,7 +98,11 @@ PageRouter.prototype.routeToPage = function (routeObj) {
         //let testGraphViewobj = new TestGraphView();
     }else if(route == "groups"){
         fnConnObj.query({path1:route})
-    }else{
+    }else if(route == "group"){
+        fnConnObj.query({path1:route,path2:route2})
+    }
+    
+    else{
         $(".content-padded").html("ROUTING ERROR. The route "+route+" doesnt not exist");
     }
 }

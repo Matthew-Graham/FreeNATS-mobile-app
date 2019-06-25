@@ -203,10 +203,13 @@ FnConn.prototype.query = function (routeObj) {
       case 'groups':
         router.currPage = "groups";
         console.log(data);
-        let groupListViewObj = new GroupListView(data);
-        
+        let groupListViewObj = new GroupListView(data);       
         break;
-      
+      case 'group':
+        router.currPage = "group";
+        console.log(data);
+        let groupViewObj = new GroupView(data);       
+        break;
     }
   }
 

@@ -55,6 +55,7 @@
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
     <script type="text/javascript" src="views/AlertView.js"></script>
+    <script type="text/javascript" src="views/GroupView.js"></script>
     <script type="text/javascript" src="views/GroupListView.js"></script>
     <script type="text/javascript" src="views/TestListView.js"></script>
     <script type="text/javascript" src="views/TestGraphView.js"></script>
@@ -136,7 +137,7 @@
         {{#each groups}}        
         <li id ="{{this.groupid}}" class="table-view-cell">
                 <div class="media-body">               
-                       <p>({{this.groupname}})</p>   
+                       <p>{{this.groupname}}</p>   
                        <p>Weight:{{this.weight}}</p>                       
                    </div>    
                   <span class ="{{groupStatusColour this.alerttext}}">        
@@ -149,7 +150,26 @@
 </script>
 
 
-
+<!-- Group template -->
+<script id="groupTemplate" type="text/template">
+    
+    <h3>{{this.group.groupname}}</h3>
+    <ul class="table-view">
+        {{#each this.group.nodes}}        
+        <li id = "{{this.nodeid}}" class="table-view-cell">
+                <div class="media-body">
+                         <p>{{this.nodeid}}</p>                    
+                    </div>                  
+                    <span class ="{{statusColour this.alerttext}}">        
+                            {{this.alerttext}}
+                        </span>  
+                    
+        </li>
+        {{else}} <h3>No nodes on this server</h3>
+     {{/each}}      
+      </ul> 
+    <ul class="table-view"> 
+   </script>
 
 
 
