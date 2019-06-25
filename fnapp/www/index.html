@@ -55,6 +55,7 @@
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
     <script type="text/javascript" src="views/AlertView.js"></script>
+    <script type="text/javascript" src="views/GroupListView.js"></script>
     <script type="text/javascript" src="views/TestListView.js"></script>
     <script type="text/javascript" src="views/TestGraphView.js"></script>
     <script type="text/javascript" src="views/ServerDetailsView.js"></script>
@@ -126,6 +127,32 @@
             <rect x = "0" y = "0" width = "300" height = "200" fill = "yellow"></rect>
          </svg>
     </script>
+
+
+
+<!-- List of groups template -->
+<script id="groupListTemplate" type="text/template">
+    <ul class="table-view">
+        {{#each groups}}        
+        <li id ="{{this.groupid}}" class="table-view-cell">
+                <div class="media-body">               
+                       <p>{{this.groupname}}</p>   
+                       <p>Weight:{{this.weight}}</p>                       
+                   </div>    
+                  <span class ="{{groupStatusColour this.alerttext}}">        
+                        {{this.alerttext}}
+                    </span>  
+        </li>
+        {{else}} <h3>No groups on this node setup</h3>
+     {{/each}}
+    </ul>
+</script>
+
+
+
+
+
+
 
 
     <!-- Home/Freenats servers -->
@@ -235,6 +262,7 @@
             <span class="icon icon-home"></span>
             <span class="tab-label">Servers</span>
         </a>
+
         <a  id = "nodes"class="tab-item" href="#nodes">
             <!-- <span class="icon icon-person"></span> -->
              <span class="icon">
@@ -242,16 +270,17 @@
              </span>        
             <span class="tab-label">Nodes</span>
         </a>
-        <a id = "test" class="tab-item" href="#tests">
+
+        <a id = "groups" class="tab-item" href="#groups">
             <span class="icon">
                 <i class="material-icons">dns</i>      
            </span>   
            <span class="icon">
             <i class="material-icons">dns</i>
        </span>  
-
             <span class="tab-label">Groups</span>
         </a>
+
         <a id = "alerts" class="tab-item" href="#">
            
             <span class="icon">

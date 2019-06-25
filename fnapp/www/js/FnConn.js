@@ -199,6 +199,13 @@ FnConn.prototype.query = function (routeObj) {
         router.currPage = "alerts"
         let alertViewObj = new AlertView(data);
         console.log(data);
+        break;
+      case 'groups':
+        router.currPage = "groups";
+        console.log(data);
+        let groupListViewObj = new GroupListView(data);
+        
+        break;
       
     }
   }

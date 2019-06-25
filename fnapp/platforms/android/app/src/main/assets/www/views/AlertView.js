@@ -6,7 +6,7 @@ function AlertView(alertData) {
 
 AlertView.prototype.compile = function () {
 
-    if (this.alertData.alerts == "false") {
+    if (this.alertData.alerts != "false") {
 
         Handlebars.registerHelper('alertStatusColour', function (status) {
 
