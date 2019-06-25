@@ -82,12 +82,8 @@ PageRouter.prototype.routeToPage = function (routeObj) {
  
 
     } else if (route == "alerts") {
-        this.currPage = "alerts";
-        let alertsTemplate = Handlebars.compile($("#alertsTemplate").html());
-        let context = { name: "home", };
-        let alertsHTML = alertsTemplate(context);
-        $(".content-padded").html(alertsHTML);
-
+        fnConnObj.query({path1:route})
+        
     } else if (route == "servers") {
         this.currPage = "servers";     
         // $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
@@ -100,7 +96,7 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     }else if(route == "test"){
         fnConnObj.query({path1:route, path2:route2 , path3:"data"})
         //let testGraphViewobj = new TestGraphView();
-    } else{
+    }else{
         $(".content-padded").html("ROUTING ERROR. The route "+route+" doesnt not exist");
     }
 }

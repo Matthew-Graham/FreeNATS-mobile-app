@@ -41,6 +41,7 @@
     <link rel="stylesheet" type="text/css" href="css/ratchet.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/home.css">
+    <link rel="stylesheet" type="text/css" href="css/iconfont/material-icons.css">
 
     <!-- <link rel="stylesheet" type="text/css" href="css/ratchet-theme-android.css">  -->
 
@@ -48,10 +49,12 @@
     <script type="text/javascript" src="js/handlebars.js"></script>
     <!-- <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script> -->
     <script type="text/javascript" src="js/d3.js"></script>
-   <!-- <script type="text/javascript" src="https://d3js.org/d3-axis.v1.min.js"></script>
+    <!-- <script type="text/javascript" src="https://d3js.org/d3-axis.v1.min.js"></script>
     <script type="text/javascript" src="https://d3js.org/d3-time.v1.min.js"></script>  -->
+
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
+    <script type="text/javascript" src="views/AlertView.js"></script>
     <script type="text/javascript" src="views/TestListView.js"></script>
     <script type="text/javascript" src="views/TestGraphView.js"></script>
     <script type="text/javascript" src="views/ServerDetailsView.js"></script>
@@ -162,28 +165,7 @@
     <ul class="table-view"> 
    </script>
 
-    <script id="alertsTemplate" type="text/template">
-    <ul class="table-view">
-            <li class="table-view-cell"> <h2>Alerts</h2>
-                
-            </li>      
-      </ul>
-     
-    <ul class="table-view">
-    <!-- {{#each servers}}        
-        <li class="table-view-cell">{{name}} 
-                <button class ="btn btn-primary edit"   >Edit</button>
-        </li>
-        {{else}} <h3>No servers added</h3>
-     {{/each}} -->
-    </ul>
-
-
-    <!-- floating button for adding servers -->
-     <!-- <a href="#addserver" class="float">
-            <i class="fa fa-plus my-float"></i>
-    </a> -->
-   </script>
+    
 
 
     <!-- login form -->
@@ -211,6 +193,28 @@
     </script>
 
 
+    <script id="alertsTemplate" type="text/template">
+        <ul class="table-view">   
+            {{#each alerts}}        
+            <li id ="{{this.nodeid}}" class="table-view-cell">
+                yo
+                    <div class="media-body">               
+                           <p>{{this.nodeid}}</p>                                                    
+                       </div>    
+                      <span class ="{{alertStatusColour this.alertlevel}}">        
+                            {{this.alertlevel}}
+                        </span>  
+            </li>
+            {{else}}
+            <h3>No Alerts</h3>
+            {{/each}}
+            
+           
+        </ul>
+
+    </script>
+
+
     <!-- navigation bar pre login -->
     <script id="navBar1Template" type="text/template">
             <a id = "servers" class="tab-item active" href="#servers">
@@ -232,25 +236,41 @@
             <span class="tab-label">Servers</span>
         </a>
         <a  id = "nodes"class="tab-item" href="#nodes">
-            <span class="icon icon-person"></span>
+            <!-- <span class="icon icon-person"></span> -->
+             <span class="icon">
+                  <i class="material-icons">dns</i>
+             </span>        
             <span class="tab-label">Nodes</span>
         </a>
         <a id = "test" class="tab-item" href="#tests">
-            <span class="icon icon-star-filled"></span>
+            <span class="icon">
+                <i class="material-icons">dns</i>      
+           </span>   
+           <span class="icon">
+            <i class="material-icons">dns</i>
+       </span>  
+
             <span class="tab-label">Groups</span>
         </a>
         <a id = "alerts" class="tab-item" href="#">
-            <span class="icon icon-search"></span>
+           
+            <span class="icon">
+                   <i class="material-icons">
+                notifications_none
+                </i>
+           </span>  
+           
+        
             <span class="tab-label">Alerts</span>
         </a>
         <a id = "settings" class="tab-item" href="#">
             <span class="icon icon-gear"></span>
-            <span class="tab-label">settings</span>
+            <span class="tab-label">Settings</span>
         </a>
   
     </script>
 
-    <script id ="graphTemplate" type = "text/template">
+    <script id="graphTemplate" type="text/template">
       hey
     </script>
 

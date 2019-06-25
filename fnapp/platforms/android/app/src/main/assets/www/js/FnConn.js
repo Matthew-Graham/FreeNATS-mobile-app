@@ -189,11 +189,17 @@ FnConn.prototype.query = function (routeObj) {
         //console.log(data);
         let testListViewObj = new TestListView(data);
         break;
-      case 'test':{
+      case 'test':
         router.currPage = "test"
         console.log(data);
         let testGraphViewobj = new TestGraphView(data);
-      }
+        break;
+      
+      case 'alerts':
+        router.currPage = "alerts"
+        let alertViewObj = new AlertView(data);
+        console.log(data);
+      
     }
   }
 
