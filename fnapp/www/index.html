@@ -124,15 +124,12 @@
          {{/each}}
         </ul>
 
-        <svg width = "500" height = "500">
-            <rect x = "0" y = "0" width = "300" height = "200" fill = "yellow"></rect>
-         </svg>
     </script>
 
 
 
-<!-- List of groups template -->
-<script id="groupListTemplate" type="text/template">
+    <!-- List of groups template -->
+    <script id="groupListTemplate" type="text/template">
     <ul class="table-view">
         {{#each groups}}        
         <li id ="{{this.groupid}}" class="table-view-cell">
@@ -150,9 +147,9 @@
 </script>
 
 
-<!-- Group template -->
-<script id="groupTemplate" type="text/template">
-    
+    <!-- Group template -->
+    <script id="groupTemplate" type="text/template">
+
     <h3>{{this.group.groupname}}</h3>
     <ul class="table-view">
         {{#each this.group.nodes}}        
@@ -162,17 +159,13 @@
                     </div>                  
                     <span class ="{{statusColour this.alerttext}}">        
                             {{this.alerttext}}
-                        </span>  
-                    
+                        </span>                  
         </li>
         {{else}} <h3>No nodes on this server</h3>
      {{/each}}      
       </ul> 
     <ul class="table-view"> 
    </script>
-
-
-
 
 
     <!-- Home/Freenats servers -->
@@ -199,12 +192,19 @@
                 <div class="media-body">
                          <p>{{this.nodeid}}</p>
                          <p>{{this.hostname}}</p>
-                        <p>@{{this.lastrundt}}</p>      
-                    </div>                  
+                        <p>@{{this.lastrundt}}</p>    
+                      
+                    </div>      
+                             </div>
                     <span class ="{{statusColour this.alerttext}}">        
                             {{this.alerttext}}
-                        </span>  
+                    </span>  
                     
+        </li>
+        <li class="table-view-divider">                          
+            <button id = "{{this.nodeid}}" value ="{{nodeEnabled this.nodeenabled}}" class="btn {{nodeEnabledColour this.nodeenabled}}  nodebutton">    
+                    {{nodeEnabled this.nodeenabled}}
+            </button>
         </li>
         {{else}} <h3>No nodes on this server</h3>
      {{/each}}      
@@ -212,7 +212,7 @@
     <ul class="table-view"> 
    </script>
 
-    
+
 
 
     <!-- login form -->

@@ -71,7 +71,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
       console.log(errorThrown.responnseText);
     }
 
-    router.routeToPage({path1:"servers"});
+    router.routeToPage({ path1: "servers" });
 
   })
 }
@@ -84,7 +84,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
  * @param url
  */
 FnConn.prototype.initializeSession = function (url, requestedRoute) {
-  
+
   console.log("requested route " + requestedRoute);
   this.currUrl = url;
 
@@ -109,7 +109,7 @@ FnConn.prototype.initializeSession = function (url, requestedRoute) {
       console.log("no such server")
     });
   } else {
-   
+
     console.log("SESSION VARIABLES EXIST --Attempting query");
     //Try to route normally
     this.query(requestedRoute)
@@ -127,7 +127,8 @@ FnConn.prototype.removeSession = function () {
 
 FnConn.prototype.query = function (routeObj) {
   let route = routeObj.path1;
-  let id  = routeObj.path2;
+  let id = routeObj.path2;
+  let path3 = routeObj.path3;
   let apiRoute;
 
 
@@ -146,10 +147,13 @@ FnConn.prototype.query = function (routeObj) {
   if (id === undefined) {
     apiRoute = this.currUrl + "/" + route;
     console.log("Querying api route -> " + apiRoute);
-  } else if(routeObj.path3=="data"){
-    apiRoute = this.currUrl + "/" + route + "/" + id+"/data";
+  } else if (routeObj.path3 == "data") {
+    apiRoute = this.currUrl + "/" + route + "/" + id + "/data";
     console.log("Querying api route -> " + apiRoute);
-  } else{
+  } else if (routeObj.path3 == "enable" || routeObj.path3 == "disable") {
+    apiRoute = this.currUrl + "/" + route + "/" + id+"/"+path3;
+    console.log("Querying api route -> " + apiRoute);
+  } else {
     apiRoute = this.currUrl + "/" + route + "/" + id;
     console.log("Querying api route -> " + apiRoute);
   }
@@ -161,21 +165,21 @@ FnConn.prototype.query = function (routeObj) {
   }, "json");
   jqxhr.fail(function (error) {
     console.log("SESSION INACTIVE");
-   })
+  })
   //TODO add error code  for routes
 
   dataDependentRouter = function (data) {
     console.log("Current page " + router.currPage);
     console.log("Data Dependent Route to " + route);
     //if remaining in nested ui level
-    if(router.nestedUiLevel.includes(router.currPage)){
-      
-     //if go to nested from initial 
-    }else if (router.initialUiLevel.includes(router.currPage)){
-      console.log("create level 2 nav ");  
+    if (router.nestedUiLevel.includes(router.currPage)) {
+
+      //if go to nested from initial 
+    } else if (router.initialUiLevel.includes(router.currPage)) {
+      console.log("create level 2 nav ");
       let nav = new NavbarView(2);
     }
-    
+
     switch (route) {
       case 'nodes':
         router.currPage = "nodes";
@@ -184,17 +188,34 @@ FnConn.prototype.query = function (routeObj) {
         let nodeListViewObj = new NodeListView(data);
 
         break;
-      case 'node':
-        router.currPage = "node";
+      case 'node': 
+        let nodeId = routeObj.path2;    
+        if(routeObj.path3=="disable"){
+          $("button[id='"+nodeId+"']").val("disabled");
+          $("button[id='"+nodeId+"']").html("disabled");    
+          $("button[id='"+nodeId+"']").removeClass("btn-positive");
+          $("button[id='"+nodeId+"']").addClass("btn-negative");      
+         
+          //alert
+        }else if (routeObj.path3=="enable"){    
+          $("button[id='"+nodeId+"']").val("enabled"); 
+          $("button[id='"+nodeId+"']").html("enabled");
+          $("button[id='"+nodeId+"']").removeClass("btn-negative");
+          $("button[id='"+nodeId+"']").addClass("btn-positive");
+          
+         } else{
+          router.currPage = "node";
         //console.log(data);
         let testListViewObj = new TestListView(data);
+        }
+        
         break;
       case 'test':
         router.currPage = "test"
         console.log(data);
         let testGraphViewobj = new TestGraphView(data);
         break;
-      
+
       case 'alerts':
         router.currPage = "alerts"
         let alertViewObj = new AlertView(data);
@@ -203,12 +224,12 @@ FnConn.prototype.query = function (routeObj) {
       case 'groups':
         router.currPage = "groups";
         console.log(data);
-        let groupListViewObj = new GroupListView(data);       
+        let groupListViewObj = new GroupListView(data);
         break;
       case 'group':
         router.currPage = "group";
         console.log(data);
-        let groupViewObj = new GroupView(data);       
+        let groupViewObj = new GroupView(data);
         break;
     }
   }
