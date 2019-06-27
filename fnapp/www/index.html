@@ -43,6 +43,7 @@
     <link rel="stylesheet" type="text/css" href="css/home.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont/material-icons.css">
 
+    <link rel="stylesheet" type="text/css" href="js/jquery-ui-1.12.1.custom/jquery-ui.css">
     <!-- <link rel="stylesheet" type="text/css" href="css/ratchet-theme-android.css">  -->
 
     <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
@@ -51,6 +52,9 @@
     <script type="text/javascript" src="js/d3.js"></script>
     <!-- <script type="text/javascript" src="https://d3js.org/d3-axis.v1.min.js"></script>
     <script type="text/javascript" src="https://d3js.org/d3-time.v1.min.js"></script>  -->
+
+    <link rel="stylesheet" type="text/css" href="css/iconfont/material-icons.css">
+    <script src="js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
@@ -82,19 +86,15 @@
         Error Displaying Header
     </header>
 
-
-
     <!-- footer -->
-    <nav class="bar bar-tab">
+    <nav id = "footer" class="bar bar-tab">
 
     </nav>
 
     <!-- content -->
     <div class="content">
         <div class="content-padded">
-            <a href="#" class="float">
-                <i class="fa fa-plus my-float"></i>
-            </a>
+           
         </div>
     </div>
 
@@ -104,11 +104,16 @@
 
     <!-- Page Title-->
     <script id="headerTemplate" type="text/template">
-           <h2>{{title}}</h2>            
+        <header id="" class="bar bar-nav">
+               <h1>{{title}}</h1>       
+            </header>
     </script>
 
     <!-- test page -->
     <script id="testListTemplate" type="text/template">
+
+
+
         <ul class="table-view">
             {{#each tests}}        
             <li id ="{{this.testid}}" class="table-view-cell">
@@ -170,6 +175,10 @@
 
     <!-- Home/Freenats servers -->
     <script id="homeTemplate" type="text/template">
+
+
+
+
         <ul class="table-view">
         {{#each servers}}        
             <li id ="{{url}}" value="{{name}}" class="table-view-cell media">      
@@ -258,7 +267,7 @@
             
            
         </ul>
-
+       
     </script>
 
 
@@ -320,8 +329,42 @@
     </script>
 
     <script id="graphTemplate" type="text/template">
-      hey
+        <ul class="table-view">
+                <li class="table-view-cell">     
+                    <form id ="calendarForm"  class="input-group" style = "background-color:grey;">
+                        <input type="text" name="date1" id="date1"> 
+                        <input type="text" name="date2" id="date2"> 
+                        <a id = "submitDates" class="btn connect btn-positive">Query</a>
+                </form>
+              </li>
+               
+              </ul>
+
     </script>
+
+    <script id="datePickerTemplate" type="text/template">         
+    
+        <ul class="table-view">
+                <li class="table-view-cell">
+                   
+                    </li>
+               
+              </ul>
+
+
+
+            
+     
+    </script>
+    
+
+
+
+
+
+
+
+
 
 </body>
 

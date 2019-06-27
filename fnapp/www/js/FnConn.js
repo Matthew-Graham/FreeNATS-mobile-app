@@ -146,17 +146,32 @@ FnConn.prototype.query = function (routeObj) {
 
   if (id === undefined) {
     apiRoute = this.currUrl + "/" + route;
-    console.log("Querying api route -> " + apiRoute);
+
   } else if (routeObj.path3 == "data") {
-    apiRoute = this.currUrl + "/" + route + "/" + id + "/data";
-    console.log("Querying api route -> " + apiRoute);
+
+    if (routeObj.queryString1 != undefined && routeObj.queryString2 != undefined) {
+      console.log("here");
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data?startx=" + routeObj.queryString1 + "&finishx=" + routeObj.queryString2;
+
+    } else if (routeObj.queryString1 != undefined) {
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data+?finishx=" + routeObj.queryString2;
+
+    } else if (routeObj.queryString2 != undefined) {
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data+?startx=" + routeObj.queryString1
+
+    } else {
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data";
+
+    }
+
   } else if (routeObj.path3 == "enable" || routeObj.path3 == "disable") {
-    apiRoute = this.currUrl + "/" + route + "/" + id+"/"+path3;
-    console.log("Querying api route -> " + apiRoute);
+    apiRoute = this.currUrl + "/" + route + "/" + id + "/" + path3;
+
   } else {
     apiRoute = this.currUrl + "/" + route + "/" + id;
-    console.log("Querying api route -> " + apiRoute);
   }
+
+  console.log("Querying api route -> " + apiRoute);
 
   let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
     console.log(data.error);
@@ -188,29 +203,29 @@ FnConn.prototype.query = function (routeObj) {
         let nodeListViewObj = new NodeListView(data);
 
         break;
-      case 'node': 
-        let nodeId = routeObj.path2;    
-        if(routeObj.path3=="disable"){
-          $("button[id='"+nodeId+"']").val("disabled");
-          $("button[id='"+nodeId+"']").html("disabled");    
-          $("button[id='"+nodeId+"']").removeClass("btn-positive");
-          $("button[id='"+nodeId+"']").addClass("btn-negative");      
-         
+      case 'node':
+        let nodeId = routeObj.path2;
+        if (routeObj.path3 == "disable") {
+          $("button[id='" + nodeId + "']").val("disabled");
+          $("button[id='" + nodeId + "']").html("disabled");
+          $("button[id='" + nodeId + "']").removeClass("btn-positive");
+          $("button[id='" + nodeId + "']").addClass("btn-negative");
+
           //alert
-        }else if (routeObj.path3=="enable"){    
-          $("button[id='"+nodeId+"']").val("enabled"); 
-          $("button[id='"+nodeId+"']").html("enabled");
-          $("button[id='"+nodeId+"']").removeClass("btn-negative");
-          $("button[id='"+nodeId+"']").addClass("btn-positive");
-          
-         } else{
+        } else if (routeObj.path3 == "enable") {
+          $("button[id='" + nodeId + "']").val("enabled");
+          $("button[id='" + nodeId + "']").html("enabled");
+          $("button[id='" + nodeId + "']").removeClass("btn-negative");
+          $("button[id='" + nodeId + "']").addClass("btn-positive");
+
+        } else {
           router.currPage = "node";
-        //console.log(data);
-        let testListViewObj = new TestListView(data);
+          //console.log(data);
+          let testListViewObj = new TestListView(data);
         }
-        
+
         break;
-      case 'test':
+      case 'test': 
         router.currPage = "test"
         console.log(data);
         let testGraphViewobj = new TestGraphView(data);
@@ -231,6 +246,7 @@ FnConn.prototype.query = function (routeObj) {
         console.log(data);
         let groupViewObj = new GroupView(data);
         break;
+
     }
   }
 
