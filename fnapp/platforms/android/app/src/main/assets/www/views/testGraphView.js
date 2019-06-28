@@ -4,22 +4,66 @@ function TestGraphView(jsonObj) {
     //TODO reload graph based on orientation change
     //TODO possibly add zoom in functionality 
     //TODO add trimming to long decimals on axis
-    this.jsonObj =  jsonObj;
+    this.jsonObj = jsonObj;
     this.compile();
     this.precompile();
-    // this.attachEvents();
+    this.attachEvents();
 
 
 }
 
 TestGraphView.prototype.compile = function () {
+
+    /*Header */
+    //    let datePickerTemplate = Handlebars.compile($("#datePickerTemplate").html());
+    //    let datepickerHtml = datePickerTemplate();
+    //    $("#content").html(datepickerHtml);
+
+
     let graphTemplate = Handlebars.compile($("#graphTemplate").html());
     let graphHtml = graphTemplate();
     $(".content-padded").html(graphHtml);
+
+
+    //**Calendar date pickers */
+    $("#date1").datepicker();
+    $("#date2").datepicker();
+
+
+    $( "#date1" ).datepicker({
+        autoSize: true
+      });
+      $( "#date2" ).datepicker({
+        autoSize: true
+      });
+      
+    $("#date1").datepicker("setDate", new Date(this.jsonObj.period.startx * 1000));
+    $("#date2").datepicker("setDate", new Date(this.jsonObj.period.finishx * 1000));
 }
 
 
 TestGraphView.prototype.attachEvents = function () {
+
+    let self = this;
+
+
+
+    $("#submitDates").on('click', function (event) {
+
+
+        let tempDate1 = $("#date1").datepicker("getDate");
+        let tempDate2 = $("#date2").datepicker("getDate");
+
+        let dateObj1 = new Date(tempDate1);
+        let date1 = parseInt((dateObj1.getTime() / 1000).toFixed(0))
+
+        let dateObj2 = new Date(tempDate2);
+        let date2 = parseInt((dateObj2.getTime() / 1000).toFixed(0))
+
+
+        fnConnObj.query({ path1: "test", path2: self.jsonObj.testid, path3: "data", queryString1: date1, queryString2: date2 })
+    });
+
 
 }
 
@@ -78,26 +122,26 @@ TestGraphView.prototype.precompile = function () {
     //             },
     //         ]
     // }
-    
+
     /*Dimensions for svg */
-    
-    let leftMargin =40;
-    let bottomMargin =30;
+
+    let leftMargin = 40;
+    let bottomMargin = 30;
     let rightMargin = 35;
     let topMargin = 25;
 
-    let heightPadding = 30; 
-    let widthPadding = 20;  
-    let height = window.screen.height-200;
+    let heightPadding = 30;
+    let widthPadding = 20;
+    let height = window.screen.height - 200;
     let width = window.screen.width;
-    
-   
+
+
     /*Dimensions for inner graph */
-    let graphHeightPadding = heightPadding+20;
+    let graphHeightPadding = heightPadding + 20;
     let graphWidthPadding = widthPadding;
     let graphWidth = width;
     let graphHeight = height - graphHeightPadding;
- 
+
 
     // let height = 400;
     // let width = 200- widthPadding;
@@ -116,7 +160,7 @@ TestGraphView.prototype.precompile = function () {
         objs.sort(function (a, b) {
             return a.value - b.value;
         })
-        console.log(objs[0].value);
+        //console.log(objs[0].value);
         return objs;
     }
 
@@ -139,13 +183,13 @@ TestGraphView.prototype.precompile = function () {
     // /* Graph Scales */
 
     let xScale = d3.scaleTime()
-        .domain([min, max])  
-        .range([(leftMargin), (width-rightMargin)])
+        .domain([min, max])
+        .range([(leftMargin), (width - rightMargin)])
         .nice();
 
     let yScale = d3.scaleLinear()
-        .domain([(valueMin), (valueMax * 1.05)])   
-        .range([height-bottomMargin, topMargin])
+        .domain([(valueMin), (valueMax * 1.05)])
+        .range([height - bottomMargin, topMargin])
         .nice();
 
 
@@ -163,7 +207,7 @@ TestGraphView.prototype.precompile = function () {
     svg.append("g")
         .attr("class", "axis")
         //x axis has predefined gap to the left so small adjustment needed to margin
-        .attr("transform", "translate("+(0)+","+(height-bottomMargin)+")")
+        .attr("transform", "translate(" + (0) + "," + (height - bottomMargin) + ")")
         .call(xAxis);
 
     /* 
@@ -175,7 +219,7 @@ TestGraphView.prototype.precompile = function () {
     /* Create y */
     svg.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate ("+leftMargin+","+(0)+")")
+        .attr("transform", "translate (" + leftMargin + "," + (0) + ")")
         .call(yAxis);
 
     /*Add circles for data points*/
@@ -186,7 +230,7 @@ TestGraphView.prototype.precompile = function () {
         .enter()
         .append("circle")
         .attr("cx", function (d) {
-            console.log(d.recordx);
+            // console.log(d.recordx);
             return xScale(d.recordx * 1000);
         })
         .attr("cy", function (d) {

@@ -71,7 +71,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
       console.log(errorThrown.responnseText);
     }
 
-    router.routeToPage({path1:"servers"});
+    router.routeToPage({ path1: "servers" });
 
   })
 }
@@ -84,7 +84,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
  * @param url
  */
 FnConn.prototype.initializeSession = function (url, requestedRoute) {
-  
+
   console.log("requested route " + requestedRoute);
   this.currUrl = url;
 
@@ -109,7 +109,7 @@ FnConn.prototype.initializeSession = function (url, requestedRoute) {
       console.log("no such server")
     });
   } else {
-   
+
     console.log("SESSION VARIABLES EXIST --Attempting query");
     //Try to route normally
     this.query(requestedRoute)
@@ -122,12 +122,61 @@ FnConn.prototype.removeSession = function () {
 }
 
 
+FnConn.prototype.sysVarsQry = async function (routeObj) {
+
+  let self = this;
+
+  let sysvars = [
+    {
+      name: "site.tester.suspended",
+      value: "",
+    },
+    {
+      name: "site.tester.suspended",
+      value: "",
+    }
+  ];
+
+  let index = 0;
+  qry(sysvars,index);
+  
+  /**
+   * 
+   * @param {array of system variable objects} sysvars 
+   * @param {*} index 
+   */
+  function qry(sysvars,index) {
+  
+    if(index<sysvars.length){
+      apiRoute = self.currUrl+"/sysvar/"+sysvars[index].name;
+      let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
+      console.log(data.error);
+      sysvars[index].value = data.value;
+      console.log("SESSION ACTIVE");
+      console.log(data);
+      index=index+1;
+      qry(sysvars,index);
+    }, "json");
+
+    jqxhr.fail(function (error) {
+      console.log("SESSION INACTIVE");
+    })
+    }else{
+      //end create new sys var lists
+      console.table(sysvars);
+      let sysVarViewObj = new SysVarView(sysvars);
+    }  
+  }
+
+
+}
 
 
 
 FnConn.prototype.query = function (routeObj) {
   let route = routeObj.path1;
-  let id  = routeObj.path2;
+  let id = routeObj.path2;
+  let path3 = routeObj.path3;
   let apiRoute;
 
 
@@ -144,15 +193,42 @@ FnConn.prototype.query = function (routeObj) {
 
 
   if (id === undefined) {
+
+
+
     apiRoute = this.currUrl + "/" + route;
-    console.log("Querying api route -> " + apiRoute);
-  } else if(routeObj.path3=="data"){
-    apiRoute = this.currUrl + "/" + route + "/" + id+"/data";
-    console.log("Querying api route -> " + apiRoute);
-  } else{
-    apiRoute = this.currUrl + "/" + route + "/" + id;
-    console.log("Querying api route -> " + apiRoute);
+
+
+
+  } else if (routeObj.path3 == "data") {
+
+    if (routeObj.queryString1 != undefined && routeObj.queryString2 != undefined) {
+      console.log("here");
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data?startx=" + routeObj.queryString1 + "&finishx=" + routeObj.queryString2;
+
+    } else if (routeObj.queryString1 != undefined) {
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data+?finishx=" + routeObj.queryString2;
+
+    } else if (routeObj.queryString2 != undefined) {
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data+?startx=" + routeObj.queryString1
+
+    } else {
+      apiRoute = this.currUrl + "/" + route + "/" + id + "/data";
+
+    }
+
+  } else if (routeObj.path3 == "enable" || routeObj.path3 == "disable") {
+
+    apiRoute = this.currUrl + "/" + route + "/" + id + "/" + path3;
+
   }
+
+  else {
+
+    apiRoute = this.currUrl + "/" + route + "/" + id;
+  }
+
+  console.log("Querying api route -> " + apiRoute);
 
   let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
     console.log(data.error);
@@ -161,21 +237,21 @@ FnConn.prototype.query = function (routeObj) {
   }, "json");
   jqxhr.fail(function (error) {
     console.log("SESSION INACTIVE");
-   })
+  })
   //TODO add error code  for routes
 
   dataDependentRouter = function (data) {
     console.log("Current page " + router.currPage);
     console.log("Data Dependent Route to " + route);
     //if remaining in nested ui level
-    if(router.nestedUiLevel.includes(router.currPage)){
-      
-     //if go to nested from initial 
-    }else if (router.initialUiLevel.includes(router.currPage)){
-      console.log("create level 2 nav ");  
+    if (router.nestedUiLevel.includes(router.currPage)) {
+
+      //if go to nested from initial 
+    } else if (router.initialUiLevel.includes(router.currPage)) {
+      console.log("create level 2 nav ");
       let nav = new NavbarView(2);
     }
-    
+
     switch (route) {
       case 'nodes':
         router.currPage = "nodes";
@@ -185,15 +261,57 @@ FnConn.prototype.query = function (routeObj) {
 
         break;
       case 'node':
-        router.currPage = "node";
-        //console.log(data);
-        let testListViewObj = new TestListView(data);
+        let nodeId = routeObj.path2;
+        if (routeObj.path3 == "disable") {
+          $("button[id='" + nodeId + "']").val("disabled");
+          $("button[id='" + nodeId + "']").html("disabled");
+          $("button[id='" + nodeId + "']").removeClass("btn-positive");
+          $("button[id='" + nodeId + "']").addClass("btn-negative");
+
+          //alert
+        } else if (routeObj.path3 == "enable") {
+          $("button[id='" + nodeId + "']").val("enabled");
+          $("button[id='" + nodeId + "']").html("enabled");
+          $("button[id='" + nodeId + "']").removeClass("btn-negative");
+          $("button[id='" + nodeId + "']").addClass("btn-positive");
+
+        } else {
+          router.currPage = "node";
+          //console.log(data);
+          let testListViewObj = new TestListView(data);
+        }
+
         break;
-      case 'test':{
+      case 'test':
         router.currPage = "test"
         console.log(data);
         let testGraphViewobj = new TestGraphView(data);
-      }
+        break;
+
+      case 'alerts':
+        router.currPage = "alerts"
+        let alertViewObj = new AlertView(data);
+        console.log(data);
+        break;
+      case 'groups':
+        router.currPage = "groups";
+        console.log(data);
+        let groupListViewObj = new GroupListView(data);
+        break;
+      case 'group':
+        router.currPage = "group";
+        console.log(data);
+        let groupViewObj = new GroupView(data);
+        break;
+      case 'sysvarread':
+        router.currPage = "sysvarread";
+        console.log(data);
+        break;
+      case 'sysvar':
+          router.currPage = "sysvar";
+          alert(routeObj.path1 + "succesfully changed")
+          break;
+
     }
   }
 

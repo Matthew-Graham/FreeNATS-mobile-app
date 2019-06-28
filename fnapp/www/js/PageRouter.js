@@ -30,7 +30,7 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     */
    //TODO Change to constants
     this.initialUiLevel = ["servers", "serverLogin","modifyServer"];
-    this.nestedUiLevel =["tests","nodes","node","alerts","groups"];
+    this.nestedUiLevel =["tests","nodes","node","alerts","groups","settings"];
 
     
     //Check session for these pages
@@ -82,11 +82,7 @@ PageRouter.prototype.routeToPage = function (routeObj) {
  
 
     } else if (route == "alerts") {
-        this.currPage = "alerts";
-        let alertsTemplate = Handlebars.compile($("#alertsTemplate").html());
-        let context = { name: "home", };
-        let alertsHTML = alertsTemplate(context);
-        $(".content-padded").html(alertsHTML);
+        fnConnObj.query({path1:route})
 
     } else if (route == "servers") {
         this.currPage = "servers";     
@@ -100,7 +96,15 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     }else if(route == "test"){
         fnConnObj.query({path1:route, path2:route2 , path3:"data"})
         //let testGraphViewobj = new TestGraphView();
-    } else{
+    }else if(route == "groups"){
+        fnConnObj.query({path1:route})
+    }else if(route == "group"){
+        fnConnObj.query({path1:route,path2:route2})
+    }else if(route=="sysvarread"){
+        fnConnObj.sysVarsQry({path1:route});
+    }
+    
+    else{
         $(".content-padded").html("ROUTING ERROR. The route "+route+" doesnt not exist");
     }
 }
