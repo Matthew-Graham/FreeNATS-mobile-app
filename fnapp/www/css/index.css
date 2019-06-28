@@ -12,43 +12,46 @@ header.bar.bar-nav{
     background-color: black;
 }
 
+/* Date picker controls*/
+/* input.datePickerCtrl{
+  
+  background-color: aqua;
+}
 
 
-/*
-Graph css
-*/
-.graph .labels.x-labels {
-    text-anchor: middle;
-  }
+
+
+#date2{
+  background-color: aqua;
+  height: 1.1em;
+  width: 50%;
+}
+
+
+#dateLbl1{
+  height: 1.1em;
+}
+
+
+#dateLbl2{
+  height: 1.1em;
+}
+
+
+ */
+#dateInputRow1{
+  height: 1.4em;
+ 
+}
+
+#dateInputRow2{
+  height: 1.4em;
   
-  .graph .labels.y-labels {
-    text-anchor: end;
-  }
-  
-  
-  .graph {
-    height: 500px;
-    width: 800px;
-  }
-  
-  .graph .grid {
-    stroke: #ccc;
-    stroke-dasharray: 0;
-    stroke-width: 1;
-  }
-  
-  .labels {
-    font-size: 13px;
-  }
-  
-  .label-title {
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 12px;
-    fill: black;
-  }
-  
-  .data {
-    fill: red;
-    stroke-width: 1; 
-  }
+}
+
+
+#submitDates{
+   /* width: 7em;  */
+   position: block;
+}
+

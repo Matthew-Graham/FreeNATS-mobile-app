@@ -30,7 +30,7 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     */
    //TODO Change to constants
     this.initialUiLevel = ["servers", "serverLogin","modifyServer"];
-    this.nestedUiLevel =["tests","nodes","node","alerts","groups"];
+    this.nestedUiLevel =["tests","nodes","node","alerts","groups","settings"];
 
     
     //Check session for these pages
@@ -100,6 +100,8 @@ PageRouter.prototype.routeToPage = function (routeObj) {
         fnConnObj.query({path1:route})
     }else if(route == "group"){
         fnConnObj.query({path1:route,path2:route2})
+    }else if(route=="sysvarread"){
+        fnConnObj.sysVarsQry({path1:route});
     }
     
     else{

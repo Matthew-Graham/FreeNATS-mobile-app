@@ -122,6 +122,54 @@ FnConn.prototype.removeSession = function () {
 }
 
 
+FnConn.prototype.sysVarsQry = async function (routeObj) {
+
+  let self = this;
+
+  let sysvars = [
+    {
+      name: "site.tester.suspended",
+      value: "",
+    },
+    {
+      name: "site.tester.suspended",
+      value: "",
+    }
+  ];
+
+  let index = 0;
+  qry(sysvars,index);
+  
+  /**
+   * 
+   * @param {array of system variable objects} sysvars 
+   * @param {*} index 
+   */
+  function qry(sysvars,index) {
+  
+    if(index<sysvars.length){
+      apiRoute = self.currUrl+"/sysvar/"+sysvars[index].name;
+      let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
+      console.log(data.error);
+      sysvars[index].value = data.value;
+      console.log("SESSION ACTIVE");
+      console.log(data);
+      index=index+1;
+      qry(sysvars,index);
+    }, "json");
+
+    jqxhr.fail(function (error) {
+      console.log("SESSION INACTIVE");
+    })
+    }else{
+      //end create new sys var lists
+      console.table(sysvars);
+      let sysVarViewObj = new SysVarView(sysvars);
+    }  
+  }
+
+
+}
 
 
 
@@ -145,7 +193,12 @@ FnConn.prototype.query = function (routeObj) {
 
 
   if (id === undefined) {
+
+
+
     apiRoute = this.currUrl + "/" + route;
+
+
 
   } else if (routeObj.path3 == "data") {
 
@@ -165,9 +218,13 @@ FnConn.prototype.query = function (routeObj) {
     }
 
   } else if (routeObj.path3 == "enable" || routeObj.path3 == "disable") {
+
     apiRoute = this.currUrl + "/" + route + "/" + id + "/" + path3;
 
-  } else {
+  }
+
+  else {
+
     apiRoute = this.currUrl + "/" + route + "/" + id;
   }
 
@@ -225,7 +282,7 @@ FnConn.prototype.query = function (routeObj) {
         }
 
         break;
-      case 'test': 
+      case 'test':
         router.currPage = "test"
         console.log(data);
         let testGraphViewobj = new TestGraphView(data);
@@ -246,6 +303,14 @@ FnConn.prototype.query = function (routeObj) {
         console.log(data);
         let groupViewObj = new GroupView(data);
         break;
+      case 'sysvarread':
+        router.currPage = "sysvarread";
+        console.log(data);
+        break;
+      case 'sysvar':
+          router.currPage = "sysvar";
+          alert(routeObj.path1 + "succesfully changed")
+          break;
 
     }
   }

@@ -56,6 +56,7 @@
     <link rel="stylesheet" type="text/css" href="css/iconfont/material-icons.css">
     <script src="js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 
+    <script type="text/javascript" src="views/SysVarView.js"></script>
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
     <script type="text/javascript" src="views/AlertView.js"></script>
@@ -87,14 +88,14 @@
     </header>
 
     <!-- footer -->
-    <nav id = "footer" class="bar bar-tab">
+    <nav id="footer" class="bar bar-tab">
 
     </nav>
 
     <!-- content -->
     <div class="content">
         <div class="content-padded">
-           
+
         </div>
     </div>
 
@@ -321,42 +322,43 @@
         
             <span class="tab-label">Alerts</span>
         </a>
-        <a id = "settings" class="tab-item" href="#">
+        <a id = "sysvarread" class="tab-item" href="#">
             <span class="icon icon-gear"></span>
-            <span class="tab-label">Settings</span>
+            <span class="tab-label">System Variables</span>
         </a>
   
     </script>
 
     <script id="graphTemplate" type="text/template">
         <ul class="table-view">
-                <li class="table-view-cell">     
-                    <form id ="calendarForm"  class="input-group" style = "background-color:grey;">
-                        <input type="text" name="date1" id="date1"> 
-                        <input type="text" name="date2" id="date2"> 
-                        <a id = "submitDates" class="btn connect btn-positive">Query</a>
+                <li class="table-view-cell" id ="dateRow">     
+                    <form id ="calendarForm"  class="input-group datePickerForm" >     
+                        <div class="input-row" id="dateInputRow1">
+                            <label id="dateLbl1" for="date1">From</label>
+                            <input class = "datePickerCtrl" type="text" name="date1" id="date1">                          
+                        </div>
+
+                        <div class="input-row" id="dateInputRow2">
+                                <label id="dateLbl2" for="date2">To</label>
+                                <input class = "datePickerCtrl" type="text" name="date2" id="date2">
+                        </div>                
                 </form>
+                <a id = "submitDates" class="btn connect btn-positive">Query</a>
               </li>
                
               </ul>
 
     </script>
 
-    <script id="datePickerTemplate" type="text/template">         
-    
-        <ul class="table-view">
-                <li class="table-view-cell">
-                   
-                    </li>
-               
-              </ul>
-
-
-
-            
-     
+    <script id="sysvarsTemplate" type="text/template">      
+            {{#each this}}
+            <form action="">
+                 <label id ={{name}} class="labelsysvar" style="display:block;">{{name}}</label>
+                 <input id = "input {{name}}" class= "inputsysvar" value="{{value}}" type="text" placeholder="{{value}}"> 
+                 <a  class="modifySysVar btn connect btn-positive">Modify</a>
+            {{/each}}   
+         </form>
     </script>
-    
 
 
 

@@ -28,6 +28,15 @@ TestGraphView.prototype.compile = function () {
     //**Calendar date pickers */
     $("#date1").datepicker();
     $("#date2").datepicker();
+
+
+    $( "#date1" ).datepicker({
+        autoSize: true
+      });
+      $( "#date2" ).datepicker({
+        autoSize: true
+      });
+      
     $("#date1").datepicker("setDate", new Date(this.jsonObj.period.startx * 1000));
     $("#date2").datepicker("setDate", new Date(this.jsonObj.period.finishx * 1000));
 }
