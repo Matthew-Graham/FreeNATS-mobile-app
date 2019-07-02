@@ -7,7 +7,7 @@ function FnConn() {
   let fnDb = "-1";
   let currUrl = "-1";
   let validSession = false;
-
+  
 }
 
 
@@ -15,7 +15,7 @@ function FnConn() {
 FnConn.prototype.connect = function (url, name, pass, route) {
   console.log("requested route " + route);
   let loginUrl = url + "/login";
-
+  let self = this;
   let jqxhr = $.ajax({
     url: loginUrl,
     type: 'post',
@@ -40,7 +40,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
 
         tx.executeSql('UPDATE servers  SET sid = ?,skey = ? WHERE url = ?', [data.sid, data.skey, url], function (tx, result) {
           console.log("Session variables successfully updated");
-          fnConnObj.query(route);
+          self.query({path1:route});
         }, function (tx, error) {
           console.log("SQL query ERROR" + error.message)
         });
@@ -83,26 +83,39 @@ FnConn.prototype.connect = function (url, name, pass, route) {
 /**
  * @param url
  */
-FnConn.prototype.initializeSession = function (url, requestedRoute) {
-
+FnConn.prototype.initializeSession = function (url, routeObj) {
+  
+  let requestedRoute = routeObj.path1;
+  console.log(url);
   console.log("requested route " + requestedRoute);
   this.currUrl = url;
+  let self = this;
 
   /*
   check if session var exists
   */
-  if (sessionStorage.getItem("skey") == undefined || null) {
-
-    console.log("SESSION NOT ACTIVE")
+ let skey = sessionStorage.getItem("skey");
+ console.log("skey"+skey)
+  if (skey == null) {
+  
+    console.log("SESSION DOESN'T EXIST") 
     //populate session based on url    
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     fnDb.transaction(function (tx) {
+      
       //session var doesnt exist , create from server db
       tx.executeSql('SELECT * FROM servers WHERE url = ?', [url], function (tx, results) {
-        console.log("initializing session");
+        console.log("Getting session data from db");
         //grab recent session details from db
-        fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, requestedRoute);
+        console.log("url"+results.rows.item(0).url);
+        
+        //change to query
+        sessionStorage.setItem("url", url);
+        sessionStorage.setItem("skey", results.rows.item(0).skey);
+        sessionStorage.setItem("sid", results.rows.item(0).sid);
+        self.query(routeObj);
+        //self.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, requestedRoute);
 
       });
     }, function (tx, error) {
@@ -112,7 +125,7 @@ FnConn.prototype.initializeSession = function (url, requestedRoute) {
 
     console.log("SESSION VARIABLES EXIST --Attempting query");
     //Try to route normally
-    this.query(requestedRoute)
+    this.query({path1:requestedRoute})
   }
 }
 
@@ -174,11 +187,17 @@ FnConn.prototype.sysVarsQry = async function (routeObj) {
 
 
 FnConn.prototype.query = function (routeObj) {
+  
+  
+  
   let route = routeObj.path1;
   let id = routeObj.path2;
   let path3 = routeObj.path3;
   let apiRoute;
 
+console.log("routes here "+route);
+  console.log(id);
+  console.log(path3);
 
   //check session var/session storage var
   //doesnt exist populate sid from db
@@ -194,12 +213,8 @@ FnConn.prototype.query = function (routeObj) {
 
   if (id === undefined) {
 
-
-
     apiRoute = this.currUrl + "/" + route;
-
-
-
+    console.log("api "+apiRoute)
   } else if (routeObj.path3 == "data") {
 
     if (routeObj.queryString1 != undefined && routeObj.queryString2 != undefined) {
@@ -230,32 +245,60 @@ FnConn.prototype.query = function (routeObj) {
 
   console.log("Querying api route -> " + apiRoute);
 
-  let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
+  let jqxhr = $.get(apiRoute, { fn_skey:sessionStorage.getItem("skey"), fn_sid:sessionStorage.getItem("sid") }, function (data) {
+   
     console.log(data.error);
+    console.log(sessionStorage.getItem("skey"));
+    console.log(sessionStorage.getItem("sid"));
     dataDependentRouter(data);
     console.log("SESSION ACTIVE");
   }, "json");
   jqxhr.fail(function (error) {
-    console.log("SESSION INACTIVE");
+    
+    let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+
+    fnDb.transaction(function (tx) {
+      
+      //session var doesnt exist , create from server db
+      tx.executeSql('SELECT * FROM servers WHERE url = ?', [app.fnConnObj.currUrl], function (tx, results) {
+        console.log("Query Failed - Retreiving new session data");
+        //grab recent session details from db 
+        //change to query
+         app.fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, routeObj.path1);
+
+      });
+    }, function (tx, error) {
+      console.log("no such server")
+    });
+
+
+
+    //query fails beacuase session invalid - relog
+   
+    //login
+    console.log(error);
+    console.log(sessionStorage.getItem("skey"));
+    console.log(sessionStorage.getItem("sid"));
+    console.log("SESSION INACTIVE in ddr");
   })
   //TODO add error code  for routes
 
   dataDependentRouter = function (data) {
-    console.log("Current page " + router.currPage);
+    console.log("Current page " + app.router.currPage);
     console.log("Data Dependent Route to " + route);
     //if remaining in nested ui level
-    if (router.nestedUiLevel.includes(router.currPage)) {
+    if (app.router.nestedUiLevel.includes(app.router.currPage)) {
 
       //if go to nested from initial 
-    } else if (router.initialUiLevel.includes(router.currPage)) {
+    } else if (app.router.initialUiLevel.includes(app.router.currPage)) {
       console.log("create level 2 nav ");
       let nav = new NavbarView(2);
     }
 
     switch (route) {
       case 'nodes':
-        router.currPage = "nodes";
-        console.log(router.currPage + " is curr page");
+        app.router.currPage = "nodes";
+        console.log(app.router.currPage + " is curr page");
         //new node view passing in node data
         let nodeListViewObj = new NodeListView(data);
 
@@ -276,39 +319,39 @@ FnConn.prototype.query = function (routeObj) {
           $("button[id='" + nodeId + "']").addClass("btn-positive");
 
         } else {
-          router.currPage = "node";
+          app.router.currPage = "node";
           //console.log(data);
           let testListViewObj = new TestListView(data);
         }
 
         break;
       case 'test':
-        router.currPage = "test"
+        app.router.currPage = "test"
         console.log(data);
         let testGraphViewobj = new TestGraphView(data);
         break;
 
       case 'alerts':
-        router.currPage = "alerts"
+        app.router.currPage = "alerts"
         let alertViewObj = new AlertView(data);
         console.log(data);
         break;
       case 'groups':
-        router.currPage = "groups";
+        app.router.currPage = "groups";
         console.log(data);
         let groupListViewObj = new GroupListView(data);
         break;
       case 'group':
-        router.currPage = "group";
+        app.router.currPage = "group";
         console.log(data);
         let groupViewObj = new GroupView(data);
         break;
       case 'sysvarread':
-        router.currPage = "sysvarread";
+        app.router.currPage = "sysvarread";
         console.log(data);
         break;
       case 'sysvar':
-          router.currPage = "sysvar";
+        app.router.currPage = "sysvar";
           alert(routeObj.path1 + "succesfully changed")
           break;
 

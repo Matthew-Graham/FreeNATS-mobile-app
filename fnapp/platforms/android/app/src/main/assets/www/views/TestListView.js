@@ -31,7 +31,7 @@ TestListView.prototype.attachEvents = function () {
    
     let pageid = "test";
     // pRouter = new PageRouter();   
-    router.routeToPage({path1:pageid,path2:this.id});
+    app.router.routeToPage({path1:pageid,path2:this.id});
     console.log(this.id);
   });
 }

@@ -9,7 +9,21 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "io.cordova.hellocordova"
+    },
+    "cordova-plugin-background-mode": {
+      "PACKAGE_NAME": "io.cordova.hellocordova"
+    },
+    "cordova-plugin-local-notification": {
+      "ANDROID_SUPPORT_V4_VERSION": "26.+",
+      "PACKAGE_NAME": "io.cordova.hellocordova"
     }
   },
-  "dependent_plugins": {}
+  "dependent_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "io.cordova.hellocordova"
+    },
+    "cordova-plugin-badge": {
+      "PACKAGE_NAME": "io.cordova.hellocordova"
+    }
+  }
 }

@@ -1,7 +1,7 @@
 function ServerDetailsView(templateNumber, tempServer) {
 
     this.tempServer = tempServer;
-    router.currPage = "modifyServer";
+    app.router.currPage = "modifyServer";
     this.templateNumber = templateNumber;
     this.compile();
     this.attachEvents();
@@ -70,7 +70,7 @@ ServerDetailsView.prototype.persistNewServer = function (serverName, url, usr, p
 
         tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)',
             [serverName, url, usr, pass, "-1", "-1"], function (tx, results) {
-                router.routeToPage({path1:"servers"});
+                app.router.routeToPage({path1:"servers"});
             }, null);
 
 
@@ -86,7 +86,7 @@ ServerDetailsView.prototype.persistUpdatedServer = function (oldUrl,serverName, 
 
         tx.executeSql('UPDATE servers SET serverName = ?,url = ?,naun = ?, napw = ?, sid = -1 , skey=-1 WHERE url = ?', [serverName,url,usr,pass,oldUrl], function (tx, result) {
             console.log("query successful");
-            router.routeToPage({path1:"servers"});
+            app.router.routeToPage({path1:"servers"});
           }, null);
           
     }, function (error) {

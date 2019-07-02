@@ -1,9 +1,9 @@
 function NodeListView(nodeList) {
-  router.currPage = "nodes";
+  app.router.currPage = "nodes";
 
   //check session method
 
-  console.log("NODE PAGE---" + router.currPage)
+  console.log("NODE PAGE---" + app.router.currPage)
   console.log(nodeList);
   this.nodeList = nodeList;
   this.compile();
@@ -67,7 +67,7 @@ NodeListView.prototype.attachEvents = function () {
     let nodeid = this.id;
     let pageid = "tests";
     // pRouter = new PageRouter();   
-    router.routeToPage({path1:pageid, path2:nodeid});
+    app.router.routeToPage({path1:pageid, path2:nodeid});
   });
 
   $(".nodebutton").on('click', function (event) {
@@ -76,10 +76,10 @@ NodeListView.prototype.attachEvents = function () {
     let nodeid = this.id
 
     if($(this).attr("value")=="enabled"){
-       fnConnObj.query({path1:"node",path2:nodeid,path3:"disable"})
+       app.fnConnObj.query({path1:"node",path2:nodeid,path3:"disable"})
        console.log("disable")
     }else{
-      fnConnObj.query({path1:"node",path2:nodeid,path3:"enable"})
+      app.fnConnObj.query({path1:"node",path2:nodeid,path3:"enable"})
       console.log("enable")
     }
 

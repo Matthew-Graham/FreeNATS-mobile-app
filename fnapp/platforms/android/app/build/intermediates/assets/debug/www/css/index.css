@@ -1,0 +1,57 @@
+
+
+/* Header */
+header.bar.bar-nav{
+    text-align: center;
+    background-color:rgb(156, 156, 168);
+    
+}
+
+/* Bottom Navigation */
+.tab-item{
+    background-color: black;
+}
+
+/* Date picker controls*/
+/* input.datePickerCtrl{
+  
+  background-color: aqua;
+}
+
+
+
+
+#date2{
+  background-color: aqua;
+  height: 1.1em;
+  width: 50%;
+}
+
+
+#dateLbl1{
+  height: 1.1em;
+}
+
+
+#dateLbl2{
+  height: 1.1em;
+}
+
+
+ */
+#dateInputRow1{
+  height: 1.4em;
+ 
+}
+
+#dateInputRow2{
+  height: 1.4em;
+  
+}
+
+
+#submitDates{
+   /* width: 7em;  */
+   position: block;
+}
+

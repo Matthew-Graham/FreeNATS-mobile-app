@@ -61,7 +61,7 @@ TestGraphView.prototype.attachEvents = function () {
         let date2 = parseInt((dateObj2.getTime() / 1000).toFixed(0))
 
 
-        fnConnObj.query({ path1: "test", path2: self.jsonObj.testid, path3: "data", queryString1: date1, queryString2: date2 })
+        app.fnConnObj.query({ path1: "test", path2: self.jsonObj.testid, path3: "data", queryString1: date1, queryString2: date2 })
     });
 
 

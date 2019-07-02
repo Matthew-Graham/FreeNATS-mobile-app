@@ -42,7 +42,7 @@ function GroupView(groupListData) {
       let nodeid = this.id;
       let pageid = "tests";
       // pRouter = new PageRouter();   
-      router.routeToPage({path1:pageid, path2:nodeid});
+      app.router.routeToPage({path1:pageid, path2:nodeid});
     });
   }
   
