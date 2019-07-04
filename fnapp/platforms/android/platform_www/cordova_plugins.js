@@ -32,6 +32,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.notification.local"
     ]
+  },
+  {
+    "id": "com.bez4pieci.cookies.cookies",
+    "file": "plugins/com.bez4pieci.cookies/www/cookies.js",
+    "pluginId": "com.bez4pieci.cookies",
+    "clobbers": [
+      "cookies"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -41,7 +49,8 @@ module.exports.metadata =
   "cordova-plugin-device": "2.0.2",
   "cordova-plugin-background-mode": "0.7.2",
   "cordova-plugin-badge": "0.8.8",
-  "cordova-plugin-local-notification": "0.9.3"
+  "cordova-plugin-local-notification": "0.9.3",
+  "com.bez4pieci.cookies": "0.0.1"
 };
 // BOTTOM OF METADATA
 });

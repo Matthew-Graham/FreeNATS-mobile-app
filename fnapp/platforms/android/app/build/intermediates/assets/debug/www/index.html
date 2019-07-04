@@ -58,6 +58,7 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="views/SysVarView.js"></script>
     <script type="text/javascript" src="js/AlertBackgroundService.js"></script>
+    <script type="text/javascript" src="views/SettingsView.js"></script>
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
     <script type="text/javascript" src="views/AlertView.js"></script>
@@ -178,10 +179,6 @@
 
     <!-- Home/Freenats servers -->
     <script id="homeTemplate" type="text/template">
-
-
-
-
         <ul class="table-view">
         {{#each servers}}        
             <li id ="{{url}}" value="{{name}}" class="table-view-cell media">      
@@ -251,6 +248,38 @@
         {{/if}}
     </script>
 
+    <!-- Settings -->
+    <script id="settingsTemplate" type="text/template">
+        <ul class="table-view">
+            
+            <li id = "" class="table-view-cell">
+                    <div class="media-body">
+
+                        <form id ="loginForm"  class="input-group">   
+                            <label for="">Hours</label>
+                            <input id = "freqHours" type="text" placeholder="" class = "freq" value = "">    
+                            <label for="">Minutes</label>
+                            <input id = "freqMins" type="text" placeholder="" class = "freq" value = "">    
+                        <a id = "{{alertQuery this.alertStatus}}" class="btn submit {{settingColour this.alertStatus}} btn-block">{{alertQuery this.alertStatus}}</a>
+                         </form>   
+                    </div>                 
+                    <!-- <button id = "" value ="" class="btn ">    
+                        
+                    </button> -->
+                        
+            </li>
+            <li class="table-view-divider">                          
+                
+            </li>
+          
+          </ul> 
+      
+       </script>
+
+
+
+
+
 
     <script id="alertsTemplate" type="text/template">
         <ul class="table-view">   
@@ -283,6 +312,10 @@
             <a id = "modifyServer" class="tab-item" href="#">
                 <span class="icon icon-plus"></span>
                 <span class="tab-label">Add a Server</span>
+            </a>
+            <a id = "settings" class="tab-item" href="#">
+                <span class="icon icon-gear"></span>
+                <span class="tab-label">Settings</span>
             </a>
     </script>
 
@@ -352,7 +385,7 @@
 
     </script>
 
-    <script id="sysvarsTemplate" type="text/template">      
+    <script id="sysvarsTemplate" type="text/template">
             {{#each this}}
             <form action="">
                  <label id ={{name}} class="labelsysvar" style="display:block;">{{name}}</label>

@@ -29,8 +29,8 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     any new additional pages should be added to at least 1 of these arrays
     */
    //TODO Change to constants
-    this.initialUiLevel = ["servers", "serverLogin","modifyServer"];
-    this.nestedUiLevel =["tests","nodes","node","alerts","groups","settings"];
+    this.initialUiLevel = ["servers", "serverLogin","modifyServer","settings"];
+    this.nestedUiLevel =["tests","nodes","node","alerts","groups","sysvarread","group"];
 
     
     //Check session for these pages
@@ -89,8 +89,10 @@ PageRouter.prototype.routeToPage = function (routeObj) {
         // $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
         //if unchanged server list  use previous  if not gen new one 
         let servers = new FnServerView();
-
+    }else if (route=="settings"){
+        this.currPage= "settings"; 
     
+        let settings = new SettingsView();
     } else if (route == "modifyServer") {
        let test = new ServerDetailsView(1);
     }else if(route == "test"){

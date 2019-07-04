@@ -40,5 +40,13 @@
     "variables": {
       "ANDROID_SUPPORT_V4_VERSION": "26.+"
     }
+  },
+  "com.bez4pieci.cookies": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-remove-cookies"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

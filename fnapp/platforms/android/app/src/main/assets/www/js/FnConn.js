@@ -7,11 +7,11 @@ function FnConn() {
   let fnDb = "-1";
   let currUrl = "-1";
   let validSession = false;
-  
+
 }
 
 
-
+//change to accept query callback instead of route
 FnConn.prototype.connect = function (url, name, pass, route) {
   console.log("requested route " + route);
   let loginUrl = url + "/login";
@@ -29,10 +29,29 @@ FnConn.prototype.connect = function (url, name, pass, route) {
   });
 
   jqxhr.done(function (data) {
+
+    //dont save session if non session query like bckground
     console.log("successful login");
     sessionStorage.setItem("url", url);
     sessionStorage.setItem("skey", data.skey);
     sessionStorage.setItem("sid", data.sid);
+
+    function removeCookies() {
+      var res = document.cookie;
+      var multiple = res.split(";");
+      for (var i = 0; i < multiple.length; i++) {
+        var key = multiple[i].split("=");
+        document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
+      }
+      // alert("removing cookies");
+      window.cookies.clear(function () {
+        // alert("cookies cleared")
+        console.log('Cookies cleared!');
+      });
+    }
+    removeCookies();
+
+
 
     let persistSession = function () {
       let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
@@ -40,7 +59,20 @@ FnConn.prototype.connect = function (url, name, pass, route) {
 
         tx.executeSql('UPDATE servers  SET sid = ?,skey = ? WHERE url = ?', [data.sid, data.skey, url], function (tx, result) {
           console.log("Session variables successfully updated");
-          self.query({path1:route});
+          
+          //non session based query
+
+          if(route == "alertbackground"){
+            app.fnConnObj.backgroundQuery(app.alertService.currServerIndex);
+          }else{
+            self.query({ path1: route });
+          }
+          
+          
+          
+
+
+
         }, function (tx, error) {
           console.log("SQL query ERROR" + error.message)
         });
@@ -84,7 +116,7 @@ FnConn.prototype.connect = function (url, name, pass, route) {
  * @param url
  */
 FnConn.prototype.initializeSession = function (url, routeObj) {
-  
+
   let requestedRoute = routeObj.path1;
   console.log(url);
   console.log("requested route " + requestedRoute);
@@ -94,22 +126,22 @@ FnConn.prototype.initializeSession = function (url, routeObj) {
   /*
   check if session var exists
   */
- let skey = sessionStorage.getItem("skey");
- console.log("skey"+skey)
+  let skey = sessionStorage.getItem("skey");
+  console.log("skey" + skey)
   if (skey == null) {
-  
-    console.log("SESSION DOESN'T EXIST") 
+
+    console.log("SESSION DOESN'T EXIST")
     //populate session based on url    
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     fnDb.transaction(function (tx) {
-      
+
       //session var doesnt exist , create from server db
       tx.executeSql('SELECT * FROM servers WHERE url = ?', [url], function (tx, results) {
         console.log("Getting session data from db");
         //grab recent session details from db
-        console.log("url"+results.rows.item(0).url);
-        
+        console.log("url" + results.rows.item(0).url);
+
         //change to query
         sessionStorage.setItem("url", url);
         sessionStorage.setItem("skey", results.rows.item(0).skey);
@@ -125,7 +157,7 @@ FnConn.prototype.initializeSession = function (url, routeObj) {
 
     console.log("SESSION VARIABLES EXIST --Attempting query");
     //Try to route normally
-    this.query({path1:requestedRoute})
+    this.query({ path1: requestedRoute })
   }
 }
 
@@ -151,51 +183,143 @@ FnConn.prototype.sysVarsQry = async function (routeObj) {
   ];
 
   let index = 0;
-  qry(sysvars,index);
-  
+  qry(sysvars, index);
+
   /**
    * 
    * @param {array of system variable objects} sysvars 
    * @param {*} index 
    */
-  function qry(sysvars,index) {
-  
-    if(index<sysvars.length){
-      apiRoute = self.currUrl+"/sysvar/"+sysvars[index].name;
-      let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
-      console.log(data.error);
-      sysvars[index].value = data.value;
-      console.log("SESSION ACTIVE");
-      console.log(data);
-      index=index+1;
-      qry(sysvars,index);
-    }, "json");
+  function qry(sysvars, index) {
 
-    jqxhr.fail(function (error) {
-      console.log("SESSION INACTIVE");
-    })
-    }else{
+    if (index < sysvars.length) {
+      apiRoute = self.currUrl + "/sysvar/" + sysvars[index].name;
+      let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
+        console.log(data.error);
+        sysvars[index].value = data.value;
+        console.log("SESSION ACTIVE");
+        console.log(data);
+        index = index + 1;
+        qry(sysvars, index);
+      }, "json");
+
+      jqxhr.fail(function (error) {
+        console.log("SESSION INACTIVE");
+      })
+    } else {
       //end create new sys var lists
       console.table(sysvars);
       let sysVarViewObj = new SysVarView(sysvars);
-    }  
+    }
   }
 
 
 }
 
+FnConn.prototype.backgroundQuery = function (index) {
+  let self = this;
+  let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+  let rowIndex = index;
+  app.alertService.currServerIndex = rowIndex;
+
+  fnDb.transaction(function (tx) {
+    tx.executeSql('SELECT * FROM servers', [], function (tx, results) {
+
+      console.log("query server");
+      console.log(results.rows.item(rowIndex).url);
+      console.log(results.rows.item(rowIndex).skey);
+      console.log(results.rows.item(rowIndex).sid);
+      let apiRoute = results.rows.item(rowIndex).url + "/alerts";
+      console.log(apiRoute);
+
+      let jqxhr = $.get(apiRoute, { fn_skey: results.rows.item(rowIndex).skey, fn_sid: results.rows.item(rowIndex).sid }, function (data) {
+        function removeCookies() {
+          var res = document.cookie;
+          var multiple = res.split(";");
+          for (var i = 0; i < multiple.length; i++) {
+            var key = multiple[i].split("=");
+            document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
+          }
+          alert("removing cookies");
+          window.cookies.clear(function () {
+            alert("cookies cleared")
+            console.log('Cookies cleared!');
+          });
+        }
+        removeCookies();
+        console.log("SESSION details correct");
+        console.log(data);
+        alert(data);
+
+        //notification data
+        let count = data.alertcount;
+        let alertText = "";
+        console.log("alerts" + data.alerts);
+
+        // data.alerts = [{
+        //   nodeid:"vpn",
+        //   alertlevel:"1"
+        // }]
+
+        if (data.alerts != false) {
+          data.alerts.forEach(element => {
+            alertText = alertText + "Node:" + element.nodeid + "(" + element.alertlevel + "),";
+          });
+
+          cordova.plugins.notification.local.schedule({
+            title: "Alerts(" + count + ")",
+            text: alertText,
+            foreground: true
+          })
+        }else{
+
+          //possibly remove 
+          cordova.plugins.notification.local.schedule({
+            title: "0 Alerts",
+            text: "No alerting nodes found",
+            foreground: true
+          })
+        }
+
+        //if background 
+        if (rowIndex < results.rows.length - 1) {
+          rowIndex++;
+          self.backgroundQuery(rowIndex);
+        }
+      }, "json");
+
+      jqxhr.fail(function (error) {
+        alert(error);
+        //connect with new session details from connect
+        app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, "alertbackground");
+
+        console.log("SESSION INACTIVE in bckground");
+      });
+
+
+
+
+    }, null);
+
+  });
+
+}
+
+
+
 
 
 FnConn.prototype.query = function (routeObj) {
-  
-  
-  
+
+
+
   let route = routeObj.path1;
   let id = routeObj.path2;
   let path3 = routeObj.path3;
+  let data = routeObj.data;
   let apiRoute;
 
-console.log("routes here "+route);
+  console.log("routes here " + route);
   console.log(id);
   console.log(path3);
 
@@ -213,8 +337,11 @@ console.log("routes here "+route);
 
   if (id === undefined) {
 
+
     apiRoute = this.currUrl + "/" + route;
-    console.log("api "+apiRoute)
+
+
+
   } else if (routeObj.path3 == "data") {
 
     if (routeObj.queryString1 != undefined && routeObj.queryString2 != undefined) {
@@ -245,8 +372,22 @@ console.log("routes here "+route);
 
   console.log("Querying api route -> " + apiRoute);
 
-  let jqxhr = $.get(apiRoute, { fn_skey:sessionStorage.getItem("skey"), fn_sid:sessionStorage.getItem("sid") }, function (data) {
-   
+  let jqxhr = $.get(apiRoute, { fn_skey: sessionStorage.getItem("skey"), fn_sid: sessionStorage.getItem("sid") }, function (data) {
+
+    function removeCookies() {
+      var res = document.cookie;
+      var multiple = res.split(";");
+      for (var i = 0; i < multiple.length; i++) {
+        var key = multiple[i].split("=");
+        document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
+      }
+      // alert("removing cookies");
+      window.cookies.clear(function () {
+        // alert("cookies cleared")
+        console.log('Cookies cleared!');
+      });
+    }
+    removeCookies();
     console.log(data.error);
     console.log(sessionStorage.getItem("skey"));
     console.log(sessionStorage.getItem("sid"));
@@ -254,17 +395,18 @@ console.log("routes here "+route);
     console.log("SESSION ACTIVE");
   }, "json");
   jqxhr.fail(function (error) {
-    
+
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     fnDb.transaction(function (tx) {
-      
+
       //session var doesnt exist , create from server db
       tx.executeSql('SELECT * FROM servers WHERE url = ?', [app.fnConnObj.currUrl], function (tx, results) {
         console.log("Query Failed - Retreiving new session data");
+
         //grab recent session details from db 
         //change to query
-         app.fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, routeObj.path1);
+        app.fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, routeObj.path1);
 
       });
     }, function (tx, error) {
@@ -274,7 +416,7 @@ console.log("routes here "+route);
 
 
     //query fails beacuase session invalid - relog
-   
+
     //login
     console.log(error);
     console.log(sessionStorage.getItem("skey"));
@@ -303,6 +445,8 @@ console.log("routes here "+route);
         let nodeListViewObj = new NodeListView(data);
 
         break;
+
+      //move css updating to view class
       case 'node':
         let nodeId = routeObj.path2;
         if (routeObj.path3 == "disable") {
@@ -352,8 +496,8 @@ console.log("routes here "+route);
         break;
       case 'sysvar':
         app.router.currPage = "sysvar";
-          alert(routeObj.path1 + "succesfully changed")
-          break;
+        alert(routeObj.path1 + "succesfully changed")
+        break;
 
     }
   }

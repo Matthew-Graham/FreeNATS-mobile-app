@@ -1,57 +1,108 @@
 
 function AlertBackgroundService() {
+    this.self = this;
+    this.fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+    this.currServerIndex = 0;
+
+    //on start up
+
+
+
+    this.getPersitentValues();
+
 
     //first run populate from sql
-    this.monitoredServers = [];
-    this.populateMonitoredServers();
-    this.populated = true;
-    this.checkService();
-    this.timerInstance;
+    // this.monitoredServers = [];
+    // this.populateMonitoredServers();
+    // this.populated = true;
+    // this.checkService();
+    // this.timerInstance;
 
 
 }
 
-AlertBackgroundService.prototype.checkService = function () {
+AlertBackgroundService.prototype.getPersitentValues = function () {
 
-    //check backgroundmode
-    if (this.monitoredServers.length > 0) {
-        if (this.populated == false) {
-            this.populateMonitoredServers();
-            this.startService();
-        } else {
-            this.startService();
-        }
-    } else {
-        this.stopService();
-    }
+    this.fnDb.transaction(function (tx) {
+        tx.executeSql('SELECT * FROM settings WHERE name = ?', ["alerting"], function (tx, results) {
+            let value = results.rows.item(0).value;
+            let freq = results.rows.item(0).freq;
+            if (value == "1") {
+                app.alertService.startService(value, freq);
+            }
+
+            console.log("alerting:" + value);
+        }, null);
+
+    });
+
+
+
+
 }
 
-AlertBackgroundService.prototype.stopService = function () {
+
+AlertBackgroundService.prototype.checkService = function (serviceCallback, freq) {
+
+    let currObj = this;
+
+    this.fnDb.transaction(function (tx) {
+        tx.executeSql('SELECT * FROM settings WHERE name = ?', ["alerting"], function (tx, results) {
+            let value = results.rows.item(0).value;
+            console.log("freq");
+
+            let freqSrvr = results.rows.item(0).freq;
+            //the same freq or no new freq use db freq
+            if (freq == undefined || freq == freqSrvr) {
+                console.log("current status:" + value + "freq" + freqSrvr);
+                serviceCallback(value, freqSrvr);
+            }
+
+            else {
+                console.log("current status:" + value + "freq" + freq);
+                serviceCallback(value, freq);
+            }
+
+
+
+        }, null);
+
+    });
+}
+
+AlertBackgroundService.prototype.persistServiceValues = function (status, freq) {
+
+    this.fnDb.transaction(function (tx) {
+        tx.executeSql('UPDATE settings SET value = ?,freq = ? WHERE name = ?', [status, freq, "alerting"], function (tx, result) {
+            console.log("query successful");
+        }, null);
+
+    }, function (error) {
+        console.log("SQL Transaction error in persisting background values view Message:" + error.message)
+    });
+}
+
+AlertBackgroundService.prototype.stopService = function (value) {
+
+    app.alertService.persistServiceValues(0);
+    console.log("stopping background service")
     //disable backgroundmode
     cordova.plugins.backgroundMode.setEnabled(false);
+
     clearInterval(this.timerInstance);
 }
 
-AlertBackgroundService.prototype.startService = function () {
+AlertBackgroundService.prototype.startService = function (value, freq) {
+    app.alertService.persistServiceValues(1, freq);
+    console.log("starting background mode" + value);
+
     //start backgroundmode
-    cordova.plugins.backgroundMode.setEnabled(true);
-    cordova.plugins.backgroundMode.disableWebViewOptimizations();
-    
-    let server1 = {
-        name: "google",
-        url: "www.google.com",
-        alerted: "1",
-        nodeName: "google node",
-        alertLevel: "1",
-        freq: "10000",
-        timerInstance: ""
-    };
+    if (value == "0") {
+        console.log("enabling")
+        cordova.plugins.backgroundMode.setEnabled(true);
 
-    
-    
-    this.timerInstance= this.startTimedQuery(server1);
-
-    //create timerinstance for each monitered server if not set already 
+        timerInstance = app.alertService.startTimedQuery(freq);
+    }
 }
 
 AlertBackgroundService.prototype.populateMonitoredServers = function () {
@@ -77,38 +128,40 @@ AlertBackgroundService.prototype.populateMonitoredServers = function () {
         timerInstance: ""
     };
 
-    
+
     this.monitoredServers.push(server2);
 
     //get sql servers add to monitored servers 
     //create timer instances
 }
 
-AlertBackgroundService.prototype.startTimedQuery = function (server1) {
-
+AlertBackgroundService.prototype.startTimedQuery = function (freq) {
+    let self = this;
     timer = setInterval(function () {
         //loop through servers and query// needs to use promises or recursion
 
         let index = 0;
         //query recursively 
-        if (server1.alerted == true) {
-            let title = "Alert for " + server1.nodeName;
-            let wrnLvl = "";
 
-            if (server1.alertLevel == 1) {
-                wrnLvl = "pass";
-            }
-            let wrnLvlNum = server1.alertLevel.toString();
-            let text = wrnLvl + "(" + wrnLvlNum + ")";
-            cordova.plugins.notification.local.schedule({
-                title: title,
-                text: text,
-                foreground: true
-            });
-        }
-    }, server1.freq);
+        app.fnConnObj.backgroundQuery(0);
+
+        //     let wrnLvlNum = server1.alertLevel.toString();
+        //     let text = wrnLvl + "(" + wrnLvlNum + ")";
+        //     cordova.plugins.notification.local.schedule({
+        //         title: title,
+        //         text: text,
+        //         foreground: true
+
+        // })
+    }, freq);
 
     return timer;
+}
+
+
+AlertBackgroundService.prototype.serverIterationQuery = function () {
+    //loop through servers and query alerts
+
 }
 
 AlertBackgroundService.prototype.persistMonitoredServer = function (url, serverName, monitoring) {

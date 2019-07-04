@@ -23,6 +23,10 @@
             {
               "xml": "<feature name=\"LocalNotification\"><param name=\"ios-package\" onload=\"true\" value=\"APPLocalNotification\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"Cookies\"><param name=\"ios-package\" value=\"CDVCookies\" /></feature>",
+              "count": 1
             }
           ]
         }
@@ -53,6 +57,9 @@
       "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     },
     "cordova-plugin-local-notification": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
+    "com.bez4pieci.cookies": {
       "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     }
   },
@@ -90,6 +97,14 @@
       "clobbers": [
         "cordova.plugins.notification.local"
       ]
+    },
+    {
+      "id": "com.bez4pieci.cookies.cookies",
+      "file": "plugins/com.bez4pieci.cookies/www/cookies.js",
+      "pluginId": "com.bez4pieci.cookies",
+      "clobbers": [
+        "cookies"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -97,6 +112,7 @@
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-background-mode": "0.7.2",
     "cordova-plugin-badge": "0.8.8",
-    "cordova-plugin-local-notification": "0.9.3"
+    "cordova-plugin-local-notification": "0.9.3",
+    "com.bez4pieci.cookies": "0.0.1"
   }
 }

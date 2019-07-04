@@ -26,6 +26,7 @@
 		7FB18903D1A34C0DB1D29B19 /* UNNotificationRequest+APPLocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = DF2F6065CD554530AD7771BF /* UNNotificationRequest+APPLocalNotification.m */; };
 		94A3C5FEDB8E4175AB80E368 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E7BDA3A0E9C4A489E78A404 /* UserNotifications.framework */; };
 		FE57C00CDED64421B1DA9202 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC7CB5A2C364F0BA5FDCD97 /* CoreLocation.framework */; };
+		29B8BCF63848467F824AEF34 /* CDVCookies.m in Sources */ = {isa = PBXBuildFile; fileRef = 760BE80F0D8B4870B78FC312 /* CDVCookies.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,8 @@
 		422986E483DB4571BF6409AA /* UNNotificationRequest+APPLocalNotification.h */ = {isa = PBXFileReference; name = "UNNotificationRequest+APPLocalNotification.h"; path = "cordova-plugin-local-notification/UNNotificationRequest+APPLocalNotification.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		0E7BDA3A0E9C4A489E78A404 /* UserNotifications.framework */ = {isa = PBXFileReference; name = "UserNotifications.framework"; path = "System/Library/Frameworks/UserNotifications.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		7AC7CB5A2C364F0BA5FDCD97 /* CoreLocation.framework */ = {isa = PBXFileReference; name = "CoreLocation.framework"; path = "System/Library/Frameworks/CoreLocation.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		760BE80F0D8B4870B78FC312 /* CDVCookies.m */ = {isa = PBXFileReference; name = "CDVCookies.m"; path = "com.bez4pieci.cookies/CDVCookies.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		E7936898D4BD41098DB17579 /* CDVCookies.h */ = {isa = PBXFileReference; name = "CDVCookies.h"; path = "com.bez4pieci.cookies/CDVCookies.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +228,8 @@
 				F72E711ADB594D3180066A05 /* APPNotificationOptions.h */,
 				FE031534356E4971AD4FFEA1 /* UNUserNotificationCenter+APPLocalNotification.h */,
 				422986E483DB4571BF6409AA /* UNNotificationRequest+APPLocalNotification.h */,
+				760BE80F0D8B4870B78FC312 /* CDVCookies.m */,
+				E7936898D4BD41098DB17579 /* CDVCookies.h */,
 			);
 			name = Plugins;
 			path = "HelloCordova/Plugins";
@@ -360,6 +365,7 @@
 				718B3B812A35461FB86C2E1D /* APPNotificationOptions.m in Sources */,
 				780BA649F7C34C048357B231 /* UNUserNotificationCenter+APPLocalNotification.m in Sources */,
 				7FB18903D1A34C0DB1D29B19 /* UNNotificationRequest+APPLocalNotification.m in Sources */,
+				29B8BCF63848467F824AEF34 /* CDVCookies.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
