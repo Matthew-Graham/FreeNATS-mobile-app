@@ -16,8 +16,6 @@ NavbarView.prototype.compile = function () {
         let navbarHtml = navbarTemplate();
         $(".bar.bar-tab").html(navbarHtml);
     }
-
-  
 }
 
 NavbarView.prototype.attachEvents = function () {
@@ -27,7 +25,7 @@ NavbarView.prototype.attachEvents = function () {
         event.stopPropagation();
         event.stopImmediatePropagation();
         console.log(id+"Navigation was clicked");
-        router.routeToPage({path1:id});
+        app.router.routeToPage({path1:id});
     });
 }
       

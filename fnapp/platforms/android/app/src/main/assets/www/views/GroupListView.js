@@ -35,7 +35,7 @@ GroupListView.prototype.attachEvents = function () {
   $(".table-view-cell").on('click', function (event) {
     let pageid = "group";
     // pRouter = new PageRouter();   
-    router.routeToPage({path1:pageid,path2:this.id});
+    app.router.routeToPage({path1:pageid,path2:this.id});
     console.log(this.id);
   });
 }

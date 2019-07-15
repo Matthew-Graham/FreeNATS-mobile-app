@@ -29,8 +29,8 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     any new additional pages should be added to at least 1 of these arrays
     */
    //TODO Change to constants
-    this.initialUiLevel = ["servers", "serverLogin","modifyServer"];
-    this.nestedUiLevel =["tests","nodes","node","alerts","groups","settings"];
+    this.initialUiLevel = ["servers", "serverLogin","modifyServer","settings"];
+    this.nestedUiLevel =["tests","nodes","node","alerts","groups","sysvarread","group"];
 
     
     //Check session for these pages
@@ -38,7 +38,7 @@ PageRouter.prototype.routeToPage = function (routeObj) {
         //console.log("checking session")
          //fnConnObj.initializeSession(sessionStorage.getItem("url"));
     }else if(this.initialUiLevel.includes(route)){
-        fnConnObj.removeSession();
+        app.fnConnObj.removeSession();
         //remove session
     }
    
@@ -65,7 +65,7 @@ PageRouter.prototype.routeToPage = function (routeObj) {
     if (route == "tests") {
         
        
-        fnConnObj.query({path1:"node", path2:route2});
+        app.fnConnObj.query({path1:"node", path2:route2});
 
         // $(".tab-item").on('click', function (event) {
         //     let id = this.id;
@@ -76,32 +76,34 @@ PageRouter.prototype.routeToPage = function (routeObj) {
         // });
 
     } else if (route == "nodes") {         
-        fnConnObj.initializeSession(sessionStorage.getItem("url"),routeObj);
-        //fnConnObj.query("nodes");
+        //app.fnConnObj.initializeSession(sessionStorage.getItem("url"),routeObj);
+        app.fnConnObj.query({path1:"nodes"});
         this.currPage = "nodes";
  
 
     } else if (route == "alerts") {
-        fnConnObj.query({path1:route})
+        app.fnConnObj.query({path1:route})
 
     } else if (route == "servers") {
         this.currPage = "servers";     
         // $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
         //if unchanged server list  use previous  if not gen new one 
         let servers = new FnServerView();
-
+    }else if (route=="settings"){
+        this.currPage= "settings"; 
     
+        let settings = new SettingsView();
     } else if (route == "modifyServer") {
        let test = new ServerDetailsView(1);
     }else if(route == "test"){
-        fnConnObj.query({path1:route, path2:route2 , path3:"data"})
+        app.fnConnObj.query({path1:route, path2:route2 , path3:"data"})
         //let testGraphViewobj = new TestGraphView();
     }else if(route == "groups"){
-        fnConnObj.query({path1:route})
+        app.fnConnObj.query({path1:route})
     }else if(route == "group"){
-        fnConnObj.query({path1:route,path2:route2})
+        app.fnConnObj.query({path1:route,path2:route2})
     }else if(route=="sysvarread"){
-        fnConnObj.sysVarsQry({path1:route});
+        app.fnConnObj.sysVarsQry({path1:route});
     }
     
     else{

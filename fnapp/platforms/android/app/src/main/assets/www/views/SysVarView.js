@@ -1,7 +1,7 @@
 function SysVarView(sysvars) {  
     this.systemVars = sysvars;
     console.table(this.systemVars);
-    router.currPage = "sysvar";
+    app.router.currPage = "sysvar";
     this.compile();
     this.attachEvents();
     self = this;
