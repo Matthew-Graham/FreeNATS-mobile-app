@@ -6,10 +6,18 @@
 function AlertBackgroundService() {
     this.self = this;
     this.fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+
+    /**
+     * Defaults
+     */
+    let status = 0;
+    let freq = 100000;
     this.currServerIndex = 0;
     this.currFrequency = 60000;
-    this.getPersitentValues();
     this.timerInstance;
+
+    this.getPersitentValues();
+
 }
 
 
@@ -18,41 +26,21 @@ function AlertBackgroundService() {
  * and restarts the service or leaves it off 
  */
 AlertBackgroundService.prototype.getPersitentValues = function() {
-
+    let self = this;
     this.fnDb.transaction(function(tx) {
 
         tx.executeSql('SELECT * FROM settings WHERE name = ?', ["alerting"], function(tx, results) {
             let value = results.rows.item(0).value;
             let freq = results.rows.item(0).freq;
 
+            self.status = value;
+            self.freq = freq;
+
             if (value == "1") {
-                app.alertService.startService(value, freq);
+                app.alertService.startService(freq);
             }
             console.log("alerting:" + value);
         }, null);
-    });
-}
-
-
-AlertBackgroundService.prototype.checkService = function(serviceCallback, freq) {
-    let currObj = this;
-
-    this.fnDb.transaction(function(tx) {
-
-        tx.executeSql('SELECT * FROM settings WHERE name = ?', ["alerting"], function(tx, results) {
-            let value = results.rows.item(0).value;
-            let freqSrvr = results.rows.item(0).freq;
-
-            //the same freq or no new freq use db freq
-            if (freq == undefined || freq == freqSrvr) {
-                console.log("current status:" + value + "freq" + freqSrvr);
-                serviceCallback(value, freqSrvr);
-            } else {
-                console.log("current status:" + value + "freq" + freq);
-                serviceCallback(value, freq);
-            }
-        }, null);
-
     });
 }
 
@@ -82,7 +70,8 @@ AlertBackgroundService.prototype.persistServiceValues = function(status, freq) {
  * Persists the off status to the settings table and clears the time interval
  */
 AlertBackgroundService.prototype.stopService = function() {
-    app.alertService.persistServiceValues(0);
+    this.persistServiceValues(0);
+    this.status = 0;
     console.log("stopping background service");
     cordova.plugins.backgroundMode.setEnabled(false);
     clearInterval(this.timerInstance);
@@ -95,17 +84,13 @@ AlertBackgroundService.prototype.stopService = function() {
  * @param  {int} value
  * @param  {int} freq
  */
-AlertBackgroundService.prototype.startService = function(value, freq) {
-    app.alertService.persistServiceValues(1, freq);
-    console.log("starting background mode" + value);
-
-    //final check of value
-    if (value == "0") {
-        console.log("enabling")
-        cordova.plugins.backgroundMode.setEnabled(true);
-        timerInstance = app.alertService.startTimedQuery(freq);
-    }
-
+AlertBackgroundService.prototype.startService = function(freq) {
+    this.freq = freq;
+    this.status = 1;
+    this.persistServiceValues(1, freq);
+    console.log("starting background mode every " + freq);
+    cordova.plugins.backgroundMode.setEnabled(true);
+    timerInstance = app.alertService.startTimedQuery(freq);
     //do nothing if not 0
 }
 
