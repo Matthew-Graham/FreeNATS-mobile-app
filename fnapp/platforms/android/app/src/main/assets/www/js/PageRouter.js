@@ -1,12 +1,16 @@
 /**
  * 
- * 
+ * Object that handles routing to another page
+ * maintains state of curr page and next page 
+ * defaults to the servers page
  */
 function PageRouter() {
     self = this;
-    currPage = "-1";
+    currPage = "servers";
+
+    //previous page not in use -- potential feature using back button on devices
     previousPage = "-1";
-    requestedPage = "-1";
+    requestedPage = "servers";
 
     /*
     arrays representing what nav bar is displayed depending on the current
