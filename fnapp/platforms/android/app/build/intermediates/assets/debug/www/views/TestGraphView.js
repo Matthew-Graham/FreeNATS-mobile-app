@@ -5,6 +5,7 @@ function TestGraphView(jsonObj) {
     //TODO possibly add zoom in functionality 
     //TODO add trimming to long decimals on axis
     this.jsonObj = jsonObj;
+    console.log(jsonObj);
     this.compile();
     this.precompile();
     this.attachEvents();
@@ -21,7 +22,7 @@ TestGraphView.prototype.compile = function () {
 
 
     let graphTemplate = Handlebars.compile($("#graphTemplate").html());
-    let graphHtml = graphTemplate();
+    let graphHtml = graphTemplate(this.jsonObj);
     $(".content-padded").html(graphHtml);
 
 
@@ -30,13 +31,13 @@ TestGraphView.prototype.compile = function () {
     $("#date2").datepicker();
 
 
-    $( "#date1" ).datepicker({
+    $("#date1").datepicker({
         autoSize: true
-      });
-      $( "#date2" ).datepicker({
+    });
+    $("#date2").datepicker({
         autoSize: true
-      });
-      
+    });
+
     $("#date1").datepicker("setDate", new Date(this.jsonObj.period.startx * 1000));
     $("#date2").datepicker("setDate", new Date(this.jsonObj.period.finishx * 1000));
 }
@@ -133,7 +134,7 @@ TestGraphView.prototype.precompile = function () {
     let heightPadding = 30;
     let widthPadding = 20;
     let height = window.screen.height - 200;
-    let width = window.screen.width;
+    let width = window.screen.width - 15;
 
 
     /*Dimensions for inner graph */
@@ -152,8 +153,21 @@ TestGraphView.prototype.precompile = function () {
         .attr("height", height)
         .attr("style", "background-color:#d2ddef");
 
+    
 
+    let values  = [];
 
+    this.jsonObj.data.forEach(element => {
+         values.push(element.value);
+         console.log(element.value);
+    });
+   
+     console.log( Math.max(...values));
+     console.log( Math.min(...values)+"min");
+     // 4
+    // 1
+
+    
 
     let sortDataPoints = function (objs) {
 
@@ -164,11 +178,16 @@ TestGraphView.prototype.precompile = function () {
         return objs;
     }
 
-    sortedObjs = sortDataPoints(this.jsonObj.data);
+    //sortedObjs = sortDataPoints(this.jsonObj.data);
 
 
-    let valueMin = sortedObjs[0].value;
-    let valueMax = sortedObjs[sortedObjs.length - 1].value;
+    // let valueMin = sortedObjs[0].value;
+    // let valueMax = sortedObjs[sortedObjs.length - 1].value;
+    
+    let valueMin = Math.min(...values);
+    let valueMax = Math.max(...values);
+
+
 
     console.log(valueMax);
     console.log(valueMin);
@@ -199,7 +218,7 @@ TestGraphView.prototype.precompile = function () {
     */
     let xAxis = d3.axisBottom()
         .scale(xScale)
-        .ticks(7);
+        .ticks(6);
 
     /**
      * Create x Axis
@@ -230,13 +249,15 @@ TestGraphView.prototype.precompile = function () {
         .enter()
         .append("circle")
         .attr("cx", function (d) {
+
+            console.log("circle time"+d.recordx);
             // console.log(d.recordx);
-            return xScale(d.recordx * 1000);
+            return xScale((d.recordx * 1000));
         })
         .attr("cy", function (d) {
             return yScale((d.value)).toFixed(4);
         })
-        .attr("r", 2)
+        .attr("r", 1)
         .attr("fill", function (d) {
 
             if (d.alertlevel < 0) {
@@ -249,6 +270,64 @@ TestGraphView.prototype.precompile = function () {
         }
         )
 
+    let dataArr = this.jsonObj.data;
+    //console.log(dataArr);
+    /*Lines */
+    svg.selectAll("line.dpline")
+        .data(dataArr)
+        .enter()
+        .append("line")
+        .attr("x1", function (d) {
+             console.log("linetime"+d.recordx);
+            return xScale((d.recordx * 1000));
+        })
+        .attr("y1", function (d) {
+            // console.log(d.recordx);
+            return yScale((d.value)).toFixed(4);
+        })
+        .attr("x2", function (d, i) {
+            // console.log(d.recordx);
+            //  console.log(dataArr[i+1].recordx * 1000);
+            
+            if (i < (dataArr.length - 1)) {
+                return xScale((dataArr[i + 1].recordx) * 1000);
+            } else {
+                return xScale((d.recordx * 1000));
+            }
+
+        })
+        .attr("y2", function (d, i) {
+            //console.log(i)
+            if (i < (dataArr.length - 1)) {         
+                return yScale((dataArr[i+1].value)).toFixed(4)
+            } else {
+                return yScale((d.value)).toFixed(4);
+            }
+
+
+        })
+        .attr("stroke", function (d) {
+
+            if (d.alertlevel < 0) {
+                return "red";
+            } else if (d.alertlevel > 1) {
+                return "yellow";
+            } else {
+                return "green";
+            }
+        }
+        )  .attr("stroke-width",1)
+        .classed("dpline");
+
+
+
+    /*Legend */
+    svg.append("circle").attr("cx", width - 100).attr("cy", 10).attr("r", 6).style("fill", "#FF0000")
+    svg.append("circle").attr("cx", width - 200).attr("cy", 10).attr("r", 6).style("fill", "#FF8C00")
+    svg.append("circle").attr("cx", width - 300).attr("cy", 10).attr("r", 6).style("fill", "#008000")
+    svg.append("text").attr("x", width - 80).attr("y", 10).text("Fail").style("font-size", "15px").attr("alignment-baseline", "middle")
+    svg.append("text").attr("x", width - 180).attr("y", 10).text("Warning").style("font-size", "15px").attr("alignment-baseline", "middle")
+    svg.append("text").attr("x", width - 280).attr("y", 10).text("Pass").style("font-size", "15px").attr("alignment-baseline", "middle")
 }
 
 

@@ -176,10 +176,7 @@ FnConn.prototype.sysVarsQry = async function (routeObj) {
       name: "site.tester.suspended",
       value: "",
     },
-    {
-      name: "site.tester.suspended",
-      value: "",
-    }
+  
   ];
 
   let index = 0;
@@ -240,16 +237,16 @@ FnConn.prototype.backgroundQuery = function (index) {
             var key = multiple[i].split("=");
             document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
           }
-          alert("removing cookies");
+          // alert("removing cookies");
           window.cookies.clear(function () {
-            alert("cookies cleared")
+            // alert("cookies cleared")
             console.log('Cookies cleared!');
           });
         }
         removeCookies();
         console.log("SESSION details correct");
         console.log(data);
-        alert(data);
+        // alert(data);
 
         //notification data
         let count = data.alertcount;
@@ -289,7 +286,7 @@ FnConn.prototype.backgroundQuery = function (index) {
       }, "json");
 
       jqxhr.fail(function (error) {
-        alert(error);
+        //alert(error);
         //connect with new session details from connect
         app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, "alertbackground");
 

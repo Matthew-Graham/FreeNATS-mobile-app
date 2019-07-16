@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jul 03 20:59:50 BST 2019
+#Thu Jul 04 23:11:42 BST 2019
 60.set=ASSET
 52.set=ASSET
 53.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
@@ -144,7 +144,7 @@
 62.baseType=DIRECTORY
 34.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
 77.set=ASSET
-68.path=www/js/AlertBackgroundService.js
+68.path=www/js/jquery-ui-1.12.1.custom/images/ui-icons_cc0000_256x240.png
 81.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
 69.set=ASSET
 88.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
@@ -200,7 +200,7 @@
 75.set=ASSET
 33.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
 67.set=ASSET
-67.path=www/js/jquery-ui-1.12.1.custom/images/ui-icons_cc0000_256x240.png
+67.path=www/js/AlertBackgroundService.js
 80.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
 6.baseType=DIRECTORY
 59.set=ASSET
@@ -315,7 +315,7 @@ count=93
 3.baseType=DIRECTORY
 25.path=www/cordova-js-src/android/nativeapiprovider.js
 72.path=www/css/jquery-ui-1.12.1.custom/package.json
-79.path=www/plugins/com.bez4pieci.cookies/www/cookies.js
+79.path=www/views/ServerDetailsView.js
 54.baseType=DIRECTORY
 14.baseType=DIRECTORY
 40.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
@@ -365,7 +365,7 @@ count=93
 71.path=www/css/home.css
 56.baseType=DIRECTORY
 16.baseType=DIRECTORY
-78.path=www/views/ServerDetailsView.js
+78.path=www/plugins/com.bez4pieci.cookies/www/cookies.js
 31.path=www/css/jquery-ui-1.12.1.custom/external/jquery/jquery.js
 2.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug
 46.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\debug

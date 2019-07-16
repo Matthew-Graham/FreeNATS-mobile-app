@@ -1,22 +1,30 @@
 function SettingsView(){
 
 
-;
+
   app.alertService.checkService(this.getData.bind(this));
 }
 
-SettingsView.prototype.getData = function(value){
+SettingsView.prototype.getData = function(value,freq){
   console.log(value+"value")
   if(value=="1"){
-    console.log("A enabled")
+    console.log("enabled")
     
   }else{
-    console.log("A disabled")
+    console.log("disabled")
     
   }
 
+  let hrs = 0;
+  if(freq>3600000){
+    hrs = (freq/3600000);
+  }
+
+
   let settings = {
-    alertStatus:value
+    alertStatus:value,
+    mins:(freq/60000),
+    hours:hrs
   };
 
 
@@ -24,6 +32,15 @@ SettingsView.prototype.getData = function(value){
 }
 
 SettingsView.prototype.compile = function(settings){
+
+  
+  /**Header */
+  let headerTemplate = Handlebars.compile($("#headerTemplate").html());
+  let context = { title: "Settings" };
+  let headerHTML = headerTemplate(context);
+  $("#topHeader").html(headerHTML);
+
+
     console.log(settings.alertStatus+"status here")
     Handlebars.registerHelper('settingColour', function (enabled) {
         if (enabled == "1") {
@@ -58,18 +75,25 @@ SettingsView.prototype.attachEvents = function(){
         event.stopImmediatePropagation();
         let id = this.id;
 
+        
         let freqHours = $(this).siblings("#freqHours").val();
         let freqMinutes = $(this).siblings("#freqMins").val();
+        let freq = 0;
 
-        let freq = freqMinutes*60000;
-        freq = 10000;
+        if(freqHours<"0"||freqMinutes<"0"){
+            freq=3600000;
+        }else{
+          freq = (freqMinutes*60000) +(freqHours*3600000);
+        }
+        
+        
         console.log(freqMinutes);
         console.log(id);
 
         if(id=="enable"){
             settings.alertStatus = "1";
             //start background service
-            app.alertService.persistServiceValues(1);
+           
             app.alertService.checkService(app.alertService.startService,freq);
            //app.alertService.startService(10000);     
             $(this).attr("id","disable");
@@ -77,10 +101,10 @@ SettingsView.prototype.attachEvents = function(){
             $(this).removeClass("btn-positive");
             $(this).addClass("btn-negative");
                 
-           console.log("hereere");
+           
            
         }else if(id=="disable"){
-            app.alertService.persistServiceValues(0);
+           
             app.alertService.checkService(app.alertService.stopService)
             //app.alertService.stopService();   
             $(this).attr("id","enable");

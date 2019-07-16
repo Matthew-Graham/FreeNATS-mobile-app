@@ -32,6 +32,15 @@ SettingsView.prototype.getData = function(value,freq){
 }
 
 SettingsView.prototype.compile = function(settings){
+
+  
+  /**Header */
+  let headerTemplate = Handlebars.compile($("#headerTemplate").html());
+  let context = { title: "Settings" };
+  let headerHTML = headerTemplate(context);
+  $("#topHeader").html(headerHTML);
+
+
     console.log(settings.alertStatus+"status here")
     Handlebars.registerHelper('settingColour', function (enabled) {
         if (enabled == "1") {

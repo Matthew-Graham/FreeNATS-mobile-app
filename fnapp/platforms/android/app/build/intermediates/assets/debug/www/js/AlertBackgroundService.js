@@ -5,7 +5,7 @@ function AlertBackgroundService() {
     this.currServerIndex = 0;
 
     //on start up
-  
+
 
 
     this.getPersitentValues();
@@ -22,13 +22,13 @@ function AlertBackgroundService() {
 }
 
 AlertBackgroundService.prototype.getPersitentValues = function () {
- 
+
     this.fnDb.transaction(function (tx) {
         tx.executeSql('SELECT * FROM settings WHERE name = ?', ["alerting"], function (tx, results) {
             let value = results.rows.item(0).value;
-
+            let freq = results.rows.item(0).freq;
             if (value == "1") {
-                app.alertService.startService();
+                app.alertService.startService(value, freq);
             }
 
             console.log("alerting:" + value);
@@ -42,37 +42,48 @@ AlertBackgroundService.prototype.getPersitentValues = function () {
 }
 
 
-AlertBackgroundService.prototype.checkService = function (serviceCallback,freq) {
-    
+AlertBackgroundService.prototype.checkService = function (serviceCallback, freq) {
+
     let currObj = this;
 
     this.fnDb.transaction(function (tx) {
         tx.executeSql('SELECT * FROM settings WHERE name = ?', ["alerting"], function (tx, results) {
             let value = results.rows.item(0).value;
+            console.log("freq");
 
-                serviceCallback(value,freq);
-            
+            let freqSrvr = results.rows.item(0).freq;
+            //the same freq or no new freq use db freq
+            if (freq == undefined || freq == freqSrvr) {
+                console.log("current status:" + value + "freq" + freqSrvr);
+                serviceCallback(value, freqSrvr);
+            }
 
-            console.log("alerting:" + value);
+            else {
+                console.log("current status:" + value + "freq" + freq);
+                serviceCallback(value, freq);
+            }
+
+
+
         }, null);
 
     });
 }
 
-AlertBackgroundService.prototype.persistServiceValues = function(status,freq){
-    
+AlertBackgroundService.prototype.persistServiceValues = function (status, freq) {
+
     this.fnDb.transaction(function (tx) {
-        tx.executeSql('UPDATE settings SET value = ? WHERE name = ?', [status,"alerting"], function (tx, result) {
-            console.log("query successful");   
-          }, null);
-          
+        tx.executeSql('UPDATE settings SET value = ?,freq = ? WHERE name = ?', [status, freq, "alerting"], function (tx, result) {
+            console.log("query successful");
+        }, null);
+
     }, function (error) {
         console.log("SQL Transaction error in persisting background values view Message:" + error.message)
     });
 }
 
 AlertBackgroundService.prototype.stopService = function (value) {
-    
+
     app.alertService.persistServiceValues(0);
     console.log("stopping background service")
     //disable backgroundmode
@@ -81,35 +92,17 @@ AlertBackgroundService.prototype.stopService = function (value) {
     clearInterval(this.timerInstance);
 }
 
-AlertBackgroundService.prototype.startService = function (value,freq) {
-    app.alertService.persistServiceValues(1);
-    
-    console.log("starting background mode")
+AlertBackgroundService.prototype.startService = function (value, freq) {
+    app.alertService.persistServiceValues(1, freq);
+    console.log("starting background mode" + value);
 
     //start backgroundmode
-    if (value!="1") {
+    if (value == "0") {
         console.log("enabling")
         cordova.plugins.backgroundMode.setEnabled(true);
-        cordova.plugins.backgroundMode.disableWebViewOptimizations();
-       
-        let server1 = {
-            name: "google",
-            url: "www.google.com",
-            alerted: "1",
-            nodeName: "google node",
-            alertLevel: "1",
-            freq: "10000",
-            timerInstance: ""
-        };
 
         timerInstance = app.alertService.startTimedQuery(freq);
     }
-
-
-
-    
-
-    //create timerinstance for each monitered server if not set already 
 }
 
 AlertBackgroundService.prototype.populateMonitoredServers = function () {
@@ -149,7 +142,7 @@ AlertBackgroundService.prototype.startTimedQuery = function (freq) {
 
         let index = 0;
         //query recursively 
-       
+
         app.fnConnObj.backgroundQuery(0);
 
         //     let wrnLvlNum = server1.alertLevel.toString();
@@ -158,7 +151,7 @@ AlertBackgroundService.prototype.startTimedQuery = function (freq) {
         //         title: title,
         //         text: text,
         //         foreground: true
-          
+
         // })
     }, freq);
 
@@ -166,9 +159,9 @@ AlertBackgroundService.prototype.startTimedQuery = function (freq) {
 }
 
 
-AlertBackgroundService.prototype.serverIterationQuery = function(){
+AlertBackgroundService.prototype.serverIterationQuery = function () {
     //loop through servers and query alerts
-    
+
 }
 
 AlertBackgroundService.prototype.persistMonitoredServer = function (url, serverName, monitoring) {

@@ -1,5 +1,5 @@
 function GroupView(groupListData) {
-    router.currPage = "nodes";
+    app.router.currPage = "nodes";
   
     //check session method
     this.groupListData = groupListData;

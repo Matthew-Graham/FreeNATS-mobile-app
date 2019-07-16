@@ -257,9 +257,9 @@
 
                         <form id ="loginForm"  class="input-group">   
                             <label for="">Hours</label>
-                            <input id = "freqHours" type="text" placeholder="" class = "freq" value = "">    
+                            <input id = "freqHours" type="text" placeholder="{{this.hours}}" class = "freq" value = "{{this.hours}}">    
                             <label for="">Minutes</label>
-                            <input id = "freqMins" type="text" placeholder="" class = "freq" value = "">    
+                            <input id = "freqMins" type="text" placeholder="{{this.mins}}" class = "freq" value = "{{this.mins}}">    
                         <a id = "{{alertQuery this.alertStatus}}" class="btn submit {{settingColour this.alertStatus}} btn-block">{{alertQuery this.alertStatus}}</a>
                          </form>   
                     </div>                 
@@ -366,16 +366,18 @@
 
     <script id="graphTemplate" type="text/template">
         <ul class="table-view">
+
+            <li class="table-view-cell"><h4>{{this.nodeid}}/{{this.testid}}</h4></li>
                 <li class="table-view-cell" id ="dateRow">     
                     <form id ="calendarForm"  class="input-group datePickerForm" >     
                         <div class="input-row" id="dateInputRow1">
                             <label id="dateLbl1" for="date1">From</label>
-                            <input class = "datePickerCtrl" type="text" name="date1" id="date1">                          
+                            <input class = "datePickerCtrl" type="text" name="date1" id="date1" readonly="readonly">                          
                         </div>
 
                         <div class="input-row" id="dateInputRow2">
                                 <label id="dateLbl2" for="date2">To</label>
-                                <input class = "datePickerCtrl" type="text" name="date2" id="date2">
+                                <input class = "datePickerCtrl" type="text" name="date2" id="date2"readonly="readonly">
                         </div>                
                 </form>
                 <a id = "submitDates" class="btn connect btn-positive">Query</a>
