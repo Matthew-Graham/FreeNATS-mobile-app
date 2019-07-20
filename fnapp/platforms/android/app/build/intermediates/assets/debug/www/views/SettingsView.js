@@ -1,121 +1,132 @@
-function SettingsView(){
+/**
+ * An object controlling the display and logic of all the app specific settings
+ */
+function SettingsView() {
+    this.createHelpers();
 
-
-
-  app.alertService.checkService(this.getData.bind(this));
+    //includes call to compile 
+    this.prepareAlertSetting(app.alertService.status, app.alertService.freq)
+    this.attachEvents();
 }
 
-SettingsView.prototype.getData = function(value,freq){
-  console.log(value+"value")
-  if(value=="1"){
-    console.log("enabled")
-    
-  }else{
-    console.log("disabled")
-    
-  }
 
-  let hrs = 0;
-  if(freq>3600000){
-    hrs = (freq/3600000);
-  }
-
-
-  let settings = {
-    alertStatus:value,
-    mins:(freq/60000),
-    hours:hrs
-  };
-
-
-  this.compile(settings);
-}
-
-SettingsView.prototype.compile = function(settings){
-
-  
-  /**Header */
-  let headerTemplate = Handlebars.compile($("#headerTemplate").html());
-  let context = { title: "Settings" };
-  let headerHTML = headerTemplate(context);
-  $("#topHeader").html(headerHTML);
-
-
-    console.log(settings.alertStatus+"status here")
-    Handlebars.registerHelper('settingColour', function (enabled) {
+/**
+ * Register handlebar helpers than control the colour and text of the enable disable button
+ */
+SettingsView.prototype.createHelpers = function() {
+    Handlebars.registerHelper('settingColour', function(enabled) {
         if (enabled == "1") {
-          return new Handlebars.SafeString("btn-negative");
+            return new Handlebars.SafeString("btn-negative");
         } else {
-          return new Handlebars.SafeString("btn-positive");
+            return new Handlebars.SafeString("btn-positive");
         }
-      });
+    });
 
-    //get current frequency
-  Handlebars.registerHelper('alertQuery', function (enabled) {
-    if (enabled == "1") {
-      return new Handlebars.SafeString("disable");
+    Handlebars.registerHelper('alertQuery', function(enabled) {
+        if (enabled == "1") {
+            return new Handlebars.SafeString("disable");
+        } else {
+            return new Handlebars.SafeString("enable");
+        }
+    });
+}
+
+
+
+
+/**
+ * Creates a object for use with the handlebars compiler
+ * contains the current status 
+ * and converts the frequency into hours and mins 
+ * @param  {int} value - status of the alert setting
+ * @param  {int} freq - in milliseconds
+ */
+SettingsView.prototype.prepareAlertSetting = function(value, freq) {
+    if (value == "1") {
+        console.log("enabled")
     } else {
-      return new Handlebars.SafeString("enable");
+        console.log("disabled")
     }
-  });
+
+    /**
+     * convert miliseconds to hours and mins
+     */
+    let hrs = 0;
+    if (freq > 3600000) {
+        hrs = (freq / 3600000);
+    }
+
+    /**
+     * Object to be used with the settings template
+     */
+    let alertSetting = {
+        alertStatus: value,
+        mins: (freq / 60000),
+        hours: hrs
+    };
+
+    this.compile(alertSetting);
+}
 
 
-  let settingsTemplate = Handlebars.compile($("#settingsTemplate").html());
-  let settingsHtml = settingsTemplate(settings);
-  $(".content-padded").html(settingsHtml);
+/**
+ * Compiles the settings template with alert settings data and adds it to the dom.
+ * @param  {Object} settings
+ */
+SettingsView.prototype.compile = function(settings) {
 
-  this.attachEvents();
+    /**Header */
+    let headerTemplate = Handlebars.compile($("#headerTemplate").html());
+    let context = { title: "Settings" };
+    let headerHTML = headerTemplate(context);
+    $("#topHeader").html(headerHTML);
+
+    let settingsTemplate = Handlebars.compile($("#settingsTemplate").html());
+    let settingsHtml = settingsTemplate(settings);
+    $(".content-padded").html(settingsHtml);
+
 
 }
 
-SettingsView.prototype.attachEvents = function(){
+
+/**
+ * Attachs events for turning the alerting service on and off 
+ * and changing the frequency of the alerting, also handles updating the dom
+ */
+SettingsView.prototype.attachEvents = function() {
     let obj = this;
-  $(".submit").on('click', function (event) {
+    $(".submit").on('click', function(event) {
         event.stopPropagation();
         event.stopImmediatePropagation();
         let id = this.id;
 
-        
+
         let freqHours = $(this).siblings("#freqHours").val();
         let freqMinutes = $(this).siblings("#freqMins").val();
         let freq = 0;
 
-        if(freqHours<"0"||freqMinutes<"0"){
-            freq=3600000;
-        }else{
-          freq = (freqMinutes*60000) +(freqHours*3600000);
+        /**To miliseconds from hours and minutes */
+        if (freqHours < "0" || freqMinutes < "0") {
+            freq = 3600000;
+        } else {
+            freq = (freqMinutes * 60000) + (freqHours * 3600000);
         }
-        
-        
-        console.log(freqMinutes);
-        console.log(id);
 
-        if(id=="enable"){
+        /**Start service or end it and change button accordingly */
+        if (id == "enable") {
             settings.alertStatus = "1";
-            //start background service
-           
-            app.alertService.checkService(app.alertService.startService,freq);
-           //app.alertService.startService(10000);     
-            $(this).attr("id","disable");
-            $(this).html("disable"); 
+            console.log(freq);
+            app.alertService.startService(freq);
+            $(this).attr("id", "disable");
+            $(this).html("disable");
             $(this).removeClass("btn-positive");
             $(this).addClass("btn-negative");
-                
-           
-           
-        }else if(id=="disable"){
-           
-            app.alertService.checkService(app.alertService.stopService)
-            //app.alertService.stopService();   
-            $(this).attr("id","enable");
-            $(this).html("enable"); 
+        } else if (id == "disable") {
+            app.alertService.stopService();
+            $(this).attr("id", "enable");
+            $(this).html("enable");
             $(this).removeClass("btn-negative");
-          $(this).addClass("btn-positive");    
-            //app.fnConnObj.query({path1:"node",path2:nodeid,path3:"enable"})
-          
+            $(this).addClass("btn-positive");
         }
-    
- 
-       
-      });
+    });
 }

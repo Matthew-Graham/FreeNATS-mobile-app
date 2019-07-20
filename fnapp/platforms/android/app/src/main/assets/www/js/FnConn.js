@@ -55,20 +55,19 @@ FnConn.prototype.connect = function(url, name, pass, route) {
      * Failed login
      */
     jqxhr.fail(function(xhr, textStatus, errorThrown) {
+        console.log(xhr);
+        console.log(xhr.statusText);
 
-        if (errorThrown.status == "403") {
-            alert("Incorrect password or username" + "[" + errorThrown.status + "]");
-        } else if (errorThrown.status == "404") {
-            alert("no such route found" + "[" + errorThrown.status + "]");
+        if (xhr.status == "403") {
+            alert("Invalid username/password" + "[" + xhr.statusText + "]");
+        } else if (xhr.status == "404") {
+            alert("Freenats JSON API url not found" + "[" + xhr.statusText + "]");
         } else {
-            alert("Error could not connect to url");
-            console.log(xhr.statusText);
-            console.log(textStatus);
-            console.log(errorThrown.responnseText);
+            alert("Error [" + xhr.status + "]" + xhr.statusText);
         }
 
-        //default home page
-        router.routeToPage({ path1: "servers" });
+        //default to home page on failure to login
+        app.router.routeToPage({ path1: "servers" });
     })
 }
 
@@ -143,20 +142,7 @@ FnConn.prototype.backgroundQuery = function(index) {
 
             let jqxhr = $.get(apiRoute, { fn_skey: results.rows.item(rowIndex).skey, fn_sid: results.rows.item(rowIndex).sid }, function(data) {
 
-                // function removeCookies() {
-                //     var res = document.cookie;
-                //     var multiple = res.split(";");
-                //     for (var i = 0; i < multiple.length; i++) {
-                //         var key = multiple[i].split("=");
-                //         document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
-                //     }
-                //     // alert("removing cookies");
-                //     window.cookies.clear(function() {
-                //         // alert("cookies cleared")
-                //         console.log('Cookies cleared!');
-                //     });
-                // }
-                // removeCookies();
+
                 console.log("SESSION details correct");
                 console.log(data);
                 // alert(data);
@@ -173,7 +159,17 @@ FnConn.prototype.backgroundQuery = function(index) {
 
                 if (data.alerts != false) {
                     data.alerts.forEach(element => {
-                        alertText = alertText + "Node:" + element.nodeid + "(" + element.alertlevel + "),";
+
+                        let status = "status error"
+                        if (element.alertlevel == 2) {
+                            status = "Fail";
+                        } else if (element.alertlevel == 1) {
+                            status = "Warn"
+                        } else {
+                            status = "Pass"
+                        }
+
+                        alertText = alertText + "Node:" + element.nodeid + "(" + status + "),";
                     });
 
                     cordova.plugins.notification.local.schedule({
@@ -183,14 +179,11 @@ FnConn.prototype.backgroundQuery = function(index) {
                     })
                 } else {
 
-                    alert("yes");
-
-                    //possibly remove 
-                    cordova.plugins.notification.local.schedule({
-                        title: "0 Alerts",
-                        text: "No alerting nodes found",
-                        foreground: true
-                    })
+                    // cordova.plugins.notification.local.schedule({
+                    //     title: "0 Alerts",
+                    //     text: "No alerting nodes found",
+                    //     foreground: true
+                    // })
                 }
 
                 //if background 
@@ -378,6 +371,7 @@ FnConn.prototype.query = function(routeObj) {
 
             case 'alerts':
                 app.router.currPage = "alerts"
+
                 let alertViewObj = new AlertView(data);
                 console.log(data);
                 break;
@@ -402,5 +396,26 @@ FnConn.prototype.query = function(routeObj) {
 
         }
     }
+
+}
+
+/**
+ * Code from https://www.tutorialspoint.com/How-can-I-delete-all-cookies-with-JavaScript
+ */
+FnConn.prototype.clearCookies = function() {
+
+    var res = document.cookie;
+    var multiple = res.split(";");
+    for (var i = 0; i < multiple.length; i++) {
+        var key = multiple[i].split("=");
+        document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
+    }
+
+    // alert("removing cookies");
+    window.cookies.clear(function() {
+        // alert("cookies cleared")
+        console.log('Cookies cleared!');
+    });
+
 
 }

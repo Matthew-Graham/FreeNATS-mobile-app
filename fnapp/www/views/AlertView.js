@@ -27,7 +27,26 @@ AlertView.prototype.createHelpers = function() {
                 return new Handlebars.SafeString("status colour error");
             }
         });
+
+        Handlebars.registerHelper('alertStatus', function(status) {
+            if (status == "0") {
+                return new Handlebars.SafeString("Passed");
+            } else if (status == "2") {
+                return new Handlebars.SafeString("Failed");
+            } else if (status == "1") {
+                return new Handlebars.SafeString("Warning");
+            } else {
+                return new Handlebars.SafeString("Alert level could not be determined");
+            }
+        });
+
+
+
+
     }
+
+
+
 }
 
 /**

@@ -75,6 +75,7 @@ PageRouter.prototype.routeToPage = function(routeObj) {
     } else if (route == "servers") {
         this.currPage = "servers";
         let servers = new FnServerView();
+        localStorage.clear();
 
     } else if (route == "settings") {
         this.currPage = "settings";

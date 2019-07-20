@@ -53,7 +53,7 @@ NodeListView.prototype.compile = function(nodeList) {
 
     /**Header */
     let headerTemplate = Handlebars.compile($("#headerTemplate").html());
-    let context = { title: sessionStorage.getItem("serverName") };
+    let context = { title: localStorage.getItem("servername") };
     let headerHTML = headerTemplate(context);
     $("#topHeader").html(headerHTML);
 }

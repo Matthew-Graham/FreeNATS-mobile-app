@@ -5,6 +5,15 @@
  */
 function ServerDetailsView(templateNumber, tempServer) {
     app.router.currPage = "modifyServer";
+    this.oldUrl;
+
+    /**
+     * If modify template keep the old url for querying later 
+     */
+    if (templateNumber == 2) {
+        this.oldUrl = tempServer.url;
+    }
+
     this.compile(tempServer, templateNumber);
     this.attachEvents();
 }
@@ -106,10 +115,35 @@ ServerDetailsView.prototype.persistUpdatedServer = function(oldUrl, serverName, 
 
     fnDb.transaction(function(tx) {
         tx.executeSql('UPDATE servers SET serverName = ?,url = ?,naun = ?, napw = ?, sid = -1 , skey=-1 WHERE url = ?', [serverName, url, usr, pass, oldUrl], function(tx, result) {
+
+            //clear cookies as new login details 
+            app.fnConnObj.clearCookies();
             app.router.routeToPage({ path1: "servers" });
         }, null);
+
+
     }, function(error) {
         console.log("SQL Transaction error in persist updated server  view Message:" + error.message)
+    });
+}
+
+/**
+ * Removes the server from the database
+ * @param  {String} serverUrl url of the server to be deleted
+ */
+ServerDetailsView.prototype.deleteServer = function(serverUrl) {
+    let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+
+
+    fnDb.transaction(function(tx) {
+        tx.executeSql('DELETE FROM servers WHERE url = ?', [serverUrl], function(tx, result) {
+            app.fnConnObj.clearCookies();
+            app.router.routeToPage({ path1: "servers" });
+        }, null);
+
+
+    }, function(error) {
+        console.log("SQL Transaction error trying to delete server  view Message:" + error.message)
     });
 }
 
@@ -142,8 +176,19 @@ ServerDetailsView.prototype.attachEvents = function() {
             let validSubmission = self.validateInput(serverName, url, usr, pass);
 
             if (validSubmission) {
-                self.persistUpdatedServer(self.tempServer.url, serverName, url, usr, pass);
+                self.persistUpdatedServer(self.oldUrl, serverName, url, usr, pass);
             }
         }
+    });
+
+
+    $("#delete").on('click', function(event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        let url = $("#fnurl").val();
+        alert("Deleting server");
+        self.deleteServer(url);
+
+
     });
 }

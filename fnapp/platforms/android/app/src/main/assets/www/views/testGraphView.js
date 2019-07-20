@@ -1,9 +1,8 @@
-
 function TestGraphView(jsonObj) {
 
     //TODO reload graph based on orientation change
     //TODO possibly add zoom in functionality 
-  
+
     this.jsonObj = jsonObj;
     console.log(jsonObj);
     this.compile();
@@ -13,7 +12,7 @@ function TestGraphView(jsonObj) {
 
 }
 
-TestGraphView.prototype.compile = function () {
+TestGraphView.prototype.compile = function() {
 
     /*Header */
     //    let datePickerTemplate = Handlebars.compile($("#datePickerTemplate").html());
@@ -27,8 +26,8 @@ TestGraphView.prototype.compile = function () {
 
 
     //**Calendar date pickers */
-    $("#date1").datepicker();
-    $("#date2").datepicker();
+    $("#date1").datepicker({ dateFormat: 'dd-mm-yy' });
+    $("#date2").datepicker({ dateFormat: 'dd-mm-yy' });
 
 
     $("#date1").datepicker({
@@ -38,18 +37,21 @@ TestGraphView.prototype.compile = function () {
         autoSize: true
     });
 
+
+    console.log(this.jsonObj.period.startx);
+    console.log(this.jsonObj.period.finishx);
     $("#date1").datepicker("setDate", new Date(this.jsonObj.period.startx * 1000));
     $("#date2").datepicker("setDate", new Date(this.jsonObj.period.finishx * 1000));
 }
 
 
-TestGraphView.prototype.attachEvents = function () {
+TestGraphView.prototype.attachEvents = function() {
 
     let self = this;
 
 
 
-    $("#submitDates").on('click', function (event) {
+    $("#submitDates").on('click', function(event) {
 
 
         let tempDate1 = $("#date1").datepicker("getDate");
@@ -68,7 +70,7 @@ TestGraphView.prototype.attachEvents = function () {
 
 }
 
-TestGraphView.prototype.precompile = function () {
+TestGraphView.prototype.precompile = function() {
 
 
 
@@ -153,28 +155,28 @@ TestGraphView.prototype.precompile = function () {
         .attr("height", height)
         .attr("style", "background-color:#d2ddef");
 
-    
 
-    let values  = [];
+
+    let values = [];
 
     this.jsonObj.data.forEach(element => {
-         values.push(element.value);
-         console.log(element.value);
+        values.push(element.value);
+        console.log(element.value);
     });
-   
-     console.log( Math.max(...values));
-     console.log( Math.min(...values)+"min");
-     // 4
+
+    console.log(Math.max(...values));
+    console.log(Math.min(...values) + "min");
+    // 4
     // 1
 
-    
 
-    let sortDataPoints = function (objs) {
 
-        objs.sort(function (a, b) {
-            return a.value - b.value;
-        })
-        //console.log(objs[0].value);
+    let sortDataPoints = function(objs) {
+
+        objs.sort(function(a, b) {
+                return a.value - b.value;
+            })
+            //console.log(objs[0].value);
         return objs;
     }
 
@@ -183,7 +185,7 @@ TestGraphView.prototype.precompile = function () {
 
     // let valueMin = sortedObjs[0].value;
     // let valueMax = sortedObjs[sortedObjs.length - 1].value;
-    
+
     //max
     let valueMin = Math.min(...values);
     let valueMax = Math.max(...values);
@@ -249,27 +251,28 @@ TestGraphView.prototype.precompile = function () {
         .data(this.jsonObj.data)
         .enter()
         .append("circle")
-        .attr("cx", function (d) {
+        .attr("cx", function(d) {
 
-            console.log("circle time"+d.recordx);
+            console.log("circle time" + d.recordx);
             // console.log(d.recordx);
             return xScale((d.recordx * 1000));
         })
-        .attr("cy", function (d) {
+        .attr("cy", function(d) {
             return yScale((d.value)).toFixed(4);
         })
         .attr("r", 1)
-        .attr("fill", function (d) {
+        .attr("fill", function(d) {
 
-            if (d.alertlevel < 0) {
+            if (d.alertlevel == 2) {
                 return "red";
-            } else if (d.alertlevel > 1) {
-                return "yellow";
-            } else {
+            } else if (d.alertlevel == 1) {
+                return "orange";
+            } else if (d.alertlevel == 0) {
                 return "green";
+            } else {
+                return "blue"
             }
-        }
-        )
+        })
 
     let dataArr = this.jsonObj.data;
     //console.log(dataArr);
@@ -278,18 +281,18 @@ TestGraphView.prototype.precompile = function () {
         .data(dataArr)
         .enter()
         .append("line")
-        .attr("x1", function (d) {
-             console.log("linetime"+d.recordx);
+        .attr("x1", function(d) {
+            console.log("linetime" + d.recordx);
             return xScale((d.recordx * 1000));
         })
-        .attr("y1", function (d) {
+        .attr("y1", function(d) {
             // console.log(d.recordx);
             return yScale((d.value)).toFixed(4);
         })
-        .attr("x2", function (d, i) {
+        .attr("x2", function(d, i) {
             // console.log(d.recordx);
             //  console.log(dataArr[i+1].recordx * 1000);
-            
+
             if (i < (dataArr.length - 1)) {
                 return xScale((dataArr[i + 1].recordx) * 1000);
             } else {
@@ -297,27 +300,28 @@ TestGraphView.prototype.precompile = function () {
             }
 
         })
-        .attr("y2", function (d, i) {
+        .attr("y2", function(d, i) {
             //console.log(i)
-            if (i < (dataArr.length - 1)) {         
-                return yScale((dataArr[i+1].value)).toFixed(4)
+            if (i < (dataArr.length - 1)) {
+                return yScale((dataArr[i + 1].value)).toFixed(4)
             } else {
                 return yScale((d.value)).toFixed(4);
             }
 
 
         })
-        .attr("stroke", function (d) {
+        .attr("stroke", function(d) {
 
-            if (d.alertlevel < 0) {
+            if (d.alertlevel == 2) {
                 return "red";
-            } else if (d.alertlevel > 1) {
-                return "yellow";
-            } else {
+            } else if (d.alertlevel == 1) {
+                return "orange";
+            } else if (d.alertlevel == 0) {
                 return "green";
+            } else {
+                return "blue"
             }
-        }
-        )  .attr("stroke-width",1)
+        }).attr("stroke-width", 1)
         .classed("dpline");
 
 
@@ -330,15 +334,3 @@ TestGraphView.prototype.precompile = function () {
     svg.append("text").attr("x", width - 180).attr("y", 10).text("Warning").style("font-size", "15px").attr("alignment-baseline", "middle")
     svg.append("text").attr("x", width - 280).attr("y", 10).text("Pass").style("font-size", "15px").attr("alignment-baseline", "middle")
 }
-
-
-
-
-
-
-
-
-
-
-
-

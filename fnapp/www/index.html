@@ -79,7 +79,6 @@
 
     <!-- Header -->
     <header id="topHeader" class="bar bar-nav">
-        Error Displaying Header
     </header>
 
     <!-- footer -->
@@ -137,14 +136,14 @@
             <li id="{{this.groupid}}" class="table-view-cell">
                 <div class="media-body">
                     <p>{{this.groupname}}</p>
-                    <p>Weight:{{this.weight}}</p>
+
                 </div>
                 <span class="{{groupStatusColour this.alerttext}}">        
                         {{this.alerttext}}
                     </span>
             </li>
             {{else}}
-            <h3>No groups on this node setup</h3>
+            <h3>No groups on this server</h3>
             {{/each}}
         </ul>
     </script>
@@ -165,7 +164,7 @@
                         </span>
             </li>
             {{else}}
-            <h3>No nodes on this server</h3>
+            <h3>No nodes in this group</h3>
             {{/each}}
         </ul>
         <ul class="table-view">
@@ -221,11 +220,11 @@
 
 
 
-    <!-- login form -->
+    <!-- add server/modify server -->
     <script id=serverConnDetailsTemplate type="text/template">
+        <!-- modify server-->
         {{#if url}}
         <form id="loginForm" class="input-group">
-
             <input id="fnurl" type="url" placeholder="" value="{{url}}">
             <input id="serverName" type="text" placeholder="" value="{{name}}">
             <input id="username" type="text" placeholder="" value="{{usr}}">
@@ -233,6 +232,10 @@
             <a id="submit" class="btn connect btn-positive btn-block">modify</a>
         </form>
 
+        <form id="deleteFrom" class="input-group">
+            <a id="delete" class="btn connect btn-negative btn-block">delete</a>
+        </form>
+        <!-- add server -->
         {{else}}
         <form id="loginForm" class="input-group">
             <input id="fnurl" type="url" placeholder="Enter a Freenats url" value="">
@@ -277,7 +280,7 @@
 
 
 
-
+    <!-- Alerts page -->
     <script id="alertsTemplate" type="text/template">
         <ul class="table-view">
             {{#each alerts}}
@@ -287,16 +290,13 @@
                     <p>{{this.nodeid}}</p>
                 </div>
                 <span class="{{alertStatusColour this.alertlevel}}">        
-                            {{this.alertlevel}}
+                    {{ alertStatus this.alertlevel}}
                         </span>
             </li>
             {{else}}
             <h3>No Alerts</h3>
             {{/each}}
-
-
         </ul>
-
     </script>
 
 
@@ -361,11 +361,12 @@
 
     </script>
 
+    <!-- Graph page -->
     <script id="graphTemplate" type="text/template">
         <ul class="table-view">
 
             <li class="table-view-cell">
-                <h4>{{this.nodeid}}/{{this.testid}}</h4>
+                <h6>{{this.nodeid}}/{{this.test.testname}}/{{this.test.testtype}}</h6>
             </li>
             <li class="table-view-cell" id="dateRow">
                 <form id="calendarForm" class="input-group datePickerForm">
@@ -386,6 +387,7 @@
 
     </script>
 
+    <!-- System variables page -->
     <script id="sysvarsTemplate" type="text/template">
         {{#each this}}
         <form action="">

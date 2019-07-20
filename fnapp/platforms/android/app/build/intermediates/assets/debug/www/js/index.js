@@ -95,6 +95,7 @@ var app = {
             console.log("SQL Transaction error creating settings table Message:" + error.message);
         });
 
+
         /**
          * Create initial nav bar for first starting up the application
          */

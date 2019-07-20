@@ -90,7 +90,7 @@ AlertBackgroundService.prototype.startService = function(freq) {
     this.persistServiceValues(1, freq);
     console.log("starting background mode every " + freq);
     cordova.plugins.backgroundMode.setEnabled(true);
-    timerInstance = app.alertService.startTimedQuery(freq);
+    this.timerInstance = app.alertService.startTimedQuery(freq);
     //do nothing if not 0
 }
 
