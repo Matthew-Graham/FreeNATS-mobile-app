@@ -56,14 +56,7 @@ PageRouter.prototype.routeToPage = function(routeObj) {
 
     if (route == "tests") {
         app.fnConnObj.query({ path1: "node", path2: route2 });
-        //TODO 
-        // $(".tab-item").on('click', function (event) {
-        //     let id = this.id;
-        //     event.stopPropagation();
-        //     event.stopImmediatePropagation();
-        //     console.log(id);
-        //     self.routeToPage(id);
-        // });
+
 
     } else if (route == "nodes") {
         app.fnConnObj.query({ path1: "nodes" });
@@ -75,6 +68,7 @@ PageRouter.prototype.routeToPage = function(routeObj) {
     } else if (route == "servers") {
         this.currPage = "servers";
         let servers = new FnServerView();
+        localStorage.clear();
 
     } else if (route == "settings") {
         this.currPage = "settings";

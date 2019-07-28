@@ -64,7 +64,6 @@ AlertBackgroundService.prototype.persistServiceValues = function(status, freq) {
 }
 
 
-
 /**
  * Stops the background mode
  * Persists the off status to the settings table and clears the time interval

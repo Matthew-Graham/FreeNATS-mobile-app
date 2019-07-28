@@ -6,7 +6,7 @@ function FnServerView() {
     //TODO check if server list unchanged
     this.serverList = [];
     this.fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
-
+    this.firstRun = 0;
     //calls compile internally and attach events as web sql asycnhronous
     this.getServers();
 }
@@ -39,6 +39,9 @@ FnServerView.prototype.attachEvents = function() {
         event.stopPropagation();
         event.stopImmediatePropagation();
         let serverUrl = this.id;
+        let serverName = $(this).children("div").children(".serverName").attr("id");
+
+        localStorage.setItem("servername", serverName);
         app.fnConnObj.currUrl = serverUrl;
         app.router.routeToPage({ path1: "nodes" });
     });
@@ -84,8 +87,17 @@ FnServerView.prototype.getServers = function() {
                 self.serverList.push(tmpServer);
             }
 
-            //list complete pass to compile 
-            self.compile(self.serverList);
+            //automatically go nodes page if only one server and just starting up the application
+            if (self.serverList.length == 1 && localStorage.getItem("startup") == "0") {
+                app.fnConnObj.currUrl = self.serverList[0].url;
+                localStorage.setItem("servername", self.serverList[0].name);
+                localStorage.setItem("startup", "1");
+                app.router.routeToPage({ path1: "nodes" });
+            } else {
+                //list complete pass to compile 
+                self.compile(self.serverList);
+            }
+
         }, null);
     }, function(error) {
         console.log("SQL Transaction error in serverlistview Message:" + error.message)

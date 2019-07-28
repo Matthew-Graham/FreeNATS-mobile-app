@@ -6,7 +6,7 @@ function AlertView(alertData) {
     this.alertData = alertData;
     this.createHelpers();
     this.compile();
-    //this.attachEvents();
+    this.attachEvents();
 }
 
 /**
@@ -59,13 +59,10 @@ AlertView.prototype.compile = function() {
 }
 
 
-//TODO 
-// AlertView.prototype.attachEvents = function () {
-//   $(".table-view-cell").on('click', function (event) {
-
-//     let pageid = "test";
-//     // pRouter = new PageRouter();   
-//     router.routeToPage({path1:pageid,path2:this.id});
-//     console.log(this.id);
-//   });
-// }
+AlertView.prototype.attachEvents = function() {
+    $(".table-view-cell").on('click', function(event) {
+        let pageid = "tests";
+        app.router.routeToPage({ path1: pageid, path2: this.id });
+        console.log(this.id);
+    });
+}

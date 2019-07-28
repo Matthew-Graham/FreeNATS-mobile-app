@@ -21,7 +21,7 @@ NodeListView.prototype.createHelpers = function() {
         } else if (status == "Warning") {
             return new Handlebars.SafeString("badge badge-primary");
         } else {
-            return new Handlebars.SafeString("status colour error");
+            return new Handlebars.SafeString("badge badge-outline");
         }
     });
 

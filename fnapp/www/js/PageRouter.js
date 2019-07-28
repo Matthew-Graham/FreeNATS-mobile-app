@@ -18,7 +18,7 @@ function PageRouter() {
     any new additional pages should be added to at least 1 of these arrays
     */
     this.initialUiLevel = ["servers", "serverLogin", "modifyServer", "settings"];
-    this.nestedUiLevel = ["tests", "nodes", "node", "alerts", "groups", "sysvarread", "group"];
+    this.nestedUiLevel = ["test", "tests", "nodes", "node", "alerts", "groups", "sysvarread", "group"];
 
 }
 
@@ -56,14 +56,7 @@ PageRouter.prototype.routeToPage = function(routeObj) {
 
     if (route == "tests") {
         app.fnConnObj.query({ path1: "node", path2: route2 });
-        //TODO 
-        // $(".tab-item").on('click', function (event) {
-        //     let id = this.id;
-        //     event.stopPropagation();
-        //     event.stopImmediatePropagation();
-        //     console.log(id);
-        //     self.routeToPage(id);
-        // });
+
 
     } else if (route == "nodes") {
         app.fnConnObj.query({ path1: "nodes" });

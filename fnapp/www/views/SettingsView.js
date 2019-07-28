@@ -4,6 +4,7 @@
 function SettingsView() {
     this.createHelpers();
 
+    app.alertService.getPersitentValues();
     //includes call to compile 
     this.prepareAlertSetting(app.alertService.status, app.alertService.freq)
     this.attachEvents();
@@ -48,20 +49,23 @@ SettingsView.prototype.prepareAlertSetting = function(value, freq) {
         console.log("disabled")
     }
 
+
+
     /**
-     * convert miliseconds to hours and mins
+     * slighlty modifed logic from
+     * 
+     * https://stackoverflow.com/questions/10874048/from-milliseconds-to-hour-minutes-seconds-and-milliseconds
      */
-    let hrs = 0;
-    if (freq > 3600000) {
-        hrs = (freq / 3600000);
-    }
+    let mins = Math.floor((freq / (1000 * 60)) % 60);
+    let hrs = Math.floor((freq / 3600000));
+
 
     /**
      * Object to be used with the settings template
      */
     let alertSetting = {
         alertStatus: value,
-        mins: (freq / 60000),
+        mins: mins,
         hours: hrs
     };
 
@@ -100,33 +104,67 @@ SettingsView.prototype.attachEvents = function() {
         event.stopImmediatePropagation();
         let id = this.id;
 
-
         let freqHours = $(this).siblings("#freqHours").val();
         let freqMinutes = $(this).siblings("#freqMins").val();
-        let freq = 0;
+        let freq = (freqMinutes * 60000) + (freqHours * 3600000);
 
-        /**To miliseconds from hours and minutes */
-        if (freqHours < "0" || freqMinutes < "0") {
-            freq = 3600000;
+        //both numeric and not a disable call
+        if (id != "disable" && $.isNumeric(freqHours) && $.isNumeric(freqMinutes)) {
+
+            //both zero dont start
+            if (freqHours <= 0 && freqMinutes <= 0) {
+                id = "invalid"
+
+                //hours negative dont start
+            } else if (freqHours < 0) {
+                id = "invalid"
+
+                //minutes negative dont start
+            } else if (freqMinutes < 0) {
+                id = "invalid";
+
+                //minutes more than 1 hour
+            } else if (freqMinutes > 60) {
+                id = "invalid";
+                alert("use the hour input for mins over 60")
+                    //hours to big 
+            } else if (freqHours >= 25) {
+                id = "invalid";
+
+                //valid
+            } else {
+                id = "enable"
+                    /**To miliseconds from hours and minutes */
+
+            }
+        } else if (id == "disable") {
+            //do nothing if only disabling
         } else {
-            freq = (freqMinutes * 60000) + (freqHours * 3600000);
+            id = "invalid";
+            alert("Enter 2 numbers")
         }
+
+
 
         /**Start service or end it and change button accordingly */
         if (id == "enable") {
             settings.alertStatus = "1";
             console.log(freq);
             app.alertService.startService(freq);
+            // app.router.routeToPage({ path1: "servers" });
             $(this).attr("id", "disable");
             $(this).html("disable");
             $(this).removeClass("btn-positive");
             $(this).addClass("btn-negative");
         } else if (id == "disable") {
             app.alertService.stopService();
+            // app.router.routeToPage({ path1: "servers" });
             $(this).attr("id", "enable");
             $(this).html("enable");
             $(this).removeClass("btn-negative");
             $(this).addClass("btn-positive");
+        } else {
+            alert("invalid input")
         }
     });
 }

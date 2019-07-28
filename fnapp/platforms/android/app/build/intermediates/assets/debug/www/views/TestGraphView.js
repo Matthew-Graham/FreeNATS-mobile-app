@@ -25,27 +25,46 @@ TestGraphView.prototype.compile = function() {
     $(".content-padded").html(graphHtml);
 
 
+
+
+
+    /*Date and time from query into date objects */
+    console.log(this.jsonObj.period.startx);
+    console.log(this.jsonObj.period.finishx);
+    let dt1 = new Date(this.jsonObj.period.startx * 1000);
+    let dt2 = new Date(this.jsonObj.period.finishx * 1000);
+    let dtNow = new Date();
+    console.log(dtNow);
     //**Calendar date pickers */
-    $("#date1").datepicker();
-    $("#date2").datepicker();
-
-
-    $("#date1").datepicker({
-        autoSize: true
-    });
-    $("#date2").datepicker({
-        autoSize: true
+    $("#date1").datetimepicker({
+        dateFormat: 'dd-mm-yy',
+        autoSize: true,
+        maxDate: dtNow
     });
 
-    $("#date1").datepicker("setDate", new Date(this.jsonObj.period.startx * 1000));
-    $("#date2").datepicker("setDate", new Date(this.jsonObj.period.finishx * 1000));
+    $("#date2").datetimepicker({
+        dateFormat: 'dd-mm-yy',
+        autoSize: true,
+        maxDate: dtNow
+    });
+
+    $("#date1").datetimepicker("setDate", dt1);
+    $("#date2").datetimepicker("setDate", dt2);
+
 }
 
+TestGraphView.prototype.validateDate = function(tempDate1, tempDate2) {
+
+    if (tempDate1 >= tempDate2) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 TestGraphView.prototype.attachEvents = function() {
 
     let self = this;
-
 
 
     $("#submitDates").on('click', function(event) {
@@ -53,15 +72,18 @@ TestGraphView.prototype.attachEvents = function() {
 
         let tempDate1 = $("#date1").datepicker("getDate");
         let tempDate2 = $("#date2").datepicker("getDate");
+        console.log(tempDate1);
+        console.log(tempDate2);
+        if (self.validateDate(tempDate1, tempDate2)) {
+            let dateObj1 = new Date(tempDate1);
+            let date1 = parseInt((dateObj1.getTime() / 1000).toFixed(0))
 
-        let dateObj1 = new Date(tempDate1);
-        let date1 = parseInt((dateObj1.getTime() / 1000).toFixed(0))
-
-        let dateObj2 = new Date(tempDate2);
-        let date2 = parseInt((dateObj2.getTime() / 1000).toFixed(0))
-
-
-        app.fnConnObj.query({ path1: "test", path2: self.jsonObj.testid, path3: "data", queryString1: date1, queryString2: date2 })
+            let dateObj2 = new Date(tempDate2);
+            let date2 = parseInt((dateObj2.getTime() / 1000).toFixed(0))
+            app.fnConnObj.query({ path1: "test", path2: self.jsonObj.testid, path3: "data", queryString1: date1, queryString2: date2 })
+        } else {
+            alert("invalid dates submitted");
+        }
     });
 
 
@@ -69,62 +91,13 @@ TestGraphView.prototype.attachEvents = function() {
 
 TestGraphView.prototype.precompile = function() {
 
-
-
-    // let svg = d3.select('.content-padded')
-    //          .append("svg")
-    //          .attr("width", 200)
-    //          .attr("height", 300)
-    //         .attr("style", "background-color:#d2ddef");
-
     let currObj = this;
     let container = $(".content-padded");
     //replace with container height
 
 
-    //test data
-    // let jsonObj = {
-    //     test: {
-    //         localtestid: "26",
-    //         nodeid: "test",
-    //         simpleeval: "1",
-    //         testname: "MySQL Connect",
-    //     },
-
-
-
-
-
-    //     period: {
-    //         startx: 1560330000,
-    //         finishx: 1560386962,
-    //     }
-    //     ,
-    //     data:
-    //         [
-    //             {
-    //                 recordx: "1560336361",
-    //                 recorddt: "10:46:01 12/06/2019",
-    //                 value: "0.300",
-    //                 alertlevel: "0"
-    //             },
-    //             {
-    //                 recordx: "1560336661",
-    //                 recorddt: "10:51:01 12/06/2019",
-    //                 value: "0.229",
-    //                 alertlevel: "0"
-    //             },
-    //             {
-    //                 recordx: "1560336962",
-    //                 recorddt: "10:56:02 12/06/2019",
-    //                 value: "0.235",
-    //                 alertlevel: "0"
-    //             },
-    //         ]
-    // }
 
     /*Dimensions for svg */
-
     let leftMargin = 40;
     let bottomMargin = 30;
     let rightMargin = 35;
@@ -158,7 +131,7 @@ TestGraphView.prototype.precompile = function() {
 
     this.jsonObj.data.forEach(element => {
         values.push(element.value);
-        console.log(element.value);
+        // console.log(element.value);
     });
 
     console.log(Math.max(...values));
@@ -250,7 +223,7 @@ TestGraphView.prototype.precompile = function() {
         .append("circle")
         .attr("cx", function(d) {
 
-            console.log("circle time" + d.recordx);
+            // console.log("circle time" + d.recordx);
             // console.log(d.recordx);
             return xScale((d.recordx * 1000));
         })
@@ -279,7 +252,7 @@ TestGraphView.prototype.precompile = function() {
         .enter()
         .append("line")
         .attr("x1", function(d) {
-            console.log("linetime" + d.recordx);
+            // console.log("linetime" + d.recordx);
             return xScale((d.recordx * 1000));
         })
         .attr("y1", function(d) {

@@ -63,7 +63,7 @@ FnConn.prototype.connect = function(url, name, pass, route) {
         } else if (xhr.status == "404") {
             alert("Freenats JSON API url not found" + "[" + xhr.statusText + "]");
         } else {
-            alert("Error [" + xhr.status + "]" + xhr.statusText);
+            alert("Could not connect [" + xhr.status + "]" + xhr.statusText);
         }
 
         //default to home page on failure to login
@@ -73,18 +73,16 @@ FnConn.prototype.connect = function(url, name, pass, route) {
 
 
 /**
+ * not in use
  * @param  {} routeObj
  */
 FnConn.prototype.sysVarsQry = function(routeObj) {
 
     let self = this;
-
     let sysvars = [{
-            name: "site.tester.suspended",
-            value: "",
-        },
-
-    ];
+        name: "site.tester.suspended",
+        value: "",
+    }, ];
 
     let index = 0;
     qry(sysvars, index);
@@ -95,7 +93,6 @@ FnConn.prototype.sysVarsQry = function(routeObj) {
      * @param {*} index 
      */
     function qry(sysvars, index) {
-
         if (index < sysvars.length) {
             apiRoute = self.currUrl + "/sysvar/" + sysvars[index].name;
             let jqxhr = $.get(apiRoute, {}, function(data) {
@@ -179,14 +176,11 @@ FnConn.prototype.backgroundQuery = function(index) {
                     })
                 } else {
 
-                    alert("yes");
-
-                    //possibly remove 
-                    cordova.plugins.notification.local.schedule({
-                        title: "0 Alerts",
-                        text: "No alerting nodes found",
-                        foreground: true
-                    })
+                    // cordova.plugins.notification.local.schedule({
+                    //     title: "0 Alerts",
+                    //     text: "No alerting nodes found",
+                    //     foreground: true
+                    // })
                 }
 
                 //if background 

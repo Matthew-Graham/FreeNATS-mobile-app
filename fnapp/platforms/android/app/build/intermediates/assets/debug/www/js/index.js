@@ -55,14 +55,14 @@ var app = {
         /**
          * Check they dont exist already
          */
-        fnDb.transaction(function(tx) {
+        // fnDb.transaction(function(tx) {
 
-            tx.executeSql('DROP TABLE servers');
-        });
-        fnDb.transaction(function(tx) {
+        //     tx.executeSql('DROP TABLE servers');
+        // });
+        // fnDb.transaction(function(tx) {
 
-            tx.executeSql('DROP TABLE settings');
-        });
+        //     tx.executeSql('DROP TABLE settings');
+        // });
 
 
         /**
@@ -73,12 +73,12 @@ var app = {
             tx.executeSql('CREATE TABLE IF NOT EXISTS servers (serverName unique,url,naun,napw,sid,skey)', [], function(tx) {
 
                 /**remove */
-                let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin", "-1", "-1"];
-                console.log(serverData);
-                tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);
+                // let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin", "-1", "-1"];
+                // console.log(serverData);
+                // tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);
                 router.currPage = "servers";
                 router.routeToPage({ path1: "servers" })
-
+                localStorage.setItem("startup", "0");
             });
         }, function(error) {
             console.log("SQL Transaction error creating server table Message:" + error.message);

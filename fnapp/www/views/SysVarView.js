@@ -31,7 +31,7 @@ SysVarView.prototype.attachEvents = function() {
 
         //MOVE 
         //post
-        let url = sessionStorage.getItem("url") + "/sysvar/" + name + "?fn_skey=" + sessionStorage.getItem("skey") + "&fn_sid=" + sessionStorage.getItem("sid");
+        let url = app.fnConnObj.currUrl + "/sysvar/" + name;
         let jqxhr = $.post(url, { value: sysvarid });
 
         jqxhr.done(function(data) {
