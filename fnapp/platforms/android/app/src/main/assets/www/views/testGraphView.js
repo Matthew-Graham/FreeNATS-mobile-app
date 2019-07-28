@@ -3,7 +3,7 @@
  * Object that handles logic and display of 
  * the  test graph view
  *
- * @param  {} jsonObj
+ * @param  {JSON} jsonObj
  */
 function TestGraphView(jsonObj) {
 

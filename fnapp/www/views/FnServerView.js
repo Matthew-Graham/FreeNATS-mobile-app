@@ -3,10 +3,10 @@
  */
 function FnServerView() {
 
-    //TODO check if server list unchanged
     this.serverList = [];
     this.fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
     this.firstRun = 0;
+
     //calls compile internally and attach events as web sql asycnhronous
     this.getServers();
 }

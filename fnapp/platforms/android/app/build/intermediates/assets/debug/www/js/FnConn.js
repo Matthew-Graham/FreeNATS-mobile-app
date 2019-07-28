@@ -14,7 +14,7 @@ function FnConn() {
  * @param  {string} url
  * @param  {string} name
  * @param  {string} pass
- * @param  {string} route for requerying some API path after success
+ * @param  {string} route route obj for requerying some API path after success
  */
 FnConn.prototype.connect = function(url, name, pass, route) {
     let loginUrl = url + "/login";

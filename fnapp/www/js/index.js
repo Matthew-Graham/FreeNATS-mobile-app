@@ -53,30 +53,12 @@ var app = {
         let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
         /**
-         * Check they dont exist already
-         */
-        // fnDb.transaction(function(tx) {
-
-        //     tx.executeSql('DROP TABLE servers');
-        // });
-
-        // fnDb.transaction(function(tx) {
-
-        //     tx.executeSql('DROP TABLE settings');
-        // });
-
-
-        /**
          * Create tables to store servers and settings
          */
         fnDb.transaction(function(tx) {
 
             tx.executeSql('CREATE TABLE IF NOT EXISTS servers (serverName unique,url,naun,napw)', [], function(tx) {
 
-                /**remove */
-                // let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin"];
-                // console.log(serverData);
-                // tx.executeSql('INSERT INTO servers (serverName,url,naun,napw) VALUES (?,?,?,?)', serverData);
                 router.currPage = "servers";
                 router.routeToPage({ path1: "servers" })
                 localStorage.setItem("startup", "0");

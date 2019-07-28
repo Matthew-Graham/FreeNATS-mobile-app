@@ -33,17 +33,6 @@ GroupView.prototype.compile = function(groupData) {
     let groupTemplate = Handlebars.compile($("#groupTemplate").html());
     let groupHtml = groupTemplate(groupData);
     $(".content-padded").html(groupHtml);
-
-    /**
-     * Nav bar 
-     */
-    //let nav =  new NavbarView();
-
-    /**Header */
-    // let headerTemplate = Handlebars.compile($("#headerTemplate").html());
-    // let context = { title: sessionStorage.getItem("serverName") };
-    // let headerHTML = headerTemplate(context);
-    // $("#topHeader").html(headerHTML);
 }
 
 /**

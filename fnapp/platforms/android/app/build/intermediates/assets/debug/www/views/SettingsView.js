@@ -4,7 +4,6 @@
 function SettingsView() {
     this.createHelpers();
 
-    // app.alertService.getPersitentValues();
     //includes call to compile 
     this.prepareAlertSetting(app.alertService.status, app.alertService.freq)
     this.attachEvents();
@@ -141,7 +140,7 @@ SettingsView.prototype.attachEvents = function() {
             //do nothing if only disabling
         } else {
             id = "invalid";
-            alert("Enter 2 numbers")
+            //alert("Enter 2 numbers")
         }
 
 
