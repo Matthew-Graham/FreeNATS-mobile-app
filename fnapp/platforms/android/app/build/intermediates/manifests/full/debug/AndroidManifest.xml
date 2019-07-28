@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.cordova.hellocordova"
+    package="com.github.MatthewGraham"
     android:hardwareAccelerated="true"
     android:versionCode="10000"
     android:versionName="1.0.0" >
@@ -50,7 +50,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true" >
         <activity
-            android:name="io.cordova.hellocordova.MainActivity"
+            android:name="com.github.MatthewGraham.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="@string/activity_name"
             android:launchMode="singleTop"
@@ -67,7 +67,7 @@
 
         <provider
             android:name="de.appplant.cordova.plugin.notification.util.AssetProvider"
-            android:authorities="io.cordova.hellocordova.localnotifications.provider"
+            android:authorities="com.github.MatthewGraham.localnotifications.provider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data

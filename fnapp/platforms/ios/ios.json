@@ -9,6 +9,10 @@
         "parents": {
           "/*": [
             {
+              "xml": "<feature name=\"Cookies\"><param name=\"ios-package\" value=\"CDVCookies\" /></feature>",
+              "count": 1
+            },
+            {
               "xml": "<feature name=\"Device\"><param name=\"ios-package\" value=\"CDVDevice\" /></feature>",
               "count": 1
             },
@@ -22,10 +26,6 @@
             },
             {
               "xml": "<feature name=\"LocalNotification\"><param name=\"ios-package\" onload=\"true\" value=\"APPLocalNotification\" /><param name=\"onload\" value=\"true\" /></feature>",
-              "count": 1
-            },
-            {
-              "xml": "<feature name=\"Cookies\"><param name=\"ios-package\" value=\"CDVCookies\" /></feature>",
               "count": 1
             }
           ]
@@ -44,7 +44,7 @@
     }
   },
   "installed_plugins": {
-    "cordova-plugin-whitelist": {
+    "com.bez4pieci.cookies": {
       "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     },
     "cordova-plugin-device": {
@@ -59,12 +59,20 @@
     "cordova-plugin-local-notification": {
       "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     },
-    "com.bez4pieci.cookies": {
+    "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     }
   },
   "dependent_plugins": {},
   "modules": [
+    {
+      "id": "com.bez4pieci.cookies.cookies",
+      "file": "plugins/com.bez4pieci.cookies/www/cookies.js",
+      "pluginId": "com.bez4pieci.cookies",
+      "clobbers": [
+        "cookies"
+      ]
+    },
     {
       "id": "cordova-plugin-device.device",
       "file": "plugins/cordova-plugin-device/www/device.js",
@@ -97,22 +105,14 @@
       "clobbers": [
         "cordova.plugins.notification.local"
       ]
-    },
-    {
-      "id": "com.bez4pieci.cookies.cookies",
-      "file": "plugins/com.bez4pieci.cookies/www/cookies.js",
-      "pluginId": "com.bez4pieci.cookies",
-      "clobbers": [
-        "cookies"
-      ]
     }
   ],
   "plugin_metadata": {
-    "cordova-plugin-whitelist": "1.3.3",
+    "com.bez4pieci.cookies": "0.0.1",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-background-mode": "0.7.2",
     "cordova-plugin-badge": "0.8.8",
     "cordova-plugin-local-notification": "0.9.3",
-    "com.bez4pieci.cookies": "0.0.1"
+    "cordova-plugin-whitelist": "1.3.3"
   }
 }

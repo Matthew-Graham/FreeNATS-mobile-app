@@ -1,6 +1,14 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
   module.exports = [
     {
+      "id": "com.bez4pieci.cookies.cookies",
+      "file": "plugins/com.bez4pieci.cookies/www/cookies.js",
+      "pluginId": "com.bez4pieci.cookies",
+      "clobbers": [
+        "cookies"
+      ]
+    },
+    {
       "id": "cordova-plugin-device.device",
       "file": "plugins/cordova-plugin-device/www/device.js",
       "pluginId": "cordova-plugin-device",
@@ -32,22 +40,14 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "cordova.plugins.notification.local"
       ]
-    },
-    {
-      "id": "com.bez4pieci.cookies.cookies",
-      "file": "plugins/com.bez4pieci.cookies/www/cookies.js",
-      "pluginId": "com.bez4pieci.cookies",
-      "clobbers": [
-        "cookies"
-      ]
     }
   ];
   module.exports.metadata = {
-    "cordova-plugin-whitelist": "1.3.3",
+    "com.bez4pieci.cookies": "0.0.1",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-background-mode": "0.7.2",
     "cordova-plugin-badge": "0.8.8",
     "cordova-plugin-local-notification": "0.9.3",
-    "com.bez4pieci.cookies": "0.0.1"
+    "cordova-plugin-whitelist": "1.3.3"
   };
 });
