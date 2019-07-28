@@ -37,7 +37,22 @@ AlertBackgroundService.prototype.getPersitentValues = function() {
             self.freq = freq;
 
             if (value == "1") {
-                app.alertService.startService(freq);
+
+                if (freq != "undefined") {
+
+                    if (freq > 0 && freq > 59000) {
+                        app.alertService.startService(freq);
+                    } else {
+                        alert("frequency below a minute cant start service")
+                    }
+
+                } else {
+                    self.status = "0";
+                    self.freq = 1000000;
+                    this.persistServiceValues("0", 1000000)
+                    alert("Could read saved freqency, please start the query")
+                }
+
             }
             console.log("alerting:" + value);
         }, null);
@@ -68,8 +83,8 @@ AlertBackgroundService.prototype.persistServiceValues = function(status, freq) {
  * Stops the background mode
  * Persists the off status to the settings table and clears the time interval
  */
-AlertBackgroundService.prototype.stopService = function() {
-    this.persistServiceValues(0);
+AlertBackgroundService.prototype.stopService = async function() {
+    this.persistServiceValues(0, 3600000);
     this.status = 0;
     console.log("stopping background service");
     cordova.plugins.backgroundMode.setEnabled(false);

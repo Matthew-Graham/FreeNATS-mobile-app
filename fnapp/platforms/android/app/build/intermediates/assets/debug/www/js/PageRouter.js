@@ -18,7 +18,7 @@ function PageRouter() {
     any new additional pages should be added to at least 1 of these arrays
     */
     this.initialUiLevel = ["servers", "serverLogin", "modifyServer", "settings"];
-    this.nestedUiLevel = ["tests", "nodes", "node", "alerts", "groups", "sysvarread", "group"];
+    this.nestedUiLevel = ["test", "tests", "nodes", "node", "alerts", "groups", "sysvarread", "group"];
 
 }
 

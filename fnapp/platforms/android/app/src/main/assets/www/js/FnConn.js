@@ -118,6 +118,8 @@ FnConn.prototype.sysVarsQry = function(routeObj) {
  * @param  {int} index current index of array of servers
  */
 FnConn.prototype.backgroundQuery = function(index) {
+
+    alert("querying");
     let self = this;
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
     let rowIndex = index;
@@ -127,15 +129,12 @@ FnConn.prototype.backgroundQuery = function(index) {
         tx.executeSql('SELECT * FROM servers', [], function(tx, results) {
 
             console.log("query server");
-            console.log(results.rows.item(rowIndex).url);
-            console.log(results.rows.item(rowIndex).skey);
-            console.log(results.rows.item(rowIndex).sid);
+
             let apiRoute = results.rows.item(rowIndex).url + "/alerts";
-            console.log(apiRoute);
+            // console.log(apiRoute);
+            //self.connect(results.rows.item(rowIndex).url,results.rows.item(rowIndex).naun,results.rows.item(rowIndex).napw,{path1:"alerts"});
 
-            let jqxhr = $.get(apiRoute, { fn_skey: results.rows.item(rowIndex).skey, fn_sid: results.rows.item(rowIndex).sid }, function(data) {
-
-
+            let jqxhr = $.get(apiRoute, {}, function(data) {
                 console.log("SESSION details correct");
                 console.log(data);
                 // alert(data);
@@ -189,7 +188,8 @@ FnConn.prototype.backgroundQuery = function(index) {
             jqxhr.fail(function(error) {
                 //alert(error);
                 //connect with new session details from connect
-                app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, "alertbackground");
+                self.clearCookies();
+                app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, { path1: "alertbackground" });
 
                 console.log("SESSION INACTIVE in background");
             });

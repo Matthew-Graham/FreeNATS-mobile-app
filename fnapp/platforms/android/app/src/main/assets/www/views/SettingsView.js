@@ -4,7 +4,7 @@
 function SettingsView() {
     this.createHelpers();
 
-    app.alertService.getPersitentValues();
+    // app.alertService.getPersitentValues();
     //includes call to compile 
     this.prepareAlertSetting(app.alertService.status, app.alertService.freq)
     this.attachEvents();

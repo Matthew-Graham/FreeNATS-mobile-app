@@ -59,6 +59,7 @@ var app = {
 
         //     tx.executeSql('DROP TABLE servers');
         // });
+
         // fnDb.transaction(function(tx) {
 
         //     tx.executeSql('DROP TABLE settings');
@@ -70,12 +71,12 @@ var app = {
          */
         fnDb.transaction(function(tx) {
 
-            tx.executeSql('CREATE TABLE IF NOT EXISTS servers (serverName unique,url,naun,napw,sid,skey)', [], function(tx) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS servers (serverName unique,url,naun,napw)', [], function(tx) {
 
                 /**remove */
-                // let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin", "-1", "-1"];
+                // let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin"];
                 // console.log(serverData);
-                // tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);
+                // tx.executeSql('INSERT INTO servers (serverName,url,naun,napw) VALUES (?,?,?,?)', serverData);
                 router.currPage = "servers";
                 router.routeToPage({ path1: "servers" })
                 localStorage.setItem("startup", "0");

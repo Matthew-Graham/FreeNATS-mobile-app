@@ -1,3 +1,7 @@
+/**
+ * Handles the logic and display of the test list page
+ * @param  {JSON} testListData - contain array of tests for a certain node
+ */
 function TestListView(testListData) {
     this.testListData = testListData;
     this.createHelpers();
@@ -5,6 +9,10 @@ function TestListView(testListData) {
     this.attachEvents();
 }
 
+/**
+ * Create handle bar helper to change
+ *  css class of badge depending on alert status
+ */
 TestListView.prototype.createHelpers = function() {
 
     Handlebars.registerHelper('testStatusColour', function(status) {
@@ -23,13 +31,18 @@ TestListView.prototype.createHelpers = function() {
 
 }
 
+/**
+ * Compile test list HTML with test list JSON data and append it to the DOM.
+ */
 TestListView.prototype.compile = function() {
-
     let testListTemplate = Handlebars.compile($("#testListTemplate").html());
     let testListHtml = testListTemplate(this.testListData);
     $(".content-padded").html(testListHtml);
 }
 
+/**
+ * Attach navigation to test data page event
+ */
 TestListView.prototype.attachEvents = function() {
     $(".table-view-cell").on('click', function(event) {
         let pageid = "test";

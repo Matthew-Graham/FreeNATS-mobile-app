@@ -31,8 +31,7 @@
         -->
 
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"/> -->
-    <!-- <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -117,9 +116,7 @@
                     <p>{{this.name}} ({{this.testtype}})</p>
                     <p>@{{this.lastrundt}}</p>
                 </div>
-                <span class="{{testStatusColour this.alerttext}}">        
-                            {{this.alerttext}}
-                        </span>
+                <span class="{{testStatusColour this.alerttext}}">{{this.alerttext}}</span>
             </li>
             {{else}}
             <h3>No tests on this node setup</h3>
@@ -261,9 +258,9 @@
 
                     <form id="loginForm" class="input-group">
                         <label for="">Hours</label>
-                        <input id="freqHours" type="text" placeholder="{{this.hours}}" class="freq" value="{{this.hours}}">
+                        <input id="freqHours" type="text" placeholder="{{this.hours}} max 24" class="freq" type="number" value="{{this.hours}}">
                         <label for="">Minutes</label>
-                        <input id="freqMins" type="text" placeholder="{{this.mins}}" class="freq" value="{{this.mins}}">
+                        <input id="freqMins" type="text" placeholder="{{this.mins}} max 59" class="freq" type="number" value="{{this.mins}}">
                         <a id="{{alertQuery this.alertStatus}}" class="btn submit {{settingColour this.alertStatus}} btn-block">{{alertQuery this.alertStatus}}</a>
                     </form>
                 </div>
@@ -295,7 +292,7 @@
                     <p>{{this.nodeid}}</p>
                 </div>
                 <span class="{{alertStatusColour this.alertlevel}}">        
-                    {{ alertStatus this.alertlevel}}
+                    {{alertStatus this.alertlevel}}
                         </span>
             </li>
             {{else}}
@@ -307,7 +304,7 @@
 
     <!-- navigation bar pre login -->
     <script id="navBar1Template" type="text/template">
-        <a id="servers" class="tab-item active" href="#servers">
+        <a id="servers" class="tab-item" href="#servers">
             <span class="icon icon-home"></span>
             <span class="tab-label">Servers</span>
         </a>
@@ -316,6 +313,7 @@
             <span class="tab-label">Add a Server</span>
         </a>
         <a id="settings" class="tab-item" href="#">
+
             <span class="icon icon-gear"></span>
             <span class="tab-label">Settings</span>
         </a>

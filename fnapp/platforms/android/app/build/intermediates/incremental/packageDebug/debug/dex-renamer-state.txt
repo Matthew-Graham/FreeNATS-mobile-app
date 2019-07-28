@@ -1,4 +1,4 @@
-#Thu Jul 25 17:05:30 BST 2019
+#Sun Jul 28 11:03:32 BST 2019
 base.0=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex

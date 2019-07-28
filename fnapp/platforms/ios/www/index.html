@@ -31,27 +31,37 @@
         -->
 
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"/> -->
-    <!-- <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
 
+    <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/ratchet.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/home.css">
+    <link rel="stylesheet" type="text/css" href="css/iconfont/material-icons.css">
+    <link rel="stylesheet" type="text/css" href="js/lib/jquery-ui-1.12.1.custom/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="css/timepicker.css">
 
-    <!-- <link rel="stylesheet" type="text/css" href="css/ratchet-theme-android.css">  -->
+    <!-- JS libraries and cordova js -->
+    <script type="text/javascript" src="js/lib/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="js/lib/handlebars.js"></script>
+    <script type="text/javascript" src="js/lib/d3.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/lib/jqueryui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
 
-    <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
-    <script type="text/javascript" src="js/handlebars.js"></script>
-    <!-- <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script> -->
-    <script type="text/javascript" src="js/d3.min.js"></script>
-   <script type="text/javascript" src="https://d3js.org/d3-axis.v1.min.js"></script>
-    <script type="text/javascript" src="https://d3js.org/d3-time.v1.min.js"></script> 
+    <!-- App JS -->
+    <script type="text/javascript" src="views/SysVarView.js"></script>
+    <script type="text/javascript" src="js/AlertBackgroundService.js"></script>
+    <script type="text/javascript" src="views/SettingsView.js"></script>
     <script type="text/javascript" src="views/NavbarView.js"></script>
     <script type="text/javascript" src="views/NodeListView.js"></script>
+    <script type="text/javascript" src="views/AlertView.js"></script>
+    <script type="text/javascript" src="views/GroupView.js"></script>
+    <script type="text/javascript" src="views/GroupListView.js"></script>
     <script type="text/javascript" src="views/TestListView.js"></script>
     <script type="text/javascript" src="views/TestGraphView.js"></script>
     <script type="text/javascript" src="views/ServerDetailsView.js"></script>
@@ -60,10 +70,6 @@
     <script type="text/javascript" src="js/PageRouter.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
 
-
-
-    <!--     
-    <script type="text/javascript" src="cordova.js"></script> -->
 
     <title>Freenats Mobile App</title>
 
@@ -74,22 +80,17 @@
 
     <!-- Header -->
     <header id="topHeader" class="bar bar-nav">
-        Error Displaying Header
     </header>
 
-
-
     <!-- footer -->
-    <nav class="bar bar-tab">
+    <nav id="footer" class="bar bar-tab">
 
     </nav>
 
     <!-- content -->
     <div class="content">
         <div class="content-padded">
-            <a href="#" class="float">
-                <i class="fa fa-plus my-float"></i>
-            </a>
+
         </div>
     </div>
 
@@ -99,156 +100,315 @@
 
     <!-- Page Title-->
     <script id="headerTemplate" type="text/template">
-           <h2>{{title}}</h2>            
+        <header id="" class="bar bar-nav">
+            <h1>{{title}}</h1>
+        </header>
     </script>
 
     <!-- test page -->
     <script id="testListTemplate" type="text/template">
+        <h4 class="pagetitle">Tests for {{this.nodeid}} </h4>
+
         <ul class="table-view">
-            {{#each tests}}        
-            <li id ="{{url}}" class="table-view-cell">
-                    <div class="media-body">               
-                           <p>{{this.name}} ({{this.testtype}})</p>   
-                           <p>@{{this.lastrundt}}</p>                       
-                       </div>    
-                      <span class ="{{testStatusColour this.alerttext}}">        
-                            {{this.alerttext}}
-                        </span>  
+            {{#each tests}}
+            <li id="{{this.testid}}" class="table-view-cell">
+                <div class="media-body">
+                    <p>{{this.name}} ({{this.testtype}})</p>
+                    <p>@{{this.lastrundt}}</p>
+                </div>
+                <span class="{{testStatusColour this.alerttext}}">{{this.alerttext}}</span>
             </li>
-            {{else}} <h3>No tests on this node setup</h3>
-         {{/each}}
+            {{else}}
+            <h3>No tests on this node setup</h3>
+            {{/each}}
+        </ul>
+
+    </script>
+
+
+
+    <!-- List of groups template -->
+    <script id="groupListTemplate" type="text/template">
+        <h4 class="pagetitle">Groups</h4>
+        <ul class="table-view">
+            {{#each groups}}
+            <li id="{{this.groupid}}" class="table-view-cell">
+                <div class="media-body">
+                    <p>{{this.groupname}}</p>
+
+                </div>
+                <span class="{{groupStatusColour this.alerttext}}">        
+                        {{this.alerttext}}
+                    </span>
+            </li>
+            {{else}}
+            <h3>No groups on this server</h3>
+            {{/each}}
         </ul>
     </script>
 
 
-    <!-- Home/Freenats servers -->
+    <!-- Group template -->
+    <script id="groupTemplate" type="text/template">
+
+        <h4 class="pagetitle">{{this.group.groupname}}</h4>
+        <ul class="table-view">
+            {{#each this.group.nodes}}
+            <li id="{{this.nodeid}}" class="table-view-cell">
+                <div class="media-body">
+                    <p>{{this.nodeid}}</p>
+                </div>
+                <span class="{{statusColour this.alerttext}}">        
+                            {{this.alerttext}}
+                        </span>
+            </li>
+            {{else}}
+            <h3>No nodes in this group</h3>
+            {{/each}}
+        </ul>
+        <ul class="table-view">
+    </script>
+
+
+    <!-- Home/Freenats servers list-->
     <script id="homeTemplate" type="text/template">
         <ul class="table-view">
-        {{#each servers}}        
-            <li id ="{{url}}" value="{{name}}" class="table-view-cell media">      
-                <button id = "" class="btn btn-primary btn-outlined icon icon-gear editServer">         
+            {{#each this}}
+            <li id="{{url}}" value="{{name}}" class="table-view-cell media">
+                <button id="" class="btn btn-primary btn-outlined icon icon-gear editServer">         
                 </button>
-                  <div class="media-body">
-                        <b class = "serverName" id ="{{name}}">{{name}}</b>
-                    </div>
-             </li>
-            {{else}} <h3>No servers added</h3>
-         {{/each}}
+                <div class="media-body">
+                    <b class="serverName" id="{{name}}">{{name}}</b>
+                </div>
+            </li>
+            {{else}}
+            <h3>No servers added</h3>
+            {{/each}}
         </ul>
-       </script>
+    </script>
 
     <!-- Nodes -->
     <script id="nodesTemplate" type="text/template">
-    <ul class="table-view">
-        {{#each nodes}}        
-        <li id = "{{this.nodeid}}" class="table-view-cell">
+        <h4 class="pagetitle">Nodes</h4>
+        <ul class="table-view">
+            {{#each nodes}}
+            <li id="{{this.nodeid}}" class="table-view-cell">
                 <div class="media-body">
-                         <p>{{this.nodeid}}</p>
-                         <p>{{this.hostname}}</p>
-                        <p>@{{this.lastrundt}}</p>      
-                    </div>                  
-                    <span class ="{{statusColour this.alerttext}}">        
+                    <p>{{this.nodeid}}</p>
+                    <p>{{this.hostname}}</p>
+                    <p>@{{this.lastrundt}}</p>
+
+                </div>
+                </div>
+                <span class="{{statusColour this.alerttext}}">        
                             {{this.alerttext}}
-                        </span>  
-                    
-        </li>
-        {{else}} <h3>No nodes on this server</h3>
-     {{/each}}      
-      </ul> 
-    <ul class="table-view"> 
-   </script>
+                    </span>
 
-    <script id="alertsTemplate" type="text/template">
-    <ul class="table-view">
-            <li class="table-view-cell"> <h2>Alerts</h2>
-                
-            </li>      
-      </ul>
-     
-    <ul class="table-view">
-    <!-- {{#each servers}}        
-        <li class="table-view-cell">{{name}} 
-                <button class ="btn btn-primary edit"   >Edit</button>
-        </li>
-        {{else}} <h3>No servers added</h3>
-     {{/each}} -->
-    </ul>
+            </li>
+            <li class="table-view-divider">
+                <button id="{{this.nodeid}}" value="{{nodeEnabled this.nodeenabled}}" class="btn {{nodeEnabledColour this.nodeenabled}}  nodebutton">    
+                    {{nodeEnabled this.nodeenabled}}
+            </button>
+            </li>
+            {{else}}
+            <h3>No nodes on this server</h3>
+            {{/each}}
+        </ul>
+        <ul class="table-view">
+    </script>
 
 
-    <!-- floating button for adding servers -->
-     <!-- <a href="#addserver" class="float">
-            <i class="fa fa-plus my-float"></i>
-    </a> -->
-   </script>
 
 
-    <!-- login form -->
+    <!-- add server/modify server -->
     <script id=serverConnDetailsTemplate type="text/template">
-       {{#if url}}
-       <form id ="loginForm"  class="input-group">
-        
-                <input id = "fnurl" type="url" placeholder="" value = "{{url}}">    
-                <input id = "serverName" type="text" placeholder="" value = "{{name}}">
-                <input id = "username" type="text" placeholder="" value = "{{usr}}">
-                <input id="password" type="password" placeholder="" value ="{{pass}}"> 
-            <a id = "submit" class="btn connect btn-positive btn-block">modify</a>
+        <!-- modify server-->
+        {{#if url}}
+        <form id="loginForm" class="input-group">
+            <input id="fnurl" type="url" placeholder="" value="{{url}}">
+            <input id="serverName" type="text" placeholder="" value="{{name}}">
+            <input id="username" type="text" placeholder="" value="{{usr}}">
+            <input id="password" type="password" placeholder="" value="{{pass}}">
+            <a id="submit" class="btn connect btn-positive btn-block">modify</a>
         </form>
-        
+
+        <form id="deleteFrom" class="input-group">
+            <a id="delete" class="btn connect btn-negative btn-block">delete</a>
+        </form>
+        <!-- add server -->
         {{else}}
-        <form id ="loginForm"  class="input-group">
-        <input id = "fnurl" type="url" placeholder="Enter a Freenats url" value = "">
-        <input id = "serverName" type="text" placeholder="Name your server" value = "">
-        <input id = "username" type="text" placeholder="Enter your username" value = "">
-        <input id="password" type="password" placeholder="Enter your password" value ="">
-        <div></div>
-        <a id = "submit" class="btn connect btn-positive btn-block">add</a>
+        <form id="loginForm" class="input-group">
+            <input id="fnurl" type="url" placeholder="http://example.co.uk/jsonapi.php" value="">
+            <input id="serverName" type="text" placeholder="Name your server" value="">
+            <input id="username" type="text" placeholder="Enter your username" value="">
+            <input id="password" type="password" placeholder="Enter your password" value="">
+            <div></div>
+            <a id="submit" class="btn connect btn-positive btn-block">add</a>
         </form>
         {{/if}}
+    </script>
+
+    <!-- Settings -->
+    <script id="settingsTemplate" type="text/template">
+        <h4 class="pagetitle">App alert monitoring</h4>
+        <ul class="table-view">
+
+            <li id="" class="table-view-cell">
+                <div class="media-body">
+
+                    <form id="loginForm" class="input-group">
+                        <label for="">Hours</label>
+                        <input id="freqHours" type="text" placeholder="{{this.hours}} max 24" class="freq" type="number" value="{{this.hours}}">
+                        <label for="">Minutes</label>
+                        <input id="freqMins" type="text" placeholder="{{this.mins}} max 59" class="freq" type="number" value="{{this.mins}}">
+                        <a id="{{alertQuery this.alertStatus}}" class="btn submit {{settingColour this.alertStatus}} btn-block">{{alertQuery this.alertStatus}}</a>
+                    </form>
+                </div>
+                <!-- <button id = "" value ="" class="btn ">    
+                        
+                    </button> -->
+
+            </li>
+            <li class="table-view-divider">
+
+            </li>
+
+        </ul>
+
+    </script>
+
+
+
+
+
+    <!-- Alerts page -->
+    <script id="alertsTemplate" type="text/template">
+        <h4 class="pagetitle">Alerts</h4>
+        <ul class="table-view">
+            {{#each alerts}}
+            <li id="{{this.nodeid}}" class="table-view-cell">
+
+                <div class="media-body">
+                    <p>{{this.nodeid}}</p>
+                </div>
+                <span class="{{alertStatusColour this.alertlevel}}">        
+                    {{alertStatus this.alertlevel}}
+                        </span>
+            </li>
+            {{else}}
+            <h3>No Alerts</h3>
+            {{/each}}
+        </ul>
     </script>
 
 
     <!-- navigation bar pre login -->
     <script id="navBar1Template" type="text/template">
-            <a id = "servers" class="tab-item active" href="#servers">
-                <span class="icon icon-home"></span>
-                <span class="tab-label">Servers</span>
-            </a>
-            <a id = "modifyServer" class="tab-item" href="#">
-                <span class="icon icon-plus"></span>
-                <span class="tab-label">Add a Server</span>
-            </a>
+        <a id="servers" class="tab-item" href="#servers">
+            <span class="icon icon-home"></span>
+            <span class="tab-label">Servers</span>
+        </a>
+        <a id="modifyServer" class="tab-item" href="#">
+            <span class="icon icon-plus"></span>
+            <span class="tab-label">Add a Server</span>
+        </a>
+        <a id="settings" class="tab-item" href="#">
+
+            <span class="icon icon-gear"></span>
+            <span class="tab-label">Settings</span>
+        </a>
     </script>
 
 
     <!-- navigation bar post login -->
     <script id="navBarTemplate" type="text/template">
 
-        <a id = "servers" class="tab-item active" href="#servers">
+        <a id="servers" class="tab-item" href="#servers">
             <span class="icon icon-home"></span>
             <span class="tab-label">Servers</span>
         </a>
-        <a  id = "nodes"class="tab-item" href="#nodes">
-            <span class="icon icon-person"></span>
+
+        <a id="nodes" class="tab-item" href="#nodes">
+            <!-- <span class="icon icon-person"></span> -->
+            <span class="icon">
+                  <i class="material-icons">dns</i>
+             </span>
             <span class="tab-label">Nodes</span>
         </a>
-        <a id = "test" class="tab-item" href="#tests">
-            <span class="icon icon-star-filled"></span>
+
+        <a id="groups" class="tab-item" href="#groups">
+            <span class="icon">
+                <i class="material-icons">dns</i>      
+           </span>
+            <span class="icon">
+            <i class="material-icons">dns</i>
+       </span>
             <span class="tab-label">Groups</span>
         </a>
-        <a id = "alerts" class="tab-item" href="#">
-            <span class="icon icon-search"></span>
+
+        <a id="alerts" class="tab-item" href="#">
+
+            <span class="icon">
+                   <i class="material-icons">
+                notifications_none
+                </i>
+           </span>
+
+
             <span class="tab-label">Alerts</span>
         </a>
-        <a id = "settings" class="tab-item" href="#">
+        <a id="sysvarread" class="tab-item" href="#">
             <span class="icon icon-gear"></span>
-            <span class="tab-label">settings</span>
+            <span class="tab-label">System Variables</span>
         </a>
-  
+
     </script>
 
-    <script id ="graphTemplate" type = "text/template">
-      
+    <!-- Graph page -->
+    <script id="graphTemplate" type="text/template">
+        <h4 class="pagetitle">Test Data </h4>
+        <ul class="table-view">
+
+            <li class="table-view-cell">
+                <h6>{{this.nodeid}}/{{this.test.testname}}/{{this.test.testtype}}</h6>
+            </li>
+            <li class="table-view-cell" id="dateRow">
+                <form id="calendarForm" class="input-group datePickerForm">
+                    <div class="input-row" id="dateInputRow1">
+                        <label id="dateLbl1" for="date1">From</label>
+                        <input class="datePickerCtrl" type="text" name="date1" id="date1" readonly="readonly">
+                    </div>
+
+                    <div class="input-row" id="dateInputRow2">
+                        <label id="dateLbl2" for="date2">To</label>
+                        <input class="datePickerCtrl" type="text" name="date2" id="date2" readonly="readonly">
+                    </div>
+                </form>
+                <a id="submitDates" class="btn connect btn-positive">Query</a>
+            </li>
+
+        </ul>
+
     </script>
+
+    <!-- System variables page -->
+    <script id="sysvarsTemplate" type="text/template">
+        <h4 class="pagetitle">System Variables</h4>
+        {{#each this}}
+        <form action="">
+            <label id={{name}} class="labelsysvar" style="display:block;">{{name}}</label>
+            <input id="input {{name}}" class="inputsysvar" value="{{value}}" type="text" placeholder="{{value}}">
+            <a class="modifySysVar btn connect btn-positive">Modify</a> {{/each}}
+        </form>
+    </script>
+
+
+
+
+
+
+
+
 
 </body>
 

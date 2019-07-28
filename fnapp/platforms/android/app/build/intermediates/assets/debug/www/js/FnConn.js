@@ -5,8 +5,6 @@
 function FnConn() {
     let fnDb = "-1";
     let currUrl = "-1";
-    let validSession = false;
-
 }
 
 
@@ -17,7 +15,7 @@ function FnConn() {
  * @param  {string} url
  * @param  {string} name
  * @param  {string} pass
- * @param  {string} route
+ * @param  {string} route for requerying some API path after success
  */
 FnConn.prototype.connect = function(url, name, pass, route) {
     let loginUrl = url + "/login";
@@ -44,10 +42,10 @@ FnConn.prototype.connect = function(url, name, pass, route) {
         /**
          * original query is run again.
          */
-        if (route == "alertbackground") {
+        if (route.path1 == "alertbackground") {
             app.fnConnObj.backgroundQuery(app.alertService.currServerIndex);
         } else {
-            self.query({ path1: route });
+            self.query(route);
         }
     });
 
@@ -113,15 +111,15 @@ FnConn.prototype.sysVarsQry = function(routeObj) {
             let sysVarViewObj = new SysVarView(sysvars);
         }
     }
-
-
 }
 
 /**
  * 
- * @param  {} index
+ * @param  {int} index current index of array of servers
  */
 FnConn.prototype.backgroundQuery = function(index) {
+
+    alert("querying");
     let self = this;
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
     let rowIndex = index;
@@ -131,15 +129,12 @@ FnConn.prototype.backgroundQuery = function(index) {
         tx.executeSql('SELECT * FROM servers', [], function(tx, results) {
 
             console.log("query server");
-            console.log(results.rows.item(rowIndex).url);
-            console.log(results.rows.item(rowIndex).skey);
-            console.log(results.rows.item(rowIndex).sid);
+
             let apiRoute = results.rows.item(rowIndex).url + "/alerts";
-            console.log(apiRoute);
+            // console.log(apiRoute);
+            //self.connect(results.rows.item(rowIndex).url,results.rows.item(rowIndex).naun,results.rows.item(rowIndex).napw,{path1:"alerts"});
 
-            let jqxhr = $.get(apiRoute, { fn_skey: results.rows.item(rowIndex).skey, fn_sid: results.rows.item(rowIndex).sid }, function(data) {
-
-
+            let jqxhr = $.get(apiRoute, {}, function(data) {
                 console.log("SESSION details correct");
                 console.log(data);
                 // alert(data);
@@ -193,9 +188,10 @@ FnConn.prototype.backgroundQuery = function(index) {
             jqxhr.fail(function(error) {
                 //alert(error);
                 //connect with new session details from connect
-                app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, "alertbackground");
+                self.clearCookies();
+                app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, { path1: "alertbackground" });
 
-                console.log("SESSION INACTIVE in bckground");
+                console.log("SESSION INACTIVE in background");
             });
 
 
@@ -211,7 +207,16 @@ FnConn.prototype.backgroundQuery = function(index) {
 
 
 
+/**
+ * Contains the logic for determining a route based on the route obj 
+ * and querying the API for data 
+ * for displaying certain pages based on a  route 
+ * and for calling connect if session info fails
+ * @param  {Object} routeObj contains path information for determining api route
+ */
 FnConn.prototype.query = function(routeObj) {
+
+    let self = this;
 
     let route = routeObj.path1;
     let id = routeObj.path2;
@@ -224,20 +229,14 @@ FnConn.prototype.query = function(routeObj) {
     console.log(id);
     console.log(path3);
 
-    //check session var/session storage var
-    //doesnt exist populate sid from db
-    //does exist query test 
-    //fail - login retrive username and pass from server
-
-    //valid session 
-    //route to requested page through data router 
-    //choose nav bar 
-
-
+    /**
+     * Returns a complete url with API path based on supplied paths in the route obj
+     * @param  {Object} routeObj contains path information for determining api route
+     */
     function determineCompleteUrl(routeObj) {
 
         let apiRoute;
-        let route = routeObj.path1;
+
         let id = routeObj.path2;
         let path3 = routeObj.path3;
 
@@ -276,57 +275,44 @@ FnConn.prototype.query = function(routeObj) {
         return apiRoute;
     }
 
+
     apiRoute = determineCompleteUrl(routeObj);
     console.log("Querying api route -> " + apiRoute);
 
+
     let jqxhr = $.post(apiRoute, {}, function(data) {
-        dataDependentRouter(data);
-        console.log("SESSION ACTIVE");
+        console.log("cookie SESSION ACTIVE");
+        dataDependentRouter(data, routeObj);
+
     }, "json");
 
 
     jqxhr.fail(function(error) {
 
-            let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+        let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
-            fnDb.transaction(function(tx) {
+        fnDb.transaction(function(tx) {
 
-                //session var doesnt exist , create from server db
-                tx.executeSql('SELECT * FROM servers WHERE url = ?', [app.fnConnObj.currUrl], function(tx, results) {
-                    console.log("Query Failed - Retreiving new session data");
+            tx.executeSql('SELECT * FROM servers WHERE url = ?', [app.fnConnObj.currUrl], function(tx, results) {
+                console.log("Query Failed with cookies- Retreiving and using saved login info  ");
 
-                    //grab recent session details from db 
-                    //change to query
-                    app.fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, routeObj.path1);
+                app.fnConnObj.connect(results.rows.item(0).url, results.rows.item(0).naun, results.rows.item(0).napw, routeObj);
 
-                });
-            }, function(tx, error) {
-                console.log("no such server")
             });
+        }, function(tx, error) {
+            console.log("no such server")
+        });
+    })
 
-
-
-            //query fails beacuase session invalid - relog
-
-            //login
-            console.log(error);
-            console.log(sessionStorage.getItem("skey"));
-            console.log(sessionStorage.getItem("sid"));
-            console.log("SESSION INACTIVE in ddr");
-        })
-        //TODO add error code  for routes
-
-    dataDependentRouter = function(data) {
+    //TODO add error code  for routes
+    /**
+     * Create a certain view depending on the route specified 
+     * @param  {JSON} data
+     */
+    dataDependentRouter = function(data, routeObj) {
+        let route = routeObj.path1;
         console.log("Current page " + app.router.currPage);
         console.log("Data Dependent Route to " + route);
-        //if remaining in nested ui level
-        if (app.router.nestedUiLevel.includes(app.router.currPage)) {
-
-            //if go to nested from initial 
-        } else if (app.router.initialUiLevel.includes(app.router.currPage)) {
-            console.log("create level 2 nav ");
-            let nav = new NavbarView(2);
-        }
 
         switch (route) {
             case 'nodes':
@@ -408,9 +394,8 @@ FnConn.prototype.clearCookies = function() {
         document.cookie = key[0] + " =; expires = Thu, 01 Jan 1970 00:00:00 UTC";
     }
 
-    // alert("removing cookies");
+
     window.cookies.clear(function() {
-        // alert("cookies cleared")
         console.log('Cookies cleared!');
     });
 

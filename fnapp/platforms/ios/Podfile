@@ -2,7 +2,7 @@
 
 platform :ios, '9.0'
 
-target 'C:\Users\Matt\fnapp\platforms\ios\HelloCordova' do
-	project 'C:\Users\Matt\fnapp\platforms\ios\HelloCordova.xcodeproj'
+target 'C:\Users\Matt\Documents\GitHub\FreeNATS-mobile-app\fnapp\platforms\ios\FreeNats mobile' do
+	project 'C:\Users\Matt\Documents\GitHub\FreeNATS-mobile-app\fnapp\platforms\ios\FreeNats mobile.xcodeproj'
 
 end
