@@ -38,17 +38,21 @@ PageRouter.prototype.routeToPage = function(routeObj) {
 
     //if route is an initial ui level and currpage is an initial ui level keep  nav bar   
     if (this.initialUiLevel.includes(this.requestedPage) && this.initialUiLevel.includes(this.currPage)) {
-        console.log("keeping level 1 nav ");
+        console.log("keeping initial nav bar ");
 
         //If route is initial ui level and current page is a nested ui level create new initial nav  
     } else if (this.initialUiLevel.includes(this.requestedPage) && this.nestedUiLevel.includes(this.currPage)) {
-        console.log("create level 1 nav ");
+        console.log("creating intial nav bar");
         let nav1 = new NavbarView(1);
 
         //If route is nested and current page is initial create new new nested nav bar
     } else if (this.initialUiLevel.includes(this.currPage) && this.nestedUiLevel.includes(this.requestedPage)) {
+        console.log("creating nested nav bar");
         let nav = new NavbarView(2);
 
+    } else if (this.nestedUiLevel.includes(this.currPage) && this.nestedUiLevel.includes(this.requestedPage)) {
+        //keep level 2
+        console.log("keeping nested nav bar")
     } else {
         console.log("Error determining what navigation bar to display")
     }

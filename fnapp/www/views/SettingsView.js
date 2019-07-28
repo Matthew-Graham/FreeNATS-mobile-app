@@ -4,7 +4,6 @@
 function SettingsView() {
     this.createHelpers();
 
-    // app.alertService.getPersitentValues();
     //includes call to compile 
     this.prepareAlertSetting(app.alertService.status, app.alertService.freq)
     this.attachEvents();
@@ -36,7 +35,7 @@ SettingsView.prototype.createHelpers = function() {
 
 
 /**
- * Creates a object for use with the handlebars compiler
+ * Creates a  JSON object for use with the handlebars compiler
  * contains the current status 
  * and converts the frequency into hours and mins 
  * @param  {int} value - status of the alert setting
@@ -44,9 +43,9 @@ SettingsView.prototype.createHelpers = function() {
  */
 SettingsView.prototype.prepareAlertSetting = function(value, freq) {
     if (value == "1") {
-        console.log("enabled")
+        console.log("Alerting enabled")
     } else {
-        console.log("disabled")
+        console.log("Alerting disabled")
     }
 
 
@@ -141,7 +140,7 @@ SettingsView.prototype.attachEvents = function() {
             //do nothing if only disabling
         } else {
             id = "invalid";
-            alert("Enter 2 numbers")
+            //alert("Enter 2 numbers")
         }
 
 

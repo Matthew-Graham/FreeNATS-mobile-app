@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Jul 28 11:07:34 BST 2019
+#Sun Jul 28 11:20:08 BST 2019
 60.set=ASSET
 52.set=ASSET
 53.base=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\assets\\release

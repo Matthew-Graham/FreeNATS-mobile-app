@@ -92,7 +92,7 @@ ServerDetailsView.prototype.persistNewServer = function(serverName, url, usr, pa
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     fnDb.transaction(function(tx) {
-        tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', [serverName, url, usr, pass, "-1", "-1"], function(tx, results) {
+        tx.executeSql('INSERT INTO servers (serverName,url,naun,napw) VALUES (?,?,?,?)', [serverName, url, usr, pass], function(tx, results) {
             app.router.routeToPage({ path1: "servers" });
         }, null);
     }, function(error) {
@@ -114,7 +114,7 @@ ServerDetailsView.prototype.persistUpdatedServer = function(oldUrl, serverName, 
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
 
     fnDb.transaction(function(tx) {
-        tx.executeSql('UPDATE servers SET serverName = ?,url = ?,naun = ?, napw = ?, sid = -1 , skey=-1 WHERE url = ?', [serverName, url, usr, pass, oldUrl], function(tx, result) {
+        tx.executeSql('UPDATE servers SET serverName = ?,url = ?,naun = ?, napw = ? WHERE url = ?', [serverName, url, usr, pass, oldUrl], function(tx, result) {
 
             //clear cookies as new login details 
             app.fnConnObj.clearCookies();
@@ -176,6 +176,7 @@ ServerDetailsView.prototype.attachEvents = function() {
             let validSubmission = self.validateInput(serverName, url, usr, pass);
 
             if (validSubmission) {
+                alert("Modifying Server");
                 self.persistUpdatedServer(self.oldUrl, serverName, url, usr, pass);
             }
         }

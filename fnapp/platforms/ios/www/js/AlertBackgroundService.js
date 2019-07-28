@@ -22,7 +22,7 @@ function AlertBackgroundService() {
 
 
 /**
- * Retrieves the previous state of the service 
+ * Retrieves the previous state of the service when the app is restarted
  * and restarts the service or leaves it off 
  */
 AlertBackgroundService.prototype.getPersitentValues = function() {
@@ -54,7 +54,7 @@ AlertBackgroundService.prototype.getPersitentValues = function() {
                 }
 
             }
-            console.log("alerting:" + value);
+
         }, null);
     });
 }

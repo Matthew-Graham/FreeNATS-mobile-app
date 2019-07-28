@@ -2,10 +2,9 @@
 <widget id="com.github.MatthewGraham" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>FreeNats mobile</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        A mobile app that can connect to FreeNATS API's
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="Matthew Graham" href="mggraham94@gmail.com">
     </author>
     <content src="index.html" />
     <access origin="*" />
@@ -23,8 +22,8 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="cordova-plugin-whitelist" spec="1" />
-    <plugin name="cordova-plugin-background-mode" spec="~0.7.2" />
-    <plugin name="cordova-plugin-local-notification" spec="~0.9.3">
+    <plugin name="cordova-plugin-background-mode" spec="git+https://github.com/tushe/cordova-plugin-background-mode.git" />
+    <plugin name="cordova-plugin-local-notification" spec="git+https://github.com/Steffaan/cordova-plugin-local-notifications.git">
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="26.+" />
     </plugin>
     <plugin name="com.bez4pieci.cookies" spec="~0.0.1" />

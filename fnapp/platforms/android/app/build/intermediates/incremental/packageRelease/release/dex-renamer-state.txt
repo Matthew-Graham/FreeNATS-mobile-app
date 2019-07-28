@@ -1,4 +1,4 @@
-#Sun Jul 28 11:07:34 BST 2019
+#Sun Jul 28 11:20:08 BST 2019
 base.0=C\:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp\\platforms\\android\\app\\build\\intermediates\\transforms\\dex\\release\\0
 path.0=classes.dex
 renamed.0=classes.dex

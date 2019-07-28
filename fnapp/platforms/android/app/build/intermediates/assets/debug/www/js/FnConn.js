@@ -3,7 +3,6 @@
  * Stores info on the current url being used
  */
 function FnConn() {
-    let fnDb = "-1";
     let currUrl = "-1";
 }
 
@@ -36,8 +35,8 @@ FnConn.prototype.connect = function(url, name, pass, route) {
      * Successful login
      */
     jqxhr.done(function(data) {
-        console.log("successful login");
-        //cookies should be set by response
+        console.log("successful login, cookies updated");
+        //cookies should be set automotically by ajax 
 
         /**
          * original query is run again.
@@ -71,8 +70,10 @@ FnConn.prototype.connect = function(url, name, pass, route) {
 
 
 /**
- * not in use
- * @param  {} routeObj
+ * Recursively queries different system variable paths 
+ * resulting in a list of system variables and values.
+ * currently only 1 system variable available via api. 
+ * @param  {Object} routeObj
  */
 FnConn.prototype.sysVarsQry = function(routeObj) {
 
@@ -87,27 +88,28 @@ FnConn.prototype.sysVarsQry = function(routeObj) {
 
     /**
      * 
+     * recursively query through the sysyvars array
      * @param {Array} sysvars 
-     * @param {*} index 
+     * @param {int} index 
      */
     function qry(sysvars, index) {
         if (index < sysvars.length) {
             apiRoute = self.currUrl + "/sysvar/" + sysvars[index].name;
             let jqxhr = $.get(apiRoute, {}, function(data) {
-                console.log(data.error);
+
                 sysvars[index].value = data.value;
                 console.log("SESSION ACTIVE");
-                console.log(data);
+
                 index = index + 1;
                 qry(sysvars, index);
             }, "json");
 
             jqxhr.fail(function(error) {
+                app.router.routeToPage({ path1: "servers" })
                 console.log("SESSION INACTIVE");
             })
         } else {
             //end create new sys var lists
-            console.table(sysvars);
             let sysVarViewObj = new SysVarView(sysvars);
         }
     }
@@ -115,11 +117,12 @@ FnConn.prototype.sysVarsQry = function(routeObj) {
 
 /**
  * 
+ * Recursively queries the alert path of an arrray of servers 
+ * using the current index 
  * @param  {int} index current index of array of servers
  */
 FnConn.prototype.backgroundQuery = function(index) {
 
-    alert("querying");
     let self = this;
     let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
     let rowIndex = index;
@@ -128,26 +131,17 @@ FnConn.prototype.backgroundQuery = function(index) {
     fnDb.transaction(function(tx) {
         tx.executeSql('SELECT * FROM servers', [], function(tx, results) {
 
-            console.log("query server");
-
+            console.log("querying server for alert");
             let apiRoute = results.rows.item(rowIndex).url + "/alerts";
-            // console.log(apiRoute);
-            //self.connect(results.rows.item(rowIndex).url,results.rows.item(rowIndex).naun,results.rows.item(rowIndex).napw,{path1:"alerts"});
-
             let jqxhr = $.get(apiRoute, {}, function(data) {
                 console.log("SESSION details correct");
                 console.log(data);
-                // alert(data);
+
 
                 //notification data
                 let count = data.alertcount;
                 let alertText = "";
                 console.log("alerts" + data.alerts);
-
-                // data.alerts = [{
-                //   nodeid:"vpn",
-                //   alertlevel:"1"
-                // }]
 
                 if (data.alerts != false) {
                     data.alerts.forEach(element => {
@@ -170,42 +164,24 @@ FnConn.prototype.backgroundQuery = function(index) {
                         foreground: true
                     })
                 } else {
-
-                    // cordova.plugins.notification.local.schedule({
-                    //     title: "0 Alerts",
-                    //     text: "No alerting nodes found",
-                    //     foreground: true
-                    // })
+                    //no alerts do nothing
                 }
 
-                //if background 
+                //if another server to be queried
                 if (rowIndex < results.rows.length - 1) {
                     rowIndex++;
                     self.backgroundQuery(rowIndex);
                 }
             }, "json");
 
+            /**cookies fail so use login info */
             jqxhr.fail(function(error) {
-                //alert(error);
-                //connect with new session details from connect
                 self.clearCookies();
                 app.fnConnObj.connect(results.rows.item(rowIndex).url, results.rows.item(rowIndex).naun, results.rows.item(rowIndex).napw, { path1: "alertbackground" });
-
-                console.log("SESSION INACTIVE in background");
             });
-
-
-
-
         }, null);
-
     });
-
 }
-
-
-
-
 
 /**
  * Contains the logic for determining a route based on the route obj 
@@ -216,18 +192,15 @@ FnConn.prototype.backgroundQuery = function(index) {
  */
 FnConn.prototype.query = function(routeObj) {
 
-    let self = this;
+    //let self = this;
 
-    let route = routeObj.path1;
-    let id = routeObj.path2;
-    let path3 = routeObj.path3;
-    let data = routeObj.data;
+    // let route = routeObj.path1;
+    // let id = routeObj.path2;
+    // let path3 = routeObj.path3;
+    // let data = routeObj.data;
     let apiRoute;
     routeObj.url = this.currUrl;
 
-    console.log("routes here " + route);
-    console.log(id);
-    console.log(path3);
 
     /**
      * Returns a complete url with API path based on supplied paths in the route obj
@@ -236,7 +209,7 @@ FnConn.prototype.query = function(routeObj) {
     function determineCompleteUrl(routeObj) {
 
         let apiRoute;
-
+        let route = routeObj.path1
         let id = routeObj.path2;
         let path3 = routeObj.path3;
 
@@ -281,7 +254,7 @@ FnConn.prototype.query = function(routeObj) {
 
 
     let jqxhr = $.post(apiRoute, {}, function(data) {
-        console.log("cookie SESSION ACTIVE");
+        console.log("Session still active via cookies");
         dataDependentRouter(data, routeObj);
 
     }, "json");
@@ -304,26 +277,19 @@ FnConn.prototype.query = function(routeObj) {
         });
     })
 
-    //TODO add error code  for routes
     /**
      * Create a certain view depending on the route specified 
      * @param  {JSON} data
      */
     dataDependentRouter = function(data, routeObj) {
         let route = routeObj.path1;
-        console.log("Current page " + app.router.currPage);
-        console.log("Data Dependent Route to " + route);
 
         switch (route) {
             case 'nodes':
                 app.router.currPage = "nodes";
-                console.log(app.router.currPage + " is curr page");
-                //new node view passing in node data
                 let nodeListViewObj = new NodeListView(data);
-
                 break;
 
-                //move css updating to view class
             case 'node':
                 let nodeId = routeObj.path2;
                 if (routeObj.path3 == "disable") {
@@ -332,7 +298,7 @@ FnConn.prototype.query = function(routeObj) {
                     $("button[id='" + nodeId + "']").removeClass("btn-positive");
                     $("button[id='" + nodeId + "']").addClass("btn-negative");
 
-                    //alert
+
                 } else if (routeObj.path3 == "enable") {
                     $("button[id='" + nodeId + "']").val("enabled");
                     $("button[id='" + nodeId + "']").html("enabled");
@@ -341,14 +307,12 @@ FnConn.prototype.query = function(routeObj) {
 
                 } else {
                     app.router.currPage = "node";
-                    //console.log(data);
                     let testListViewObj = new TestListView(data);
                 }
-
                 break;
             case 'test':
                 app.router.currPage = "test"
-                console.log(data);
+
                 let testGraphViewobj = new TestGraphView(data);
                 break;
 
@@ -356,21 +320,21 @@ FnConn.prototype.query = function(routeObj) {
                 app.router.currPage = "alerts"
 
                 let alertViewObj = new AlertView(data);
-                console.log(data);
+
                 break;
             case 'groups':
                 app.router.currPage = "groups";
-                console.log(data);
+
                 let groupListViewObj = new GroupListView(data);
                 break;
             case 'group':
                 app.router.currPage = "group";
-                console.log(data);
+
                 let groupViewObj = new GroupView(data);
                 break;
             case 'sysvarread':
                 app.router.currPage = "sysvarread";
-                console.log(data);
+
                 break;
             case 'sysvar':
                 app.router.currPage = "sysvar";
@@ -379,7 +343,6 @@ FnConn.prototype.query = function(routeObj) {
 
         }
     }
-
 }
 
 /**
@@ -395,8 +358,12 @@ FnConn.prototype.clearCookies = function() {
     }
 
 
+    /**
+     * Just in case clear cookies attempt above fails 
+     * use this function belonging to cookies plugin via cordova
+     */
     window.cookies.clear(function() {
-        console.log('Cookies cleared!');
+        console.log('Clearing cookies');
     });
 
 

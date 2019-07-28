@@ -36,7 +36,7 @@ SettingsView.prototype.createHelpers = function() {
 
 
 /**
- * Creates a object for use with the handlebars compiler
+ * Creates a  JSON object for use with the handlebars compiler
  * contains the current status 
  * and converts the frequency into hours and mins 
  * @param  {int} value - status of the alert setting
@@ -44,9 +44,9 @@ SettingsView.prototype.createHelpers = function() {
  */
 SettingsView.prototype.prepareAlertSetting = function(value, freq) {
     if (value == "1") {
-        console.log("enabled")
+        console.log("Alerting enabled")
     } else {
-        console.log("disabled")
+        console.log("Alerting disabled")
     }
 
 

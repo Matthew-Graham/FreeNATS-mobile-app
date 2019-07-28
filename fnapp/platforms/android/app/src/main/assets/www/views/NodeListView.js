@@ -77,10 +77,10 @@ NodeListView.prototype.attachEvents = function() {
 
         if ($(this).attr("value") == "enabled") {
             app.fnConnObj.query({ path1: "node", path2: nodeid, path3: "disable" })
-            console.log("disable")
+            console.log("disabling node")
         } else {
             app.fnConnObj.query({ path1: "node", path2: nodeid, path3: "enable" })
-            console.log("enable")
+            console.log("enable node")
         }
     });
 }

@@ -64,6 +64,5 @@ AlertView.prototype.compile = function() {
 AlertView.prototype.attachEvents = function() {
     $(".table-view-cell").on('click', function(event) {
         app.router.routeToPage({ path1: "tests", path2: this.id });
-        console.log(this.id);
     });
 }
