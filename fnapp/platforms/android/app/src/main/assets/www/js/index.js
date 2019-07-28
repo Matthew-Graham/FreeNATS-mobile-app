@@ -97,7 +97,11 @@ var app = {
      * Create the alert service
      */
     initializeAlertService: function() {
+        cordova.plugins.backgroundMode.on('activate', function() {
+            cordova.plugins.backgroundMode.disableWebViewOptimizations();
+        });
         this.alertService = new AlertBackgroundService();
+
     }
 
 };

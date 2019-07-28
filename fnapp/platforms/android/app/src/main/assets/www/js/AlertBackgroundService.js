@@ -109,6 +109,10 @@ AlertBackgroundService.prototype.startService = function(freq) {
 }
 
 
+
+
+
+
 /**
  * Creates a timer using the set interval function with the passed 
  * in frequency and return a reference to the timer. Each iteration of the timer
