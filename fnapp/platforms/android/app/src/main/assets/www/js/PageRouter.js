@@ -1,137 +1,99 @@
-
 /**
  * 
- * 
+ * Object that handles routing to another page
+ * maintains state of curr page and next page 
+ * defaults to the servers page
  */
 function PageRouter() {
     self = this;
-    currPage = "-1";
+    currPage = "servers";
+
+    //previous page not in use -- potential feature using back button on devices
     previousPage = "-1";
-}
-
-/**
- * controls displaying of content
- * @param {id of page to route} route 
- */
-PageRouter.prototype.routeToPage = function (route, route2, data) {
-
-    //TODO remove server login after moving the function
-    //TODO possible add conditionals to arrays - 1st level 2nd level allowing easy adding of new pages 
-
-    console.log("ROUTING TO ---"+route)
-    console.log("CURRENT PAGE--- "+this.currPage)
-
+    requestedPage = "servers";
 
     /*
     arrays representing what nav bar is displayed depending on the current
     page and the page a user wants to go to 
     any new additional pages should be added to at least 1 of these arrays
     */
-    let initialUiLevel = ["servers", "serverLogin","modifyServer"];
-    let nestedUiLevel =["tests","nodes","node","alerts","groups"];
-   
-    /*if route is an initial ui level and currpage is an initial ui level keep 
-    nav bar
-    */
-    if (initialUiLevel.includes(route) && initialUiLevel.includes(this.currPage)) {
-        console.log("keeping level 1 nav ");
-    /*
-    If route is initial ui level and current page is a nested ui level create new initial nav
-    */
-    }else if(initialUiLevel.includes(route)&&nestedUiLevel.includes(this.currPage)){
-        console.log("create level 1 nav ");    
-        let nav1 = new NavbarView(1);
-    }else{
-        console.log("create level 2 nav ");  
-        let nav = new NavbarView(2);
-    }
+    this.initialUiLevel = ["servers", "serverLogin", "modifyServer", "settings"];
+    this.nestedUiLevel = ["test", "tests", "nodes", "node", "alerts", "groups", "sysvarread", "group"];
 
+}
+
+/**
+ * controls displaying of content
+ * @param {id of page to route} route 
+ */
+PageRouter.prototype.routeToPage = function(routeObj) {
+    this.requestedPage = routeObj.path1;
+    let route = routeObj.path1;
+    let route2 = routeObj.path2;
+
+    //TODO remove server login after moving the function
+    console.log("CURRENT PAGE--- " + this.currPage);
+    console.log("ROUTING TO ---" + route);
+
+
+    //if route is an initial ui level and currpage is an initial ui level keep  nav bar   
+    if (this.initialUiLevel.includes(this.requestedPage) && this.initialUiLevel.includes(this.currPage)) {
+        console.log("keeping initial nav bar ");
+
+        //If route is initial ui level and current page is a nested ui level create new initial nav  
+    } else if (this.initialUiLevel.includes(this.requestedPage) && this.nestedUiLevel.includes(this.currPage)) {
+        console.log("creating intial nav bar");
+        let nav1 = new NavbarView(1);
+
+        //If route is nested and current page is initial create new new nested nav bar
+    } else if (this.initialUiLevel.includes(this.currPage) && this.nestedUiLevel.includes(this.requestedPage)) {
+        console.log("creating nested nav bar");
+        let nav = new NavbarView(2);
+
+    } else if (this.nestedUiLevel.includes(this.currPage) && this.nestedUiLevel.includes(this.requestedPage)) {
+        //keep level 2
+        console.log("keeping nested nav bar")
+    } else {
+        console.log("Error determining what navigation bar to display")
+    }
 
 
     if (route == "tests") {
-        f1 = new FnConn();
-        f1.query("node", route2);
+        app.fnConnObj.query({ path1: "node", path2: route2 });
 
-        $(".tab-item").on('click', function (event) {
-            let id = this.id;
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            console.log(id);
-            self.routeToPage(id);
-        });
 
     } else if (route == "nodes") {
-        
-        console.log("Node page here " + this.currPage);
-        f1 = new FnConn();
-        f1.query("nodes");
-
+        app.fnConnObj.query({ path1: "nodes" });
         this.currPage = "nodes";
-        // $(".tab-item").on('click', function (event) {
-        //     let id = this.id;
-
-        //     if(id=="nodes"){
-        //         console.log("on nodes");
-        //     }else{
-        //         event.stopPropagation();
-        //         event.stopImmediatePropagation();
-        //         console.log("here"+id);
-        //         self.routeToPage(id);
-        //     }
-
-        // });
 
     } else if (route == "alerts") {
-        this.currPage = "alerts";
-        let alertsTemplate = Handlebars.compile($("#alertsTemplate").html());
-        let context = { name: "home", };
-        let alertsHTML = alertsTemplate(context);
-        $(".content-padded").html(alertsHTML);
+        app.fnConnObj.query({ path1: route })
 
     } else if (route == "servers") {
-        this.currPage = "servers";     
-        // $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
-        //if unchanged server list  use previous  if not gen new one 
+        this.currPage = "servers";
         let servers = new FnServerView();
+        localStorage.clear();
 
-    } else if (route == "serverLogin") {
-        this.currPage = "serverLogin";
-        let name;
-        let sid;
-        let skey;
-        let url;
+    } else if (route == "settings") {
+        this.currPage = "settings";
+        let settings = new SettingsView();
 
-        for (let server of data.servers) {
-
-            console.log(server.url);
-            console.log(route2);
-
-            if (server.url === route2) {
-                url = server.url;
-                name = server.name;
-                sid = server.sid;
-                console.log(sid);
-                skey = server.skey;
-            }
-        }
-
-        FnConnObj = new FnConn();
-        FnConnObj.initializeSession(url, sid, skey);
-
-        // $(".bar.bar-tab").html(Handlebars.compile($("#navBarTemplate").html()));
-        //if unchanged server list  use previous  if not gen new one 
-
-
-        sessionStorage.setItem("url", url);
-        sessionStorage.setItem("serverName", name);
-
-        /**
-         * Set Entry point page when connecting to a server
-         */
-        //this.routeToPage("nodes");
     } else if (route == "modifyServer") {
-       let test = new ServerDetailsView(1);
+        let test = new ServerDetailsView(1);
+    } else if (route == "test") {
+        app.fnConnObj.query({ path1: route, path2: route2, path3: "data" });
+
+    } else if (route == "groups") {
+        app.fnConnObj.query({ path1: route });
+
+    } else if (route == "group") {
+        app.fnConnObj.query({ path1: route, path2: route2 });
+
+    } else if (route == "sysvarread") {
+        app.fnConnObj.sysVarsQry({ path1: route });
+
+    } else {
+        let servers = new FnServerView();
+        alert("ROUTING ERROR. The route " + route + " doesnt not exist");
     }
 }
-
-

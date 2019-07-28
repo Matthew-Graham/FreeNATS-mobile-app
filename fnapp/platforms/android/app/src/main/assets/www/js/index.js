@@ -17,144 +17,107 @@
  * under the License.
  */
 
-
-
-
+/**
+ * Highest level object wrapping all functionality
+ */
 var app = {
 
-  router:new PageRouter(),
+    //default empty objects
+    router: {},
+    fnConnObj: {},
+    alertService: {},
+    // Application Constructor
+    initialize: function() {
+        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
 
-  // Application Constructor
-  initialize: function () {
-     router = this.router;
+    },
 
-    //create db for FNserver passes
-    let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+    // deviceready Event Handler
+    // Bind any cordova events here. Common events are:
+    // 'pause', 'resume', etc.
+    onDeviceReady: function() {
 
-    /**Test */
-    fnDb.transaction(function (tx) {
-      tx.executeSql('DROP TABLE servers');
-    });
+        this.receivedEvent('deviceready');
+        app.router = new PageRouter();
+        app.fnConnObj = new FnConn();
+        app.startup();
+        app.initializeAlertService();
+    },
 
-    //test
-    // let test = new FnConn();
-    // test.connect();
+    startup: function() {
 
-    fnDb.transaction(function (tx) {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS servers (serverName unique,url,naun,napw,sid,skey)',[], function (tx) {
-        
-        let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin", "-1", "-1"];
-        console.log(serverData);
-        tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);   
-        
-        router.currPage = "servers";
-        router.routeToPage("servers");
-      });
-    }, function (error) {
-      console.log("SQL Transaction error creating server table Message:" + error.message);
-    });
+        let fnConnObj = app.fnConnObj;
+        let router = app.router;
 
+        //create db for FNserver passes
+        let fnDb = openDatabase('fndb', '1.0', 'FnAppDb', 2 * 1024 * 1024);
+
+        /**
+         * Check they dont exist already
+         */
+        // fnDb.transaction(function(tx) {
+
+        //     tx.executeSql('DROP TABLE servers');
+        // });
+
+        // fnDb.transaction(function(tx) {
+
+        //     tx.executeSql('DROP TABLE settings');
+        // });
+
+
+        /**
+         * Create tables to store servers and settings
+         */
+        fnDb.transaction(function(tx) {
+
+            tx.executeSql('CREATE TABLE IF NOT EXISTS servers (serverName unique,url,naun,napw)', [], function(tx) {
+
+                /**remove */
+                // let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin"];
+                // console.log(serverData);
+                // tx.executeSql('INSERT INTO servers (serverName,url,naun,napw) VALUES (?,?,?,?)', serverData);
+                router.currPage = "servers";
+                router.routeToPage({ path1: "servers" })
+                localStorage.setItem("startup", "0");
+            });
+        }, function(error) {
+            console.log("SQL Transaction error creating server table Message:" + error.message);
+        });
+
+
+        fnDb.transaction(function(tx) {
+
+            tx.executeSql('CREATE TABLE IF NOT EXISTS settings (name unique,value,freq)', [], function(tx) {
+
+                tx.executeSql('INSERT INTO settings (name,value,freq) VALUES (?,?,?)', ["alerting", "0", "3600000"]);
+            });
+        }, function(error) {
+            console.log("SQL Transaction error creating settings table Message:" + error.message);
+        });
+
+
+        /**
+         * Create initial nav bar for first starting up the application
+         */
+        $(document).ready(function() {
+            navViewObj = new NavbarView(1);
+        });
+    },
+
+    // Update DOM on a Received Event
+    receivedEvent: function(id) {
+
+
+    },
 
     /**
-     * Test data saved server
+     * Create the alert service
      */
-    // fnDb.transaction(function (tx) {
-    //   let serverData = ["Server 1", "http://natsapi.altair.davecutting.uk/jsonapi.php", "admin", "admin", "-1", "-1"];
-    //   console.log(serverData);
-    //   tx.executeSql('INSERT INTO servers (serverName,url,naun,napw,sid,skey) VALUES (?,?,?,?,?,?)', serverData);
+    initializeAlertService: function() {
+        this.alertService = new AlertBackgroundService();
+    }
 
-    // });
-
-
-    /**
-     * Test data for connection
-     */
-
-
- 
-
-    $(document).ready(function () {
-
-      //Compile nav bar view  
-      $(".bar.bar-tab").html(Handlebars.compile($("#navBar1Template").html()));
-      // p1= new PageRouter();
-      // p1.routeToPage("servers");
-
-
-      $(".tab-item").on('click', function (event) {
-
-        let id = this.id;
-      
-        console.log(id);
-
-        //pgRouter(id);
-        router.routeToPage(id);
-      });
-
-
-
-      /**
-       * 
-       */
-      function pgRouter(pgId) {
-
-        if (pgId == "test") {
-          $(".content-padded").html(Handlebars.compile($("#testResultTemplate").html()));
-
-        } else if (pgId == "nodes") {
-          let nodesTemplate = Handlebars.compile($("#nodesTemplate").html());
-          let context = { name: "home", };
-          let nodesHTML = nodesTemplate(context);
-          $(".content-padded").html(nodesHTML);
-
-        } else if (pgId == "alerts") {
-          $(".bar.bar-tab").html(Handlebars.compile($("#navBarTemplate").html()));
-
-        } else if (pgId == "servers") {
-
-
-
-          //if unchanged server list  use previous  if not gen new one 
-          let servers = new FnServerView();
-
-        }
-      }
-    });
-
-
-
-
-
-
-
-
-
-    //check saved freenats servers else login to one
-    //Display navbar
-
-
-
-
-
-  },
-
-  // deviceready Event Handler
-  //
-  // Bind any cordova events here. Common events are:
-  // 'pause', 'resume', etc.
-  onDeviceReady: function () {
-
-
-  },
-
-  // Update DOM on a Received Event
-  receivedEvent: function (id) {
-      
-
-  }
 };
 
 app.initialize();
-
-
-

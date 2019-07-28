@@ -1,0 +1,85 @@
+Node version: v10.16.0
+
+Cordova version: 8.1.1
+
+Config.xml file: 
+
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.github.MatthewGraham" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>FreeNats mobile</name>
+    <description>
+        A mobile app that can connect to FreeNATS API's
+    </description>
+    <author email="Matthew Graham" href="mggraham94@gmail.com">
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+    </platform>
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-plugin-background-mode" spec="git+https://github.com/tushe/cordova-plugin-background-mode.git" />
+    <plugin name="cordova-plugin-local-notification" spec="git+https://github.com/Steffaan/cordova-plugin-local-notifications.git">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="26.+" />
+    </plugin>
+    <plugin name="com.bez4pieci.cookies" spec="~0.0.1" />
+    <engine name="android" spec="^7.1.4" />
+    <engine name="ios" spec="^5.0.1" />
+</widget>
+
+
+Plugins: 
+
+com.bez4pieci.cookies,cordova-plugin-background-mode,cordova-plugin-badge,cordova-plugin-device,cordova-plugin-local-notification,cordova-plugin-whitelist
+
+Android platform:
+
+**************************************************************************
+The "android" command is deprecated.
+For manual SDK, AVD, and project management, please use Android Studio.
+For command-line tools, use tools\bin\sdkmanager.bat
+and tools\bin\avdmanager.bat
+**************************************************************************
+
+Invoking "C:\Users\Matt\AppData\Local\Android\Sdk\tools\bin\avdmanager" list target
+
+Loading local repository...                                                     [=========                              ] 25% Loading local repository...       [=========                              ] 25% Fetch remote repository...        [=========                              ] 25% Fetch remote repository...        [=========                              ] 25% Fetch remote repository...        [=======================================] 100% Fetch remote repository...       Available Android targets:
+----------
+id: 1 or "android-22"
+     Name: Android API 22
+     Type: Platform
+     API level: 22
+     Revision: 2
+----------
+id: 2 or "android-26"
+     Name: Android API 26
+     Type: Platform
+     API level: 26
+     Revision: 2
+----------
+id: 3 or "android-27"
+     Name: Android API 27
+     Type: Platform
+     API level: 27
+     Revision: 3
+----------
+id: 4 or "android-28"
+     Name: Android API 28
+     Type: Platform
+     API level: 28
+     Revision: 6
+
+Error retrieving iOS platform information: Error: cmd: Command failed with exit code 1 Error output:
+'xcodebuild' is not recognized as an internal or external command,
+operable program or batch file.
+

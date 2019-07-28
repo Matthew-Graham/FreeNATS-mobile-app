@@ -7,9 +7,26 @@
     "files": {}
   },
   "installed_plugins": {
+    "com.bez4pieci.cookies": {
+      "PACKAGE_NAME": "com.github.MatthewGraham"
+    },
+    "cordova-plugin-background-mode": {
+      "PACKAGE_NAME": "com.github.MatthewGraham"
+    },
+    "cordova-plugin-local-notification": {
+      "ANDROID_SUPPORT_V4_VERSION": "26.+",
+      "PACKAGE_NAME": "com.github.MatthewGraham"
+    },
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "io.cordova.hellocordova"
+      "PACKAGE_NAME": "com.github.MatthewGraham"
     }
   },
-  "dependent_plugins": {}
+  "dependent_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.github.MatthewGraham"
+    },
+    "cordova-plugin-badge": {
+      "PACKAGE_NAME": "com.github.MatthewGraham"
+    }
+  }
 }

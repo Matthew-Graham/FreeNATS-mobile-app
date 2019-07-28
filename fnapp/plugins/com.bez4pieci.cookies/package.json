@@ -1,0 +1,57 @@
+{
+  "_from": "cordova-remove-cookies",
+  "_id": "cordova-remove-cookies@0.0.2",
+  "_inBundle": false,
+  "_integrity": "sha1-ZmZx3TmyIpKCvaJ/OFkam3nc1Gs=",
+  "_location": "/cordova-remove-cookies",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-remove-cookies",
+    "name": "cordova-remove-cookies",
+    "escapedName": "cordova-remove-cookies",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-remove-cookies/-/cordova-remove-cookies-0.0.2.tgz",
+  "_shasum": "666671dd39b2229282bda27f38591a9b79dcd46b",
+  "_spec": "cordova-remove-cookies",
+  "_where": "C:\\Users\\Matt\\Documents\\GitHub\\FreeNATS-mobile-app\\fnapp",
+  "author": {
+    "name": "Ernests Karlsons"
+  },
+  "bugs": {
+    "url": "https://github.com/bez4pieci/Phonegap-Cookies-Plugin/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "com.bez4pieci.cookies",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "cordova_name": "Cookies",
+  "deprecated": false,
+  "description": "Cordova Cookies Plugin",
+  "engines": [],
+  "homepage": "https://github.com/bez4pieci/Phonegap-Cookies-Plugin#readme",
+  "keywords": [
+    "cordova",
+    "phonegap",
+    "cookies"
+  ],
+  "license": "Apache 2.0",
+  "name": "cordova-remove-cookies",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bez4pieci/Phonegap-Cookies-Plugin.git"
+  },
+  "version": "0.0.2"
+}
